@@ -1,0 +1,97 @@
+# ###############################################################################
+#+TITLE: FOOF MEng
+#+AUTHOR: Kajetan Rzepecki
+#+DATE: 2015
+#+LANGUAGE: pl
+#
+#+STARTUP: content
+#+EXPORT_SELECT_TAGS: export
+#+LaTeX_CLASS: aghdpl
+#+LaTeX_CLASS_OPTIONS: [a4paper, 12pt]
+#+LaTeX_HEADER: \usepackage[polish]{babel}
+#+LaTeX_HEADER: \usepackage{amsmath}
+#+LATEX_HEADER: \usepackage{minted}
+#+LATEX_HEADER: \usepackage{listings}
+#+LATEX_HEADER: \usepackage{multicol}
+#+LATEX_HEADER: \usepackage[nottoc, notlof, notlot]{tocbibind}
+#+OPTIONS: tags:nil, todo:nil, toc:nil
+# ###################
+
+# Helpers & Stuff
+#+begin_src emacs-lisp :exports none
+  (setq org-export-latex-title-command "")
+  (add-to-list 'org-latex-classes
+               '("aghdpl"
+                 "\\documentclass{aghdpl}"
+                 ("\\chapter{%s}" . "\\chapter*{%s}")
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")
+                 ))
+  (setq org-latex-classes (cdr org-latex-classes))
+#+end_src
+
+# AGH setup:
+#+LATEX_HEADER: \shortauthor{K. Rzepecki}
+#+LATEX_HEADER: \degreeprogramme{Informatyka}
+
+#+LATEX_HEADER: \thesistype{Praca dyplomowa magisterska}
+
+#+LATEX_HEADER: \titlePL{???}
+#+LATEX_HEADER: \titleEN{???}
+
+#+LATEX_HEADER: \shorttitlePL{??? \dots}
+#+LATEX_HEADER: \shorttitleEN{??? \dots}
+
+#+LATEX_HEADER: \supervisor{dr inż. Piotr Matyasik}
+
+#+LATEX_HEADER: \department{Katedra Informatyki Stosowanej}
+
+#+LATEX_HEADER: \faculty{Wydział Elektrotechniki, Automatyki,\protect\\[-1mm] Informatyki i Inżynierii Biomedycznej}
+
+#+LATEX_HEADER: \acknowledgements{Serdecznie dziękuję opiekunowi pracy za wsparcie merytoryczne oraz dobre rady edytorskie pomocne w tworzeniu pracy.}
+# #+LATEX_HEADER: \acknowledgements{Serdecznie dziękuję Lucynie oraz siostrze Alicji za cierpliwość i wsparcie podczas tworzenia pracy dyplomowej.}
+
+# Title pages & table of contents:
+#+begin_latex
+\titlepages
+\tableofcontents
+#+end_latex
+
+# List of Listings specific:
+#+begin_latex
+\newcommand{\listlistingname}{\bfseries\Large{Spis listingów}}
+\newlistof[chapter]{mylisting}{mlol}{\listlistingname}
+\newcommand{\mylisting}[1]{%
+  \refstepcounter{mylisting}%
+  #1%
+  \addcontentsline{mlol}{figure}
+    {\protect\numberline{\thechapter.\thelisting}#1}\par%
+}
+\renewcommand{\cftbeforemloltitleskip}{20mm}
+\renewcommand{\cftaftermloltitleskip}{5mm}
+#+end_latex
+
+* Wstęp
+#+latex: \label{sec:intro}
+
+Celem pracy jest zdążenie na czas.
+
+** Motywacja pracy
+** Zawartość pracy
+
+* Rozdziały tematyczne...
+* Podsumowanie
+#+latex: \label{sec:outro}
+
+* Spisy rysunków i fragmentów kodu
+#+latex: \label{sec:misc}
+
+#+begin_latex
+\begingroup
+  \listoffigures
+  \listofmylisting
+\endgroup
+#+end_latex
