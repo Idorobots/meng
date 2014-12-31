@@ -1,3 +1,6 @@
+## No need to keep .tex sources.
+*.tex
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof

@@ -1,0 +1,78 @@
+# ###############################################################################
+#+TITLE: ???
+#+AUTHOR: Kajetan Rzepecki
+#+DATE: \today
+#+LANGUAGE: pl
+#+LATEX_HEADER: \institute[AGH-UST]{Wydział EAIiIB\\ Katedra Informatyki Stosowanej}
+#
+#+startup: beamer
+#+LATEX_CLASS: beamer
+
+#+OPTIONS: toc:nil
+#
+#+LATEX_HEADER: \usepackage[polish]{babel}
+#+LATEX_HEADER: \usepackage{ifthen}
+#+LATEX_HEADER: \usepackage{multicol}
+#+LATEX_HEADER: \usepackage{minted}
+#
+#+LATEX_HEADER: \usetheme{AGH}
+#+LATEX_HEADER: \setbeamertemplate{itemize item}{$\maltese$}
+# ###################
+
+# Helpers & Stuff
+#+BEGIN_SRC emacs-lisp :exports none
+(setq org-latex-title-command "")
+(setq org-beamer-frame-level 2)
+#+END_SRC
+
+# AGH Setup:
+#+LATEX_HEADER: \newcommand\shorttitle{??? \dots}
+#+LATEX_HEADER: \renewcommand\insertshorttitle{\shorttitle}
+#+LATEX_HEADER: \let\oldframetitle\frametitle
+#+LATEX_HEADER: \renewcommand{\frametitle}[1]{\oldframetitle{\ifthenelse{\equal{#1}{}}{\secname}{\secname \space - #1}}}
+
+# TITLE Frame
+#+begin_latex
+{
+\usebackgroundtemplate{\includegraphics[width=\paperwidth]{titlepagepl}} % wersja polska
+\begin{frame}
+   \titlepage
+\end{frame}
+}
+#+end_latex
+
+# STUFF
+#+begin_latex
+\setbeamertemplate{itemize items}[default]
+%\renewcommand\pause{}
+#+end_latex
+
+* Wprowadzenie
+** skiptitle
+Cele pracy:
+
+- Zdążyć na czas.
+
+#+latex: \pause
+- ???
+
+#+latex: \pause
+- PROFIT!
+
+* 
+#+LaTeX: \usebackgroundtemplate{\includegraphics[width=\paperwidth]{titlepagepl}}
+** 
+
+# FINAL FRAME
+#+begin_latex
+\vfill
+\vfill
+\vfill
+\centering{
+\vfill
+    \Huge{Dziękuję za uwagę.}
+    \vfill
+    \large\insertauthor
+}
+\vfill
+#+end_latex
