@@ -1,5 +1,5 @@
 # ###############################################################################
-#+TITLE: FOOF MEng
+#+TITLE:
 #+AUTHOR: Kajetan Rzepecki
 #+DATE: 2015
 #+LANGUAGE: pl
@@ -39,11 +39,11 @@
 
 #+LATEX_HEADER: \thesistype{Praca dyplomowa magisterska}
 
-#+LATEX_HEADER: \titlePL{???}
-#+LATEX_HEADER: \titleEN{???}
+#+LATEX_HEADER: \titlePL{Projekt języka programowania wspierającego przetwarzanie rozproszone na platformach heterogenicznych.}
+#+LATEX_HEADER: \titleEN{Design of a programming language with support for distributed computing on heterogenous platforms.}
 
-#+LATEX_HEADER: \shorttitlePL{??? \dots}
-#+LATEX_HEADER: \shorttitleEN{??? \dots}
+#+LATEX_HEADER: \shorttitlePL{Projekt języka programowania wspierającego przetwarzanie rozproszone \dots}
+#+LATEX_HEADER: \shorttitleEN{Design of a programming language with support for distributed computing \dots}
 
 #+LATEX_HEADER: \supervisor{dr inż. Piotr Matyasik}
 
@@ -77,14 +77,202 @@
 * Wstęp
 #+latex: \label{sec:intro}
 
-Celem pracy jest zdążenie na czas.
+Celem pracy jest zdążenie na czas [[cite:Backus1978]].
 
 ** Motywacja pracy
+- Knowledge for Service Oriented Architecture
+- Platform Awareness
+
 ** Zawartość pracy
 
-* Rozdziały tematyczne...
+* Język =FOOF=
+- language grammar
+- language philosophy
+
+** Proste typy danych
+- atoms
+
+** Złożone typy danych
+- lists
+- vectors
+- maps
+
+** Funkcje i kontynuacje
+- about lambdas
+- about continuations
+- exceptions via continuations
+
+** System modułowy
+- protocols
+- modules
+- units
+- SOA
+
+** Przetwarzanie współbieżne i rozproszone
+- actor model
+- distribution
+
+** Reprezentacja wiedzy w języku
+- unconstrained knowledge about the system
+- RBS vs Prolog vs ontologies
+- appendix "ontologies"
+
+* Kompilator języka =FOOF=
+- compiler block diagram
+- list compilation phases
+- mention bootstrapping
+
+** Implementacja typów danych
+- 2 bit tags for simple objects
+- tag word for complex objects
+
+** Implementacja systemu modułowego
+- simple transform
+
+** Analiza leksykalna i syntaktyczna
+- PEG
+- macroexpander
+
+** Analiza semantyczna
+- CPS
+- delimited continuations
+
+- error handling
+
+** Dalsze transformacje i optymaliza kodu
+- closure conversion
+- lambda lifting
+- partial evaluation?
+- constant folding?
+
+** Generacja kodu wynikowego
+- might need appendix "LLVM"
+- name mangling
+- low-level optimizations
+- source level translation
+
+** Implementacja systemu uruchomieniowego języka
+- primops
+- alloc
+- gc
+- scheduler
+- network stack
+
+* System uruchomieniowy języka
+- block diagram of the system
+- might need appendix "tracing vs ref count"
+- might need to throw this away
+
+** Architektura systemu uruchomieniowego
+- built-in units
+- process tree
+
+** Ładowanie i uruchamianie programów
+- loading modules
+- starting units
+- mention unit redundancy
+- list primops
+
+** Alokator pamięci
+- gc_malloc
+- allocation strategy
+- garbage collection
+- garbage cycles handling
+- etc
+- list primops
+
+** Harmonogramowanie procesów
+- cue next section
+- list primops
+
+** Komunikacja między węzłami
+- cue next section
+- list primops
+
+** Baza wiedzy
+- cue next section
+- list primops
+
+* Przetwarzanie współbieżne i rozproszone
+- difference between concurrency & distribution
+
+** Reprezentacja procesów
+- process object
+
+** Harmonogramowanie procesów
+- CFS algorithm
+
+** Implementacja symetrycznego multiprocessingu
+- Completele Fair Scheduler
+- cue CPS
+
+** Implementacja Modelu Aktorowego
+- message passing
+- message queue
+- copying vs passing pointers
+
+** Protokół komunikacji międzywęzłowej
+- node & process IDs
+- packets
+
+** Implementacja protokołu komunikacji
+- TCP vs UDP
+
+** Listy kontroli dostępu
+- safety measures
+- might need to be thrown away
+
+* Reprezentacja i przetwarzanie wiedzy
+- might need appendix "Rete usage examples"
+
+** Reprezentacja wiedzy w języku
+- facts
+- rules
+
+** Algorytm Rete
+- about Rete
+- Rete vs naïve approach
+
+** Implementacja Rete - forward chaining
+- naïve Rete
+- all the nodes!
+
+** Implementacja backward-chaining
+- fact store - linear, in-memory database
+
+** Integracja przetwarzania wiedzy w języku
+- integration with the module system
+- rules represented by autonomus processes
+
+** Przekazywanie wiedzy pomiędzy węzłami
+- network protocols
+- ACLs
+
 * Podsumowanie
 #+latex: \label{sec:outro}
+** Kompilator języka =FOOF=
+- needs better optimizations
+- needs better error handling
+
+** System uruchomieniowy
+- needs more stuff
+- needs macroexpansion
+
+** Przyszłe kierunki rozwoju
+- type system
+- datatypes
+- runtime
+- data-level paralellism
+- data encryption & ACLs
+- DHT (might be a good example program?)
+
+# The bibliography
+#+begin_latex
+\bibliographystyle{ieeetr}
+\bibliography{bibs}
+#+end_latex
+
+#+latex: \appendix
 
 * Spisy rysunków i fragmentów kodu
 #+latex: \label{sec:misc}
