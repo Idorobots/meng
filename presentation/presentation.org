@@ -48,10 +48,20 @@
 #+end_latex
 
 * Problem
-** Definicje
-- heterogeniczność vs homogeniczność
-- slajd pokazujący różnice między hetero/homo sprzętem
-- slajd pokazujący różnice między hetero/homo systemami
+** Heterogeniczność
+#+LaTeX: \alt<2>{
+#+BEGIN_CENTER
+#+ATTR_LATEX: :width 0.7\textwidth
+[[file:./img/heterohomo2.pdf]]
+#+END_CENTER
+
+#+LaTeX: }{
+
+#+BEGIN_CENTER
+#+ATTR_LATEX: :width 0.7\textwidth
+[[file:./img/heterohomo1.pdf]]
+#+END_CENTER
+#+LaTeX: }
 
 ** Na czym się skupiamy
 - Skalowalność
@@ -62,24 +72,54 @@
 - Heterogeniczność?
 
 ** State of the Art
-- Erlang, Python, JVM-based, insert-language-here - skalowalność, czasem niezawodność, zawsze homogeniczność,
-- Amazon EC2, Heroku - dynamiczność, homogeniczność
-- Ansible, Puppet, Chef, Kontenery - konfiguracja, homogeniczność
+#+BEGIN_CENTER
+#+ATTR_LATEX: :width 0.5\textwidth
+[[file:./img/sota.pdf]]
+#+END_CENTER
+
 #+LaTeX: \pause
 - Heterogeniczność?
 
 ** Przykład
-- klient - server
-- klient - load-balancer - server [...]
-- klient - load-balancer - server - db
-- klient - load-balancer - server - load-balancer - db [...]
-- downtime?
 
-** Nizależność vs. świadomość
-- slajd z zaznaczonymi heterogenicznymi częściami systemu
-- (udajemy że) nie wiemy o stukturze systemu
-- powinniśmy zbierać wiedzę by móc lepiej podejmować decyjze
-- Platform Awareness != Aware Platform
+#+LaTeX: \alt<4>{
+#+BEGIN_CENTER
+#+ATTR_LATEX: :width 0.7\textwidth
+[[file:./img/arch_example4.pdf]]
+#+END_CENTER
+
+#+LaTeX: }{\alt<3>{
+#+BEGIN_CENTER
+#+ATTR_LATEX: :width 0.7\textwidth
+[[file:./img/arch_example3.pdf]]
+#+END_CENTER
+
+#+LaTeX: }{\alt<2>{
+#+BEGIN_CENTER
+#+ATTR_LATEX: :width 0.7\textwidth
+[[file:./img/arch_example2.pdf]]
+#+END_CENTER
+
+#+LaTeX: }{
+#+BEGIN_CENTER
+#+ATTR_LATEX: :width 0.7\textwidth
+[[file:./img/arch_example1.pdf]]
+#+END_CENTER
+#+LaTeX: }}}
+
+** Niezależność vs. świadomość
+#+LaTeX: \alt<2>{
+#+BEGIN_CENTER
+#+ATTR_LATEX: :width 0.7\textwidth
+[[file:./img/arch_final2.pdf]]
+#+END_CENTER
+
+#+LaTeX: }{
+#+BEGIN_CENTER
+#+ATTR_LATEX: :width 0.7\textwidth
+[[file:./img/arch_final1.pdf]]
+#+END_CENTER
+#+LaTeX: }
 
 * Architektura
 ** Proste jądro
