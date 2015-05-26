@@ -1,5 +1,5 @@
 # ###############################################################################
-#+TITLE: ???
+#+TITLE: Projekt języka programowania \\ wspierającego przetwarzanie rozproszone \\ na platformach heterogenicznych.
 #+AUTHOR: Kajetan Rzepecki
 #+DATE: \today
 #+LANGUAGE: pl
@@ -26,7 +26,7 @@
 #+END_SRC
 
 # AGH Setup:
-#+LATEX_HEADER: \newcommand\shorttitle{??? \dots}
+#+LATEX_HEADER: \newcommand\shorttitle{Projekt języka programowania \dots}
 #+LATEX_HEADER: \renewcommand\insertshorttitle{\shorttitle}
 #+LATEX_HEADER: \let\oldframetitle\frametitle
 #+LATEX_HEADER: \renewcommand{\frametitle}[1]{\oldframetitle{\ifthenelse{\equal{#1}{}}{\secname}{\secname \space - #1}}}
@@ -47,17 +47,167 @@
 %\renewcommand\pause{}
 #+end_latex
 
-* Wprowadzenie
-** skiptitle
-Cele pracy:
+* Problem
+** Definicje
+- heterogeniczność vs homogeniczność
+- slajd pokazujący różnice między hetero/homo sprzętem
+- slajd pokazujący różnice między hetero/homo systemami
 
-- Zdążyć na czas.
+** Na czym się skupiamy
+- Skalowalność
+- Dynamiczność
+- Niezawodność
+- Konfiguracja
+#+LaTeX: \pause
+- Heterogeniczność?
 
-#+latex: \pause
-- ???
+** State of the Art
+- Erlang, Python, JVM-based, insert-language-here - skalowalność, czasem niezawodność, zawsze homogeniczność,
+- Amazon EC2, Heroku - dynamiczność, homogeniczność
+- Ansible, Puppet, Chef, Kontenery - konfiguracja, homogeniczność
+#+LaTeX: \pause
+- Heterogeniczność?
 
-#+latex: \pause
-- PROFIT!
+** Przykład
+- klient - server
+- klient - load-balancer - server [...]
+- klient - load-balancer - server - db
+- klient - load-balancer - server - load-balancer - db [...]
+- downtime?
+
+** Nizależność vs. świadomość
+- slajd z zaznaczonymi heterogenicznymi częściami systemu
+- (udajemy że) nie wiemy o stukturze systemu
+- powinniśmy zbierać wiedzę by móc lepiej podejmować decyjze
+- Platform Awareness != Aware Platform
+
+* Architektura
+** Proste jądro
+- przenośne i _integrowalne_ z wieloma platformami
+
+#+LaTeX: \pause
+- \lambda calculus - funkcje
+#+BEGIN_SRC scheme
+(lambda (x) x)
+#+END_SRC
+
+#+LaTeX: \pause
+- kontynuacje
+#+BEGIN_SRC scheme
+(+ 1 (reset (* 2 (shift k (k (k 4)))))) ; 17 wtf!?
+#+END_SRC
+
+#+LaTeX: \pause
+- system regułowy
+#+BEGIN_SRC scheme
+(whenever (and (module ?m) (provides ?m feature))
+  (start-using ?m))
+#+END_SRC
+
+** System modułowy
+- moduł posiada interfejs vs. moduł wymaga interfejsu:
+
+#+LaTeX: \pause
+#+LaTeX: \begin{multicols}{2}
+#+BEGIN_SRC scheme
+(module Foo
+  (provide bar)
+  (function (bar) ...))
+(module Bar
+  (require Foo))
+#+END_SRC
+
+#+LaTeX: \pause
+#+BEGIN_SRC scheme
+(module Foo
+  (function (bar) ...))
+(module Bar
+  (require ?m
+    (and (module ?m)
+         (provides ?m bar))))
+#+END_SRC
+#+LaTeX: \end{multicols}
+#+LaTeX: \pause
+- zintegrowany z kompilatorem
+
+** Przetwarzanie wiedzy
+- automatyczne odkrywanie i propagacja wiedzy
+#+LaTeX: \begin{multicols}{2}
+#+BEGIN_SRC scheme
+(module Foo
+  (function (bar) ...))
+#+END_SRC
+#+LaTeX: \newcolumn
+: (module Foo)
+: (provides Foo bar)
+#+LaTeX: \end{multicols}
+#+LaTeX: \pause
+- dynamiczność, niezawodność i skalowalność
+#+LaTeX: \pause
+- przetwarzanie złożonych zdarzeń
+# #+BEGIN_SRC scheme
+# (function (read-temperature)
+#   (let ((t ...))
+#     (signal! `(temperature ,t))))
+# #+END_SRC
+
+#+LaTeX: \pause
+- świadomość platformy
+
+** COMMENT Świadomość platformy
+#+BEGIN_CENTER
+#+BEGIN_SRC scheme
+(@ big-oh N
+  (function (naïve-scan xs)
+    ; runs on a single CPU core
+    ...))
+#+END_SRC
+
+#+BEGIN_SRC scheme
+(@ big-oh (log N)
+  (function (hillis-steele xs)
+    ; runs on O(N) GPU cores
+    ...))
+#+END_SRC
+#+END_CENTER
+
+* Implementacja
+** Kompilator
+- bootstrap
+- LLVM
+#+LaTeX: \pause
+- dystrybucja kodu przez uruchamialne archiva LLVM IR
+- AOT i JIT
+#+LaTeX: \pause
+- x86, ARM, JavaScript, ...
+#+LaTeX: \pause
+- Epiphany, Xtensa
+#+LaTeX: \pause
+- MOS 6502?
+
+** System regułowy
+- algorytm Rete + rozszerzenia
+#+LaTeX: \pause
+- wnioskowanie w przód:
+#+BEGIN_SRC scheme
+(whenever (and (module ?m)
+               (provides ?m ?f))
+  (list ?m ?f))
+#+END_SRC
+
+#+LaTeX: \pause
+- wnioskowanie wstecz:
+#+BEGIN_SRC scheme
+(select (?m ?f)
+        (and (module ?m)
+             (provides ?m ?f)))
+#+END_SRC
+
+** Rete
+#+BEGIN_CENTER
+#+ATTR_LATEX: :width 0.7\textwidth
+[[file:./img/rete_bench.pdf]]
+#+END_CENTER
 
 * 
 #+LaTeX: \usebackgroundtemplate{\includegraphics[width=\paperwidth]{titlepagepl}}
