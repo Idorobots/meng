@@ -48,6 +48,32 @@
 #+end_latex
 
 * Problem
+# Heterogeniczność rozumiana na dwa sposoby.
+# Heterogeniczność platform sprzętowych.
+# Heterogeniczność systemów rozproszonych.
+
+# Problemy systemów rozproszonych w literaturze.
+# Istotne problemy, które są pomijane.
+# Platform Awareness
+
+# Brak/nieadekwatne rozwiązania heterogeniczności i Platform Awareness.
+# Technologia wpływa na sposób tworzenia systemów rozproszonych.
+
+# Aplikacja Client/Server wymaga skalowania.
+# Skalowanie wprowadza load-balancery.
+# Stan aplikacji wymaga wprowadzenia dodatkowych węzłów bazodanowych.
+# Skalowania bazy danych wymaga dodatkowych load-balancerów.
+# Wniosek: heterogeniczność systemów rozproszonych jest naturalna.
+# Wniosek: obecne technologie nie są kompatybilne z Platform Awareness.
+
+# Obecne technologie każą nam udawać, że system jest mniej złożony.
+# W rzeczywistości systemy są bardziej złożone.
+# Nie mamy dobrego sposobu propagacji wiedzy o systemie.
+
+# Celem pracy jest zaprojektowanie języka programowania rozwiązującego problem, ...
+# ...implementacja kompilatora, runtime i systemu modułowego dla tego języka, ...
+# ...integracja języka z wieloma platformami.
+
 ** Heterogeniczność
 #+LaTeX: \alt<2>{
 #+BEGIN_CENTER
@@ -133,6 +159,21 @@
 - _Integracja_ z wieloma platformami
 
 * Architektura
+# Język ma bazować na prostym, przenośnym i integrowalnym rdzeniu.
+# Rdzeń korzysta z kilku ortogonalnych abstrakcji:
+# - Lambda calculus
+# - Kontynuacje
+# - Model Aktorowy
+
+# Na prostej podstawie zbudowano system modułowy oparty o reguły.
+# Innowacyjne podejście do modułów i ich interfejsów:
+# - moduł dostarcza funkcjonalność vs. moduł wymaga funkcjonalności.
+
+# Odkrywanie i propagacja wiedzy dzięki integracj z kompilatorem - kompilator emituje asercje faktów.
+# Przetwarzanie wiedzy umożliwia dynamiczność, niezawodność, skalowalność, ...
+# ...przetwarzanie złożonych zdarzeń - sygnalizacja zaistnienia faktów i ...
+# ...świadomość platformy - dodatkowe adnotacje pozwalają na tworzenie/wybieranie redundantnych modułów.
+
 ** Prosty rdzeń języka
 - Przenośny i _integrowalny_ z wieloma platformami
 
@@ -211,6 +252,18 @@
 #+END_SRC
 
 * Implementacja
+# Implementacja wykorzystuje LLVM.
+# Dzięki temu łatwo jest dystrybuować kod - archiwa bitkodu LLVM.
+# Pozwala na AOT i JIT kompilację.
+# Wspiera wiele platform:
+# - x86, ARM,
+# - AVR, Epiphany, Xtensa,
+# - nawet MOS 6502, Javascript.
+
+# System regułowy oparty o Rete + autorskie rozszerzenia.
+# Wspiera wnioskowanie w przód.
+# Wspiera wnioskowanie wstecz.
+
 ** Kompilator
 #+BEGIN_CENTER
 #+ATTR_LATEX: :width 0.8\textwidth
@@ -237,6 +290,10 @@
 #+END_SRC
 
 * Wyniki
+# Analiza wydajności systemu regułowego?
+
+# Przykład działania systemu rozproszonego zrealizowanego w języku?
+
 ** 
 #+LaTeX: \alt<2>{
 - TODO: obrazek z różnymi urządzeniami gadającymi ze sobą.
