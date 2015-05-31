@@ -70,15 +70,17 @@
 - Konfiguracja
 #+LaTeX: \pause
 - Heterogeniczność?
+- Świadomość platformy?
 
 ** State of the Art
 #+BEGIN_CENTER
-#+ATTR_LATEX: :width 0.5\textwidth
+#+ATTR_LATEX: :width 0.8\textwidth
 [[file:./img/sota.pdf]]
 #+END_CENTER
 
 #+LaTeX: \pause
 - Heterogeniczność?
+- Świadomość platformy?
 
 ** Przykład
 
@@ -107,7 +109,7 @@
 #+END_CENTER
 #+LaTeX: }}}
 
-** Niezależność vs. świadomość
+** Heterogeniczność bez świadomości
 #+LaTeX: \alt<2>{
 #+BEGIN_CENTER
 #+ATTR_LATEX: :width 0.7\textwidth
@@ -121,57 +123,69 @@
 #+END_CENTER
 #+LaTeX: }
 
+** Cel pracy
+- Projekt języka programowania
+#+LaTeX: \pause
+- Kompilator
+- System uruchomieniowy + dystrybucja
+- System modułowy + wiedza
+#+LaTeX: \pause
+- _Integracja_ z wieloma platformami
+
 * Architektura
-** Proste jądro
-- przenośne i _integrowalne_ z wieloma platformami
+** Prosty rdzeń języka
+- Przenośny i _integrowalny_ z wieloma platformami
 
 #+LaTeX: \pause
-- \lambda calculus - funkcje
+- \lambda calculus - funkcje:
 #+BEGIN_SRC scheme
 (lambda (x) x)
 #+END_SRC
 
 #+LaTeX: \pause
-- kontynuacje
+- Kontynuacje:
 #+BEGIN_SRC scheme
 (+ 1 (reset (* 2 (shift k (k (k 4)))))) ; 17 wtf!?
 #+END_SRC
 
 #+LaTeX: \pause
-- system regułowy
+- Model Aktorowy - procesy:
+#+BEGIN_SRC scheme
+(send (spawn do-something) 'message)
+#+END_SRC
+
+** System modułowy
+- Oparty o reguły:
 #+BEGIN_SRC scheme
 (whenever (and (module ?m) (provides ?m feature))
   (start-using ?m))
 #+END_SRC
 
-** System modułowy
-- moduł posiada interfejs vs. moduł wymaga interfejsu:
-
 #+LaTeX: \pause
+- Moduł dostarcza funkcjonalność vs. moduł wymaga funkcjonalności:
+
 #+LaTeX: \begin{multicols}{2}
 #+BEGIN_SRC scheme
-(module Foo
-  (provide bar)
-  (function (bar) ...))
-(module Bar
-  (require Foo))
+(module FProvider
+  (provide f)
+  (function (f) ...))
+(module FUser
+  (require FProvider))
 #+END_SRC
 
 #+LaTeX: \pause
 #+BEGIN_SRC scheme
-(module Foo
-  (function (bar) ...))
-(module Bar
+(module FProvider
+  (function (f) ...))
+(module FUser
   (require ?m
     (and (module ?m)
-         (provides ?m bar))))
+         (provides ?m f))))
 #+END_SRC
 #+LaTeX: \end{multicols}
-#+LaTeX: \pause
-- zintegrowany z kompilatorem
 
 ** Przetwarzanie wiedzy
-- automatyczne odkrywanie i propagacja wiedzy
+- Automatyczne odkrywanie i propagacja wiedzy
 #+LaTeX: \begin{multicols}{2}
 #+BEGIN_SRC scheme
 (module Foo
@@ -181,52 +195,31 @@
 : (module Foo)
 : (provides Foo bar)
 #+LaTeX: \end{multicols}
-#+LaTeX: \pause
-- dynamiczność, niezawodność i skalowalność
-#+LaTeX: \pause
-- przetwarzanie złożonych zdarzeń
-# #+BEGIN_SRC scheme
-# (function (read-temperature)
-#   (let ((t ...))
-#     (signal! `(temperature ,t))))
-# #+END_SRC
 
 #+LaTeX: \pause
-- świadomość platformy
+- Dynamiczność, niezawodność i skalowalność
 
-** COMMENT Świadomość platformy
-#+BEGIN_CENTER
-#+BEGIN_SRC scheme
-(@ big-oh N
-  (function (naïve-scan xs)
-    ; runs on a single CPU core
-    ...))
-#+END_SRC
+#+LaTeX: \pause
+- Przetwarzanie złożonych zdarzeń
 
+#+LaTeX: \pause
+- Świadomość platformy
 #+BEGIN_SRC scheme
 (@ big-oh (log N)
-  (function (hillis-steele xs)
-    ; runs on O(N) GPU cores
+  (function (hillis-steele xs) ; runs on O(N) GPU cores
     ...))
 #+END_SRC
-#+END_CENTER
 
 * Implementacja
 ** Kompilator
-- bootstrap
-- LLVM
-#+LaTeX: \pause
-- dystrybucja kodu przez uruchamialne archiva LLVM IR
-- AOT i JIT
-#+LaTeX: \pause
-- x86, ARM, JavaScript, ...
-#+LaTeX: \pause
-- Epiphany, Xtensa
-#+LaTeX: \pause
-- MOS 6502?
+#+BEGIN_CENTER
+#+ATTR_LATEX: :width 0.8\textwidth
+[[file:./img/archs.pdf]]
+#+END_CENTER
 
 ** System regułowy
 - algorytm Rete + rozszerzenia
+
 #+LaTeX: \pause
 - wnioskowanie w przód:
 #+BEGIN_SRC scheme
@@ -243,11 +236,18 @@
              (provides ?m ?f)))
 #+END_SRC
 
-** Rete
+* Wyniki
+** 
+#+LaTeX: \alt<2>{
+- TODO: obrazek z różnymi urządzeniami gadającymi ze sobą.
+- TODO: Lista rzeczy, które udało się wykonać.
+- TODO: Lista przyszłych kierunków rozwoju?
+#+LaTeX: }{
 #+BEGIN_CENTER
 #+ATTR_LATEX: :width 0.7\textwidth
 [[file:./img/rete_bench.pdf]]
 #+END_CENTER
+#+LaTeX: }
 
 * 
 #+LaTeX: \usebackgroundtemplate{\includegraphics[width=\paperwidth]{titlepagepl}}
