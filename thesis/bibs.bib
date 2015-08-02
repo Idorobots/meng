@@ -1,4 +1,4 @@
-%% Misc:
+%% Language design:
 
 @article{Backus1978,
 author = {Backus, John},
@@ -47,8 +47,8 @@ publisher = {Prentice Hall International (UK) Ltd.},
 address = {Hertfordshire, UK, UK},
 }
 
-%% Abstract VMs & Implementations:
-                  
+%% Languages:
+
 @inproceedings{Carlsson2001,
 author = {Richard Carlsson},
 title = {An introduction to {C}ore {E}rlang},
@@ -66,58 +66,6 @@ month = nov,
 abstract = {We describe a core language for the concurrent functional language Erlang, aptly named ``Core Erlang'', presenting its grammar and informal static and dynamic semantics relative to Erlang. We also discuss built-in functions and other open issues, and sketch a syntax tree representation.}
 }
 
-@inproceedings{Fairbairn1987,
-author = {Fairbairn, John and Wray, Stuart},
-title = {{TIM}: A Simple, Lazy Abstract Machine to Execute Supercombinators},
-booktitle = {Proc. Of a Conference on Functional Programming Languages and Computer Architecture},
-year = {1987},
-isbn = {0-387-18317-5},
-location = {Portland, Oregon, USA},
-pages = {34--45},
-numpages = {12},
-url = {http://dl.acm.org/citation.cfm?id=36583.36586},
-acmid = {36586},
-publisher = {Springer-Verlag},
-address = {London, UK, UK},
-}
-
-@article{Ramsdell1999,
-author = {Ramsdell, John D.},
-citeulike-article-id = {683835},
-citeulike-linkout-0 = {http://dx.doi.org/10.1023/A:1006151910336},
-citeulike-linkout-1 = {http://www.cs.utexas.edu/users/boyer/ftp/nqthm/trsecd/trsecd.html},
-citeulike-linkout-2 = {http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.46.9288},
-doi = {10.1023/A:1006151910336},
-journal = {Journal of Automated Reasoning},
-keywords = {abstract-machine, secd, tail-recursion},
-number = {1},
-pages = {43--62},
-posted-at = {2008-07-09 21:16:25},
-priority = {2},
-title = {{The Tail-Recursive {SECD} Machine}},
-url = {http://www.cs.utexas.edu/users/boyer/ftp/nqthm/trsecd/trsecd.html},
-volume = {23},
-year = {1999}
-}
-
-@inproceedings{VanHorn2010,
-author = {Van Horn, David and Might, Matthew},
-title = {Abstracting Abstract Machines},
-booktitle = {Proceedings of the 15th ACM SIGPLAN International Conference on Functional Programming},
-series = {ICFP '10},
-year = {2010},
-isbn = {978-1-60558-794-3},
-location = {Baltimore, Maryland, USA},
-pages = {51--62},
-numpages = {12},
-url = {http://doi.acm.org/10.1145/1863543.1863553},
-doi = {10.1145/1863543.1863553},
-acmid = {1863553},
-publisher = {ACM},
-address = {New York, NY, USA},
-keywords = {abstract interpretation, abstract machines},
-}
-
 @book{Abelson1996,
 author = {Abelson, Harold and Sussman, Gerald J.},
 title = {Structure and Interpretation of Computer Programs},
@@ -128,16 +76,12 @@ publisher = {MIT Press},
 address = {Cambridge, MA, USA},
 }
 
+%% Compilers & interpreters:
+
 @article{Steele1978,
 title={The Art of the Interpreter of the Modularity Complex (Parts Zero, One, and Two)},
 author={Steele Jr, Guy Lewis and Sussman, Gerald Jay},
 year={1978}
-}
-
-@misc{Gudeman1993,
-author = {David Gudeman},
-title = {Representing Type Information in Dynamically Typed Languages},
-year = {1993}
 }
 
 @book{PeytonJones1992,
@@ -163,15 +107,6 @@ note = {Free online version}
 year = 2013
 }
 
-@inproceedings{Kaser1992,
-author = {Owen Kaser and Shaunak Pawagi and C. R. Ramakrishnan and I. V. Ramakrishnan and R. C. Sekar},
-title = {Fast Parallel Implementation of Lazy Languages - The EQUALS Experience},
-booktitle = {Journal of Functional Programming},
-year = {1992},
-pages = {335--344},
-publisher = {ACM}
-}
-
 @book{Appel1992,
 author = {Andrew W. Appel},
 title = {Compiling with Continuations},
@@ -181,108 +116,6 @@ isbn = {0-521-41695-7},
 timestamp = {Tue, 13 Jan 2004 12:56:37 +0100},
 biburl = {http://dblp.uni-trier.de/rec/bib/books/cu/Appel1992},
 bibsource = {dblp computer science bibliography, http://dblp.org}
-}
-
-%% Allocators & GCs:
-
-@inpreceedings{Wilson1995,
-author = {Paul R. Wilson and Mark S. Johnstone and Michael Neely and David Boles},
-title = {Dynamic Storage Allocation: A Survey and Critical Review},
-booktitle = {},
-year = {1995},
-pages = {1--116},
-publisher = {Springer-Verlag}
-}
-
-@inproceedings{Shahriyar2012,
-author = {Shahriyar, Rifat and Blackburn, Stephen M. and Frampton, Daniel},
-title = {Down for the Count?  Getting Reference Counting Back in the Ring},
-booktitle = {Proceedings of the 2012 International Symposium on Memory Management},
-series = {ISMM '12},
-year = {2012},
-isbn = {978-1-4503-1350-6},
-location = {Beijing, China},
-pages = {73--84},
-numpages = {12},
-url = {http://doi.acm.org/10.1145/2258996.2259008},
-doi = {10.1145/2258996.2259008},
-acmid = {2259008},
-publisher = {ACM},
-address = {New York, NY, USA},
-keywords = {garbage collection, java, memory management, reference counting},
-}
-
-@inproceedings{Boehm2004,
-author = {Boehm, Hans-J.},
-title = {The Space Cost of Lazy Reference Counting},
-booktitle = {Proceedings of the 31st ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages},
-series = {POPL '04},
-year = {2004},
-isbn = {1-58113-729-X},
-location = {Venice, Italy},
-pages = {210--219},
-numpages = {10},
-url = {http://doi.acm.org/10.1145/964001.964019},
-doi = {10.1145/964001.964019},
-acmid = {964019},
-publisher = {ACM},
-address = {New York, NY, USA},
-keywords = {garbage collection, memory allocation, reference counting, space complexity},
-}
-
-@inproceedings{Huelsbergen1998,
-author = {Huelsbergen, Lorenz and Winterbottom, Phil},
-title = {Very Concurrent Mark-\&-sweep Garbage Collection Without Fine-grain Synchronization},
-booktitle = {Proceedings of the 1st International Symposium on Memory Management},
-series = {ISMM '98},
-year = {1998},
-isbn = {1-58113-114-3},
-location = {Vancouver, British Columbia, Canada},
-pages = {166--175},
-numpages = {10},
-url = {http://doi.acm.org/10.1145/286860.286878},
-doi = {10.1145/286860.286878},
-acmid = {286878},
-publisher = {ACM},
-address = {New York, NY, USA},
-}
-
-@inproceedings{Armstrong1995,
-author = {Joe Armstrong and Robert Virding},
-title = {One Pass Real-Time Generational Mark-Sweep Garbage Collection},
-booktitle = {IN INTERNATIONAL WORKSHOP ON MEMORY MANAGEMENT},
-year = {1995},
-pages = {313--322},
-publisher = {Springer-Verlag}
-}
-
-@inproceedings{Bacon2004,
-author = {Bacon, David F. and Cheng, Perry and Rajan, V. T.},
-title = {A Unified Theory of Garbage Collection},
-booktitle = {Proceedings of the 19th Annual ACM SIGPLAN Conference on Object-oriented Programming, Systems, Languages, and Applications},
-series = {OOPSLA '04},
-year = {2004},
-isbn = {1-58113-831-8},
-location = {Vancouver, BC, Canada},
-pages = {50--68},
-numpages = {19},
-url = {http://doi.acm.org/10.1145/1028976.1028982},
-doi = {10.1145/1028976.1028982},
-acmid = {1028982},
-publisher = {ACM},
-address = {New York, NY, USA},
-keywords = {graph algorithms, mark-and-sweep, reference counting, tracing},
-}
-
-@PhDThesis{Wilhelmsson2005,
-author = {Jesper Wilhelmsson},
-title = {Efficient Memory Management for Message-Passing Concurrency --- part {I}: Single-threaded execution},
-school = {Department of Information Technology, Uppsala University},
-department = {Computing Science Division},
-year  = {2005},
-number = {2005-001},
-type = {Licentiate thesis},
-month = may,
 }
 
 %% Actor Model, Concurrency & Lock-free FIFO queues:
@@ -309,24 +142,6 @@ year = {1981},
 source = {http://www.ncstrl.org:8900/ncstrl/servlet/search?formname=detail\&id=oai%3Ancstrlh%3Amitai%3AMIT-AILab%2F%2FAITR-633},
 publisher = {Massachusetts Institute of Technology},
 address = {Cambridge, MA, USA},
-}
-
-@inproceedings{Gordon2012,
-author = {Gordon, Colin S. and Parkinson, Matthew J. and Parsons, Jared and Bromfield, Aleks and Duffy, Joe},
-title = {Uniqueness and Reference Immutability for Safe Parallelism},
-booktitle = {Proceedings of the ACM International Conference on Object Oriented Programming Systems Languages and Applications},
-series = {OOPSLA '12},
-year = {2012},
-isbn = {978-1-4503-1561-6},
-location = {Tucson, Arizona, USA},
-pages = {21--40},
-numpages = {20},
-url = {http://doi.acm.org/10.1145/2384616.2384619},
-doi = {10.1145/2384616.2384619},
-acmid = {2384619},
-publisher = {ACM},
-address = {New York, NY, USA},
-keywords = {concurrency, reference immutability, type systems, views},
 }
 
 @inproceedings{MichaelScott1996,
@@ -413,8 +228,6 @@ address = {Washington, DC, USA},
 keywords = {Priority Queue, Parallel, Lock-Free, Non-Blocking, Multi-Thread, Shared Memory},
 }
 
-%% Task scheduling:
-
 @article{Pabla2009,
 author = {Pabla, Chandandeep Singh},
 title = {Completely Fair Scheduler},
@@ -480,24 +293,4 @@ acmid = {2661152},
 publisher = {ACM},
 address = {New York, NY, USA},
 keywords = {automated discovery, language design, meanings, program composition, semantic web, specifications},
-}
-
-%% Type systems:
-
-@inproceedings{Lindahl2006,
-author = {Lindahl, Tobias and Sagonas, Konstantinos},
-title = {Practical Type Inference Based on Success Typings},
-booktitle = {Proceedings of the 8th ACM SIGPLAN International Conference on Principles and Practice of Declarative Programming},
-series = {PPDP '06},
-year = {2006},
-isbn = {1-59593-388-3},
-location = {Venice, Italy},
-pages = {167--178},
-numpages = {12},
-url = {http://doi.acm.org/10.1145/1140335.1140356},
-doi = {10.1145/1140335.1140356},
-acmid = {1140356},
-publisher = {ACM},
-address = {New York, NY, USA},
-keywords = {Erlang, constraint-based type inference, subtyping, success typings},
 }
