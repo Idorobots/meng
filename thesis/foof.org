@@ -80,176 +80,200 @@
 Celem pracy jest zdążenie na czas [[cite:Backus1978]].
 
 ** Motywacja pracy
-- Knowledge for Service Oriented Architecture
-- Platform Awareness
+- Heterogeneity being incresingly important
+- add heterogeneity clarification diagram
+- Platform Independence being insufficient
+- Platform Awareness being the key
+- This language is supposed to solve heterogeneity using Platform Awareness.
+- hint at previous work in this field (mah beng)
 
 ** Zawartość pracy
+- list what is found where in the thesis
 
 * Język =FOOF=
-- language grammar
-- language philosophy
+# Przeznaczenie języka
+- elegantly solving heterogenuity issues
+- remain simple & highly ortogonal
+- embody Spartan Programming principles
+
+** Ideologia języka
+- simplicity but not crudeness
+- pragmatism
+- platform awareness
+- orthogonal features
 
 ** Proste typy danych
-- atoms
+- describe numbers
+- describe symbols
+- describe strings
 
 ** Złożone typy danych
-- lists
-- vectors
-- maps
+- describe lists
+- describe vectors ?
+- describe maps ?
 
-** Funkcje i kontynuacje
-- about lambdas
-- about continuations
-- exceptions via continuations
+** Funkcje
+- a note about lambda calculus
+- add a code fragment implementing booleans in lambda calculus ?
+- describe lambdas
+- describe named lambdas aka defines
 
-** System modułowy
-- protocols
-- modules
-- units
-- SOA
+** Kontynuacje
+- describe the notion of a continuation
+- describe CPS transformation and comment code equivalence
+- add a code example of the CPS transform
+- hint at greater detail in a future section
+- hint at delimited control
+- describe exceptions via continuations
 
 ** Przetwarzanie współbieżne i rozproszone
-- actor model
-- distribution
+- describe processes via continuations
+- describe actor model primitives
+- comment on adding distribution
 
 ** Reprezentacja wiedzy w języku
-- unconstrained knowledge about the system
-- RBS vs Prolog vs ontologies
-- appendix "ontologies"
+- describe various ways of knowledge representation
+- describe use cases in the language
+- hint at using an RBS
+
+** Makra
+- describe macros
+- add some code examples of let -> lambda etc
+- hint at problems of hygiene & add code example ?
+- hint at problems of macros & modules coexisting
+
+** System modułowy
+- describe structures - namespaces for definitions
+- describe modules - parameterized structures
+- describe units - runnable modules
+- describe protocols - a set of capabilities of a module
+- hint at protocols & SOA connection
 
 * Kompilator języka =FOOF=
+- mention technology selection & limitations (large project, little time)
+- mention possible bootstrapping
+- briefly touch on the architecture
+- hint at using Scheme for the boring details (datatypes etc)
+
+** Architektura kompilatora
 - compiler block diagram
 - list compilation phases
-- mention bootstrapping
+- list which phases have been actually implemented
+- list which phases have been skipped and say why (optimization, code-gen, parsin)
 
-** Implementacja typów danych
-- 2 bit tags for simple objects
-- tag word for complex objects
+** Parser
+- briefly describe how Scheme praser works and what it produces
+- hint at a possibility of replacing this with a PEG-based packrat
 
-** Implementacja systemu modułowego
-- simple transform
+** Makro-ekspansja
+- describe macroexpantion phase
+- describe why macroexpansion is hardcoded
+- list available macros
+- show some examples of macro-expanded code
 
-** Analiza leksykalna i syntaktyczna
-- PEG
-- macroexpander
+** Obsługa Systemu Modułowego
+- describe how modules are handled right now
+- show some examples of macro-expanded structures & modules
+- maby combine this with the previous section ?
+- maby hint at special module access syntax (foo.bar.baz)
 
-** Analiza semantyczna
-- CPS
-- delimited continuations
+** Transformacja /Continuation Passing Style/
+- describe in detail why this is useful
+- describe in detail how to transform simple stuff
+- describe in detail how to transform functions
+- describe in detail how to handle exceptions
+- hint at emitting calls to primitive functions =&yield-cont=, =&uproc-error-handler= etc
 
-- error handling
-
-** Dalsze transformacje i optymaliza kodu
-- closure conversion
-- lambda lifting
-- partial evaluation?
-- constant folding?
-
-** Generacja kodu wynikowego
-- might need appendix "LLVM"
-- name mangling
-- low-level optimizations
-- source level translation
-
-** Implementacja systemu uruchomieniowego języka
-- primops
-- alloc
-- gc
-- scheduler
-- network stack
+** Generacja kodu
+- describe how a subset of both Scheme and FOOF is emitted
+- describe how Scheme is used for direct code execution
+- hint at further development using LLVM
+- mention a requirement to perform closure conversion
+- add a code example of closure conversion
 
 * System uruchomieniowy języka
-- block diagram of the system
-- might need appendix "tracing vs ref count"
-- might need to throw this away
+- briefly touch on the architecture
+- mention Scheme bootstrap
 
 ** Architektura systemu uruchomieniowego
-- built-in units
-- process tree
+- block diagram of the system including the RBS
+- describe various parts
+- hint at in-depth description of RBS implementation in a future section
 
-** Ładowanie i uruchamianie programów
-- loading modules
-- starting units
-- mention unit redundancy
-- list primops
+** Implementacja podstawowych typów danych
+- describe scheme bootstrap
+- describe equivalence of various constructs such as lambdas
 
-** Alokator pamięci
-- gc_malloc
-- allocation strategy
-- garbage collection
-- garbage cycles handling
-- etc
-- list primops
+** Implementacja kontynuacji
+- describe how continuations are handled without getting into CFS (returning cont + hole)
+- add a code example with step-by-step execution
 
-** Harmonogramowanie procesów
-- cue next section
-- list primops
-
-** Komunikacja między węzłami
-- cue next section
-- list primops
-
-** Baza wiedzy
-- cue next section
-- list primops
-
-* Przetwarzanie współbieżne i rozproszone
-- difference between concurrency & distribution
-
-** Reprezentacja procesów
-- process object
+** Implementacja procesów
+- add a diagram of the uProc context - only include status, cont & handler registers
+- describe uProc context registers
+- describe how continuations with returns play into this scheme (recall =&yield-cont=)
+- describe how error handling is implemented (recall =&uproc-error-handler= etc)
 
 ** Harmonogramowanie procesów
-- CFS algorithm
-
-** Implementacja symetrycznego multiprocessingu
-- Completele Fair Scheduler
-- cue CPS
+- uProc context diagram - add priority & rtime
+- describe the Completely Fair Scheduler
+- add pseudocode listing showing the algorithm
+- describe uProc context switching
+- mention previous implementation in beng
+- contrast current impl with previous one (lack of wait list, heaps instead of RBT)
 
 ** Implementacja Modelu Aktorowego
-- message passing
-- message queue
-- copying vs passing pointers
+- describe actor model briefly
+- uProc context diagram - add pid & msgqueue
+- describe modifications to the runtime required by actor model (*current-uproc*, uproc list, context fields)
+- describe implementation of various actor model primitives
+- add some code examples and discussion of its effects and what happens
 
-** Protokół komunikacji międzywęzłowej
-- node & process IDs
-- packets
-
-** Implementacja protokołu komunikacji
-- TCP vs UDP
-
-** Listy kontroli dostępu
-- safety measures
-- might need to be thrown away
+** Dystrybucja obliczeń
+- difference between concurrency & distribution
+- describe modifications to the runtime in order to support distribution
+- hint about using a simple protocol
+- hint about moving this into stdlib
 
 * Reprezentacja i przetwarzanie wiedzy
-- might need appendix "Rete usage examples"
+- describe how this needs a separate section
+- elaborate on different ways of knowledge representation
 
 ** Reprezentacja wiedzy w języku
-- facts
-- rules
+- describe facts - signalling, assertion & retraction
+- describe rules briefly - adding & disabling, triggering
 
 ** Algorytm Rete
-- about Rete
+- describe in detail the algorithm
+- describe network merging
+- add a diagram showing network merging
+- describe briefly its history
 - Rete vs naïve approach
+- add a diagram showing how it is better
 
-** Implementacja Rete - forward chaining
-- naïve Rete
-- all the nodes!
+** Implementacja Rete - wnioskowanie w przód
+- describe what forward-chaining is
+- describe naïve Rete - no network merging
+- hint that this might be a good thing (future section)
+- describe all the nodes
 
-** Implementacja backward-chaining
-- fact store - linear, in-memory database
+** Implementacja wnioskowania wstecz
+- describe what backward-chaining is
+- describe fact store in detail - linear, in-memory database
+- querying fact store = create a rule and apply all known facts to it
 
-** Integracja przetwarzania wiedzy w języku
-- integration with the module system
-- rules represented by autonomus processes
-
-** Przekazywanie wiedzy pomiędzy węzłami
-- network protocols
-- ACLs
+** Integracja z Systemem Uruchomieniowym
+- describe how it sucks right now
+- describe possible integration with the module system
+- describe possible representation of rules by autonomus processes
+- add a diagram of concurrent rules
 
 * Podsumowanie
 #+latex: \label{sec:outro}
+
+- reiterate the goal of the thesis
+- state how well has it been achieved
+
 ** Kompilator języka =FOOF=
 - needs better optimizations
 - needs better error handling
@@ -257,14 +281,15 @@ Celem pracy jest zdążenie na czas [[cite:Backus1978]].
 ** System uruchomieniowy
 - needs more stuff
 - needs macroexpansion
+- needs to drop RBS and move it into stdlib
 
 ** Przyszłe kierunki rozwoju
-- type system
-- datatypes
-- runtime
+- more datatypes
+- native compilation via LLVM
+- bootstrapping compiler
+- librarized RBS
+- librarized distribution with data encryption & ACLs
 - data-level paralellism
-- data encryption & ACLs
-- DHT (might be a good example program?)
 
 # The bibliography
 #+begin_latex
@@ -273,6 +298,21 @@ Celem pracy jest zdążenie na czas [[cite:Backus1978]].
 #+end_latex
 
 #+latex: \appendix
+* Gramatyka języka =FOOF=
+- concrete language grammar in PEG or BNF
+
+* Przykładowe programy
+- some basic definitions & operations
+- fibonacci
+- parallell fibonacci
+- module system - logger
+- error handling - (raise (raise "fight the powa"))
+- RBS forward-chaining
+- RBS backward-chaining
+
+* Spis wbudowanych funkcji języka =FOOF=
+- list contents of bootstrap.scm
+- describe what =&make-structure=, =&yield-cont= etc do
 
 * Spisy rysunków i fragmentów kodu
 #+latex: \label{sec:misc}
