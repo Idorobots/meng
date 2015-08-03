@@ -82,16 +82,35 @@
   - remains simple & highly ortogonal [cite:Backus1978]
   - embodies Spartan Programming principles
 - implementing its compiler
-- add a basic compilation diagram
+
+#+begin_center
+#+label: fig:lang-parts
+#+caption: Schemat interakcji poszczególnych elementów języka.
+#+attr_latex: :width 0.8\textwidth :placement [H]
+[[file:./img/langparts.pdf]]
+#+end_center
+
 - implementing its runtime system
 
 ** Motywacja pracy
 - name and describe challenges of distributed systems - http://lycog.com/distributed-systems/challenges-distributed-systems/ [cite:McKenney2015] [cite:Tanenbaum2006]
 - Heterogeneity being incresingly important with rise of technologies such as IoT [cite:Holler2014]
-- add heterogeneity clarification diagram
 - Platform Independence being insufficient and/or impossible (vast number of very different devices)
-- diagram of heterogenous platforms in a IoT setting
-- diagram of heterogenous system on a homogenous platform
+
+#+begin_center
+#+label: fig:hetero-iot
+#+caption: Przykład systemu opartego o heterogeniczną platformę sprzętową.
+#+attr_latex: :width 0.8\textwidth :placement [H]
+[[file:./img/heteroiotexample.pdf]]
+#+end_center
+
+#+begin_center
+#+label: fig:hetero-service
+#+caption: Przykład systemu heterogenicznego niezależnie od platformy sprzętowej.
+#+attr_latex: :width 0.8\textwidth :placement [H]
+[[file:./img/heteroserviceexample.pdf]]
+#+end_center
+
 - Platform Awareness being the key (embracing the diversity)
 - This language is supposed to solve heterogeneity using Platform Awareness.
 
@@ -100,7 +119,6 @@
 
 * Język =FOOF=
 # Language ideology
-- diagram presenting briefly how the language should work
 - simplicity but not crudeness [cite:Backus1978]
 - pragmatism [cite:Hoare1973]
 - platform awareness
@@ -133,7 +151,22 @@
 
 ** Przetwarzanie współbieżne i rozproszone
 - briefly describe AMP vs SMP and contrast it with platform heterogeneity
-- add AMP vs SMP vs heterogenous platform diagram
+
+#+begin_center
+#+label: fig:homo-vs-hetero
+#+caption: Podstawowe różnice pomiędzy platformami homogenicznymi oraz heterogenicznymi.
+#+attr_latex: :width 0.8\textwidth :placement [H]
+[[file:./img/homovshetero.pdf]]
+#+end_center
+
+#+begin_center
+#+label: fig:amp-vs-smp
+#+caption: Podstawowe różnice pomiędzy systemami asymetrycznymi i symetrycznymi.
+#+attr_latex: :width 0.8\textwidth :placement [H]
+[[file:./img/ampvssmp.pdf]]
+#+end_center
+
+- note that system doesn't need to run on a heterogenous platform to be heterogenous itself
 - describe Actor Model [cite:Hewitt1973] [cite:Clinger1981]
 - describe processes via continuations (trampolines)
 - describe actor model primitives [cite:Hewitt1973]
@@ -167,7 +200,13 @@
 - hint at using Scheme for the boring details (datatypes etc)
 
 ** Architektura kompilatora
-- compiler block diagram
+#+begin_center
+#+label: fig:compilation-phases
+#+caption: Schemat poszczególnych faz kompilacji i przykładowych danych będących wynikiem ich działania.
+#+attr_latex: :width 0.8\textwidth :placement [H]
+[[file:./img/compilationphases.pdf]]
+#+end_center
+
 - list compilation phases [cite:Aho2006] [cite:Ghuloum2006] [cite:Appel1992]
 - list which phases have been actually implemented
 - list which phases have been skipped and say why (optimization, code-gen, parsing)
@@ -209,7 +248,13 @@
 - mention Scheme bootstrap
 
 ** Architektura środowiska uruchomieniowego
-- block diagram of the system including the RBS, run queue & memory sharing
+#+begin_center
+#+label: fig:rt-architecture
+#+caption: Schemat architektury środowiska uruchomieniowego języka =FOOF=.
+#+attr_latex: :width 0.8\textwidth :placement [H]
+[[file:./img/rtarchitecture.pdf]]
+#+end_center
+
 - describe various parts
 - mention that this is single threaded and requires forking for real concurrency
 - hint at in-depth description of RBS implementation in a future section
@@ -225,6 +270,13 @@
 
 ** Implementacja procesów
 - add a diagram of the uProc context - only include status, cont & handler registers
+#+begin_center
+#+label: fig:uproc-processes
+#+caption: Schemat kontekstu procesu obrazujący rejestry niezbędne do jego działania.
+#+attr_latex: :width 0.8\textwidth :placement [H]
+[[file:./img/uprocprocesses.pdf]]
+#+end_center
+
 - describe uProc context registers
 - describe how trampolines play into this scheme (recall =&yield-cont=)
 - contrast trampolines with corutines (more suitable in CPS) and yielding (done implicitly) [cite:Moura2009]
@@ -232,7 +284,13 @@
 - contrast with erlang [cite:Armstrong1996]
 
 ** Harmonogramowanie procesów
-- uProc context diagram - add priority & rtime
+#+begin_center
+#+label: fig:uproc-cfs
+#+caption: Dodatkowe rejestry kontekstu mikroprocesu wymagade do implementacji algorytmu /Completely Fair Scheduler/.
+#+attr_latex: :width 0.8\textwidth :placement [H]
+[[file:./img/uproccfs.pdf]]
+#+end_center
+
 - describe the Completely Fair Scheduler [cite:Pabla2009]
 - add pseudocode listing showing the algorithm
 - describe uProc context switching
@@ -241,10 +299,24 @@
 
 ** Implementacja Modelu Aktorowego
 - describe actor model briefly [cite:Hewitt1973] [cite:Clinger1981]
-- uProc context diagram - add pid & msgqueue
+
+#+begin_center
+#+label: fig:uproc-actor-model
+#+caption: Dodatkowe rejestry kontekstu mikroprocesu wymagade do implementacji Modelu Aktorowego.
+#+attr_latex: :width 0.8\textwidth :placement [H]
+[[file:./img/uproactormodel.pdf]]
+#+end_center
+
 - describe modifications to the runtime required by actor model (*current-uproc*, uproc list, context fields)
 - describe implementation of various actor model primitives
-- add message passing diagram
+
+#+begin_center
+#+label: fig:msg-send
+#+caption: Diagram obrazujący efekty przekazywania wiadomości pomiędzy mikroprocesami.
+#+attr_latex: :width 0.8\textwidth :placement [H]
+[[file:./img/msgsend.pdf]]
+#+end_center
+
 - add some code examples and discussion of its effects and what happens
 - contrast with erlang [cite:Armstrong1996]
 
@@ -259,16 +331,29 @@
 - elaborate on different ways of knowledge representation [cite:Wang2013] [cite:Barnaghi2012] [cite:Hachem2011] [cite:SomethingAboutProlog] [cite:SomethingAboutRBS]
 
 ** Reprezentacja wiedzy w języku
-- add fact store & rule store diagram
+#+begin_center
+#+label: fig:fact-rule-store
+#+caption: Schemat działania wbudowanych baz faktów i reguł.
+#+attr_latex: :width 0.8\textwidth :placement [H]
+[[file:./img/factrulestore.pdf]]
+#+end_center
+
 - describe facts - signalling, assertion & retraction
 - describe rules briefly - adding & disabling, triggering
 
 ** Algorytm Rete
 - describe in detail the algorithm [cite:Forgy1982]
-- add a diagram showing network merging
+
+#+begin_center
+#+label: fig:rete-network-merge
+#+caption: Schemat łączenia podsieci w algorytmie /Rete/.
+#+attr_latex: :width 0.8\textwidth :placement [H]
+[[file:./img/retemerge.pdf]]
+#+end_center
+
 - describe briefly its history [cite:Forgy1979]
 - Rete vs naïve approach (vs CLIPS or similar ?)
-- add a diagram showing how it is better
+- add a benchmark diagram showing how Rete is better
 - contrast it with other algorithms [cite:Miranker1987]
 
 ** Implementacja Rete - wnioskowanie w przód
@@ -283,10 +368,17 @@
 - querying fact store = create a rule and apply all known facts to it
 
 ** Integracja z Systemem Uruchomieniowym
-- describe how it sucks right now (a lot)
+- describe how it sucks right now (notify-whenever instead of generic whenever, logic rule removal)
 - describe possible integration with the module system (fact inference)
 - describe possible representation of rules by autonomus processes [cite:Gupta1986]
-- add a diagram of concurrent rules
+
+#+begin_center
+#+label: fig:distributed-rete
+#+caption: Schemat działania rozproszonej wersji algorytmu /Rete/.
+#+attr_latex: :width 0.8\textwidth :placement [H]
+[[file:./img/distributedrete.pdf]]
+#+end_center
+
 - hint at movig the implementation to the stdlib
 
 * Podsumowanie
