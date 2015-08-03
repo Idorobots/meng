@@ -77,17 +77,21 @@
 * Wstęp
 #+latex: \label{sec:intro}
 
-# Przeznaczenie języka
-- describe the goal of the thesis - creating a programming language that:
-- elegantly solving heterogenuity issues
-- remains simple & highly ortogonal [cite:Backus1978]
-- embodies Spartan Programming principles
+- describe the goal of the thesis - designing a programming language that:
+  - elegantly solving heterogenuity issues
+  - remains simple & highly ortogonal [cite:Backus1978]
+  - embodies Spartan Programming principles
+- implementing its compiler
+- add a basic compilation diagram
+- implementing its runtime system
 
 ** Motywacja pracy
 - name and describe challenges of distributed systems - http://lycog.com/distributed-systems/challenges-distributed-systems/ [cite:McKenney2015] [cite:Tanenbaum2006]
 - Heterogeneity being incresingly important with rise of technologies such as IoT [cite:Holler2014]
 - add heterogeneity clarification diagram
 - Platform Independence being insufficient and/or impossible (vast number of very different devices)
+- diagram of heterogenous platforms in a IoT setting
+- diagram of heterogenous system on a homogenous platform
 - Platform Awareness being the key (embracing the diversity)
 - This language is supposed to solve heterogeneity using Platform Awareness.
 
@@ -96,6 +100,7 @@
 
 * Język =FOOF=
 # Language ideology
+- diagram presenting briefly how the language should work
 - simplicity but not crudeness [cite:Backus1978]
 - pragmatism [cite:Hoare1973]
 - platform awareness
@@ -114,19 +119,23 @@
 - a note about lambda calculus [cite:Church1932] [cite:Church1933]
 - add a code fragment implementing booleans in lambda calculus ?
 - describe lambdas
+- mention funarg problem [cite:Abelson1996]
+- mention recursion problem [cite:Felleisen1991] [cite:Goldberg2005]
 - describe named lambdas aka defines
 
 ** Kontynuacje
 - describe the notion of a continuation [cite:Reynolds1993]
-- briefly describe CPS transformation and comment code equivalence [cite:Appel1992]
+- briefly describe CPS transformation and comment on code equivalence [cite:Appel1992]
 - add a code example of the CPS transform
 - hint at greater detail in a future section
 - hint at delimited control [cite:Dybvig2005]
 - describe exceptions via continuations
 
 ** Przetwarzanie współbieżne i rozproszone
+- briefly describe AMP vs SMP and contrast it with platform heterogeneity
+- add AMP vs SMP vs heterogenous platform diagram
 - describe Actor Model [cite:Hewitt1973] [cite:Clinger1981]
-- describe processes via continuations
+- describe processes via continuations (trampolines)
 - describe actor model primitives [cite:Hewitt1973]
 - comment on adding distribution
 
@@ -161,7 +170,7 @@
 - compiler block diagram
 - list compilation phases [cite:Aho2006] [cite:Ghuloum2006] [cite:Appel1992]
 - list which phases have been actually implemented
-- list which phases have been skipped and say why (optimization, code-gen, parsin)
+- list which phases have been skipped and say why (optimization, code-gen, parsing)
 
 ** Parser
 - briefly describe how Scheme praser works and what it produces [cite:Sperber2010] [cite:Abelson1996]
@@ -181,9 +190,9 @@
 - maby hint at special module access syntax (foo.bar.baz)
 
 ** Transformacja /Continuation Passing Style/
-- describe whit CPS is [cite:Appel1992] [cite:Kennedy2007]
+- describe what CPS is [cite:Appel1992] [cite:Kennedy2007]
 - describe in detail how to transform simple stuff
-- describe in detail how to transform functions (recursion problems)
+- describe in detail how to transform functions (recursion problems & crude solution via mutation [cite:German1995], [cite:Kaser1993], [cite:Felleisen1991])
 - describe in detail how to handle exceptions
 - describe in detail why this is useful (partial evaluation, constant folding etc) [cite:Bacon2002]
 - hint at emitting calls to primitive functions =&yield-cont=, =&uproc-error-handler= etc
@@ -195,13 +204,14 @@
 - mention a requirement to perform closure conversion or lambda lifting [cite:PeytonJones1992]
 - add a code example contrasting closure conversion and lambda lifting
 
-* System uruchomieniowy języka
+* Środowisko uruchomieniowe języka
 - briefly touch on the architecture
 - mention Scheme bootstrap
 
-** Architektura systemu uruchomieniowego
-- block diagram of the system including the RBS
+** Architektura środowiska uruchomieniowego
+- block diagram of the system including the RBS, run queue & memory sharing
 - describe various parts
+- mention that this is single threaded and requires forking for real concurrency
 - hint at in-depth description of RBS implementation in a future section
 
 ** Implementacja podstawowych typów danych
@@ -209,14 +219,15 @@
 - describe equivalence of various constructs such as lambdas
 
 ** Implementacja kontynuacji
-- describe how continuations are handled without getting into CFS (returning cont + hole, contrast to how G-machine/TIM reductions work) [cite:Appel1992] [cite:PeytonJones1992]
+- describe how continuations are handled without getting into CFS (returning cont + hole aka trampoline, contrast to how G-machine/TIM reductions work) [cite:Appel1992] [cite:PeytonJones1992]
 - add a code example with step-by-step execution
+- hint at debugging potential using step by step continuation execution with debug info inbetween
 
 ** Implementacja procesów
 - add a diagram of the uProc context - only include status, cont & handler registers
 - describe uProc context registers
-- describe how continuations with returns play into this scheme (recall =&yield-cont=)
-- contrast continuations with corutines and yielding [cite:Moura2009]
+- describe how trampolines play into this scheme (recall =&yield-cont=)
+- contrast trampolines with corutines (more suitable in CPS) and yielding (done implicitly) [cite:Moura2009]
 - describe how error handling is implemented (recall =&uproc-error-handler= etc)
 - contrast with erlang [cite:Armstrong1996]
 
@@ -225,7 +236,7 @@
 - describe the Completely Fair Scheduler [cite:Pabla2009]
 - add pseudocode listing showing the algorithm
 - describe uProc context switching
-- contrast current impl with previous one (lack of wait list, heaps instead of RBT) [cite:Sedgewick2008]
+- contrast current impl with previous one (lack of wait list - notifications, heaps instead of RBT, number of reductions instead of time) [cite:Sedgewick2008]
 - contrast with erlang [cite:Armstrong1996]
 
 ** Implementacja Modelu Aktorowego
@@ -233,6 +244,7 @@
 - uProc context diagram - add pid & msgqueue
 - describe modifications to the runtime required by actor model (*current-uproc*, uproc list, context fields)
 - describe implementation of various actor model primitives
+- add message passing diagram
 - add some code examples and discussion of its effects and what happens
 - contrast with erlang [cite:Armstrong1996]
 
@@ -247,6 +259,7 @@
 - elaborate on different ways of knowledge representation [cite:Wang2013] [cite:Barnaghi2012] [cite:Hachem2011] [cite:SomethingAboutProlog] [cite:SomethingAboutRBS]
 
 ** Reprezentacja wiedzy w języku
+- add fact store & rule store diagram
 - describe facts - signalling, assertion & retraction
 - describe rules briefly - adding & disabling, triggering
 
@@ -286,7 +299,7 @@
 - needs better optimizations
 - needs better error handling
 
-** System uruchomieniowy
+** Środowisko uruchomieniowe
 - needs more stuff
 - needs macroexpansion
 - needs to drop RBS and move it into stdlib
@@ -310,6 +323,7 @@
 - concrete language grammar in PEG or BNF
 
 * Przykładowe programy
+- hello world
 - some basic definitions & operations
 - fibonacci
 - parallell fibonacci
@@ -317,6 +331,7 @@
 - error handling - (raise (raise "fight the powa"))
 - RBS forward-chaining
 - RBS backward-chaining
+- task monitor example
 
 * Spis wbudowanych funkcji języka =FOOF=
 - list contents of bootstrap.scm
