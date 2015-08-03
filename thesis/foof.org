@@ -77,119 +77,123 @@
 * Wstęp
 #+latex: \label{sec:intro}
 
-Celem pracy jest zdążenie na czas [[cite:Backus1978]].
+# Przeznaczenie języka
+- describe the goal of the thesis - creating a programming language that:
+- elegantly solving heterogenuity issues
+- remains simple & highly ortogonal [cite:Backus1978]
+- embodies Spartan Programming principles
 
 ** Motywacja pracy
-- Heterogeneity being incresingly important
+- name and describe challenges of distributed systems - http://lycog.com/distributed-systems/challenges-distributed-systems/ [cite:McKenney2015] [cite:Tanenbaum2006]
+- Heterogeneity being incresingly important with rise of technologies such as IoT [cite:Holler2014]
 - add heterogeneity clarification diagram
-- Platform Independence being insufficient
-- Platform Awareness being the key
+- Platform Independence being insufficient and/or impossible (vast number of very different devices)
+- Platform Awareness being the key (embracing the diversity)
 - This language is supposed to solve heterogeneity using Platform Awareness.
-- hint at previous work in this field (mah beng)
 
 ** Zawartość pracy
 - list what is found where in the thesis
 
 * Język =FOOF=
-# Przeznaczenie języka
-- elegantly solving heterogenuity issues
-- remain simple & highly ortogonal
-- embody Spartan Programming principles
-
-** Ideologia języka
-- simplicity but not crudeness
-- pragmatism
+# Language ideology
+- simplicity but not crudeness [cite:Backus1978]
+- pragmatism [cite:Hoare1973]
 - platform awareness
-- orthogonal features
+- orthogonal features [cite:Backus1978]
+- contrast with Scheme/Lisp (and SML ?) [cite:Sperber2010]
 
-** Proste typy danych
+** Podstawowe typy danych
+- describe lists - pairs of atoms|lists [cite:McCarthy1960]
 - describe numbers
 - describe symbols
 - describe strings
-
-** Złożone typy danych
-- describe lists
 - describe vectors ?
 - describe maps ?
 
 ** Funkcje
-- a note about lambda calculus
+- a note about lambda calculus [cite:Church1932] [cite:Church1933]
 - add a code fragment implementing booleans in lambda calculus ?
 - describe lambdas
 - describe named lambdas aka defines
 
 ** Kontynuacje
-- describe the notion of a continuation
-- describe CPS transformation and comment code equivalence
+- describe the notion of a continuation [cite:Reynolds1993]
+- briefly describe CPS transformation and comment code equivalence [cite:Appel1992]
 - add a code example of the CPS transform
 - hint at greater detail in a future section
-- hint at delimited control
+- hint at delimited control [cite:Dybvig2005]
 - describe exceptions via continuations
 
 ** Przetwarzanie współbieżne i rozproszone
+- describe Actor Model [cite:Hewitt1973] [cite:Clinger1981]
 - describe processes via continuations
-- describe actor model primitives
+- describe actor model primitives [cite:Hewitt1973]
 - comment on adding distribution
 
 ** Reprezentacja wiedzy w języku
-- describe various ways of knowledge representation
 - describe use cases in the language
+- describe various ways of knowledge representation [cite:Hachem2011] [cite:Samimi2014] [cite:Wang2013]
+- describe primitive operations
 - hint at using an RBS
 
 ** Makra
 - describe macros
-- add some code examples of let -> lambda etc
-- hint at problems of hygiene & add code example ?
-- hint at problems of macros & modules coexisting
+- add some code examples of available macros
+- hint at problems of hygiene & add code example [cite:Bawden2000] [cite:Queinnec1996]
+- hint at problems of macros & modules coexisting [cite:Gasbichler2006]
+- contrast macros with other techniques (fexprs) [cite:Shutt2010]
 
 ** System modułowy
+- describe the need for a module system [cite:Gasbichler2006]
 - describe structures - namespaces for definitions
-- describe modules - parameterized structures
+- describe modules - parameterized structures [cite:Rossberg2015]
 - describe units - runnable modules
 - describe protocols - a set of capabilities of a module
-- hint at protocols & SOA connection
+- hint at protocols & SOA connection ?
 
 * Kompilator języka =FOOF=
-- mention technology selection & limitations (large project, little time)
+- mention technology selection & limitations (large project, little time) [cite:Ghuloum2006]
 - mention possible bootstrapping
-- briefly touch on the architecture
+- briefly touch on the architecture [cite:Aho2006]
 - hint at using Scheme for the boring details (datatypes etc)
 
 ** Architektura kompilatora
 - compiler block diagram
-- list compilation phases
+- list compilation phases [cite:Aho2006] [cite:Ghuloum2006] [cite:Appel1992]
 - list which phases have been actually implemented
 - list which phases have been skipped and say why (optimization, code-gen, parsin)
 
 ** Parser
-- briefly describe how Scheme praser works and what it produces
-- hint at a possibility of replacing this with a PEG-based packrat
+- briefly describe how Scheme praser works and what it produces [cite:Sperber2010] [cite:Abelson1996]
+- hint at a possibility of replacing this with a PEG-based packrat [cite:Hutton1996] [cite:Ford2004]
+- note about special quasiquote syntax [cite:Bawden1999]
 
 ** Makro-ekspansja
 - describe macroexpantion phase
-- describe why macroexpansion is hardcoded
+- describe why macroexpansion is hardcoded [cite:Gasbichler2006]
 - list available macros
 - show some examples of macro-expanded code
 
 ** Obsługa Systemu Modułowego
-- describe how modules are handled right now
+- describe how modules are handled right now [cite:Gasbichler2006] [cite:Rossberg2015]
 - show some examples of macro-expanded structures & modules
 - maby combine this with the previous section ?
 - maby hint at special module access syntax (foo.bar.baz)
 
 ** Transformacja /Continuation Passing Style/
-- describe in detail why this is useful
+- describe whit CPS is [cite:Appel1992] [cite:Kennedy2007]
 - describe in detail how to transform simple stuff
-- describe in detail how to transform functions
+- describe in detail how to transform functions (recursion problems)
 - describe in detail how to handle exceptions
+- describe in detail why this is useful (partial evaluation, constant folding etc) [cite:Bacon2002]
 - hint at emitting calls to primitive functions =&yield-cont=, =&uproc-error-handler= etc
 
 ** Generacja kodu
-- describe how a subset of both Scheme and FOOF is emitted
+- describe how a subset of both Scheme and FOOF is emitted (contrast with Core Erlang) [cite:Carlsson2001] [cite:Carlsson2004]
 - describe how Scheme is used for direct code execution
-- hint at further development using LLVM
-- mention a requirement to perform closure conversion
-- add a code example of closure conversion
+- hint at further development using LLVM [cite:SomethingAboutLLVM]
+- mention a requirement to perform closure conversion or lambda lifting [cite:PeytonJones1992]
+- add a code example contrasting closure conversion and lambda lifting
 
 * System uruchomieniowy języka
 - briefly touch on the architecture
@@ -201,33 +205,36 @@ Celem pracy jest zdążenie na czas [[cite:Backus1978]].
 - hint at in-depth description of RBS implementation in a future section
 
 ** Implementacja podstawowych typów danych
-- describe scheme bootstrap
+- describe scheme bootstrap [cite:Sperber2010]
 - describe equivalence of various constructs such as lambdas
 
 ** Implementacja kontynuacji
-- describe how continuations are handled without getting into CFS (returning cont + hole)
+- describe how continuations are handled without getting into CFS (returning cont + hole, contrast to how G-machine/TIM reductions work) [cite:Appel1992] [cite:PeytonJones1992]
 - add a code example with step-by-step execution
 
 ** Implementacja procesów
 - add a diagram of the uProc context - only include status, cont & handler registers
 - describe uProc context registers
 - describe how continuations with returns play into this scheme (recall =&yield-cont=)
+- contrast continuations with corutines and yielding [cite:Moura2009]
 - describe how error handling is implemented (recall =&uproc-error-handler= etc)
+- contrast with erlang [cite:Armstrong1996]
 
 ** Harmonogramowanie procesów
 - uProc context diagram - add priority & rtime
-- describe the Completely Fair Scheduler
+- describe the Completely Fair Scheduler [cite:Pabla2009]
 - add pseudocode listing showing the algorithm
 - describe uProc context switching
-- mention previous implementation in beng
-- contrast current impl with previous one (lack of wait list, heaps instead of RBT)
+- contrast current impl with previous one (lack of wait list, heaps instead of RBT) [cite:Sedgewick2008]
+- contrast with erlang [cite:Armstrong1996]
 
 ** Implementacja Modelu Aktorowego
-- describe actor model briefly
+- describe actor model briefly [cite:Hewitt1973] [cite:Clinger1981]
 - uProc context diagram - add pid & msgqueue
 - describe modifications to the runtime required by actor model (*current-uproc*, uproc list, context fields)
 - describe implementation of various actor model primitives
 - add some code examples and discussion of its effects and what happens
+- contrast with erlang [cite:Armstrong1996]
 
 ** Dystrybucja obliczeń
 - difference between concurrency & distribution
@@ -237,25 +244,25 @@ Celem pracy jest zdążenie na czas [[cite:Backus1978]].
 
 * Reprezentacja i przetwarzanie wiedzy
 - describe how this needs a separate section
-- elaborate on different ways of knowledge representation
+- elaborate on different ways of knowledge representation [cite:Wang2013] [cite:Barnaghi2012] [cite:Hachem2011] [cite:SomethingAboutProlog] [cite:SomethingAboutRBS]
 
 ** Reprezentacja wiedzy w języku
 - describe facts - signalling, assertion & retraction
 - describe rules briefly - adding & disabling, triggering
 
 ** Algorytm Rete
-- describe in detail the algorithm
-- describe network merging
+- describe in detail the algorithm [cite:Forgy1982]
 - add a diagram showing network merging
-- describe briefly its history
-- Rete vs naïve approach
+- describe briefly its history [cite:Forgy1979]
+- Rete vs naïve approach (vs CLIPS or similar ?)
 - add a diagram showing how it is better
+- contrast it with other algorithms [cite:Miranker1987]
 
 ** Implementacja Rete - wnioskowanie w przód
 - describe what forward-chaining is
 - describe naïve Rete - no network merging
 - hint that this might be a good thing (future section)
-- describe all the nodes
+- describe all the nodes [cite:Forgy1982]
 
 ** Implementacja wnioskowania wstecz
 - describe what backward-chaining is
@@ -263,10 +270,11 @@ Celem pracy jest zdążenie na czas [[cite:Backus1978]].
 - querying fact store = create a rule and apply all known facts to it
 
 ** Integracja z Systemem Uruchomieniowym
-- describe how it sucks right now
-- describe possible integration with the module system
-- describe possible representation of rules by autonomus processes
+- describe how it sucks right now (a lot)
+- describe possible integration with the module system (fact inference)
+- describe possible representation of rules by autonomus processes [cite:Gupta1986]
 - add a diagram of concurrent rules
+- hint at movig the implementation to the stdlib
 
 * Podsumowanie
 #+latex: \label{sec:outro}
