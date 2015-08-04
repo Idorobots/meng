@@ -95,26 +95,53 @@ W tym celu wymagane jest stworzenie kompilatora, czyli programu transformująceg
 Ostatnim wymogiem postawionym przed projektowanym językiem, jest wyjście naprzeciw licznym problemom występującym w systemach rozproszonych, w szczególności problemowi /heterogeniczności/, co umotywowano w następnej sekcji.
 
 ** Motywacja pracy
-- name and describe challenges of distributed systems - http://lycog.com/distributed-systems/challenges-distributed-systems/ [cite:McKenney2015] [cite:Tanenbaum2006]
-- Heterogeneity being incresingly important with rise of technologies such as IoT [cite:Holler2014]
-- Platform Independence being insufficient and/or impossible (vast number of very different devices)
+Tworzenie systemów rozproszonych jest zadaniem bardzo trudnym i wymaga wykorzystania specjalnie do tego przeznaczonych narzędzi - języków programowania, systemów bazodanowych i infrastruktury sieciowej. Na przestrzeni lat zidentyfikowano wiele kluczowych problemów manifestujących się we wszystkich systemach rozproszonych niezależnie od ich przeznaczenia. Tanenbaum oraz Van Steen w [[cite:Tanenbaum2006]] wymieniają nestępujące problemy:
+
+- *dostępność* - systemy rozproszone działają zwykle na wielu odrębnych maszynach, istotnym jest więc zachowanie dostępu do wspólnych zasobów z każdej części systemu,
+
+- *przezroczystość dystrybucji* - istotnym jest również ukrycie fizycznego rozproszenia procesów i zasobów, dzięki czemu system rozproszony z zewnątrz stanowi jedną, koherentną całość,
+
+- *otwartość* - polega na standaryzacji komunikacji pomiędzy poszczególnymi częściami systemu, dzięki czemu możliwe jest dodawanie nowych elementów bez ingerencji w pozostałe,
+
+- *skalowalność* - systemy rozproszone powinny umożliwiać płynną zmianę ilości zasobów, być dostępne dla użytkowników z wielu lokacji geograficznych oraz umożliwiać łatwe zarządzanie niezależnie od ich rozmiaru.
+
+Warto zauważyć, iż /skalowalność/ jest przywoływana w folklorze programistycznym nieproporcjonalnie często, natomiast, istnieje wiele równie trudnych problemów, którym przeznacza się znacznie mniej uwagi, takich jak:
+
+- *bezpieczeństwo systemu* - polega na kontroli dostępu do zasobów; w zależności od przeznaczenia systemu rozproszonego, jest najważniejszym aspektem jego budowy,
+
+- *odporność na błędy* - polega na reagowaniu na zmiany (w szczególności wystąpienie błędów) zachodzące w systemie i podejmowaniu odpowiednich akcji w razie ich wystąpienia,
+
+- *heterogeniczność* - polega na zróżnicowaniu platform sprzętowych wchodzących w skład fizycznej części systemu rozproszonego, a także poszczególnych logicznych części systemu.
+
+Heterogeniczność jest problemem szczególnie trudnym, który powoli nabiera znaczenia wraz z pojawieniem się inicjatyw takich jak *Internet Rzeczy* (ang. /Internet of Things/) [[cite:Holler2014]], gdzie systemy rozproszone zbudowane są z dużej ilości bardzo zróżnicowanych maszyn. Maszyny te cechują się różną architekturą sprzętową, ilością zasobów, a także przeznaczeniem i funkcjonalnościami, które realizują i umożliwiają.
+
+Na schemacie [[fig:hetero-iot]] przedstawiony został przykład heterogeniczności platformy sprzętowej w kontekście Internetu Rzeczy. Klient, korzystając z centralnego komputera, uzyskuje dostęp do danych sensorycznych pochodzących z szerokiej gamy różnych czujników i bazując na ich wartości jest w stanie zmieniać zachowanie równie zróżnicowanych efektorów. Całość odbywa się za pośrednictwem dedykowanych sterowników, ułatwiających skalowanie systemu.
 
 #+begin_center
 #+label: fig:hetero-iot
 #+caption: Przykład systemu opartego o heterogeniczną platformę sprzętową.
-#+attr_latex: :width 0.8\textwidth :placement [H]
+#+attr_latex: :width 0.7\textwidth :placement [H]
 [[file:./img/heteroiotexample.pdf]]
 #+end_center
+
+Każdy element takiego systemu, oznaczony na schemacie różnym kształtem oraz kolorem, reprezentuje maszynę udostępniającą różne zasoby i posiadającą różną fizyczną konstrukcję. Poszczególne elementy często działają w niekompatybilny sposób, w związku z czym wymagane jest wykorzystanie dedykowanych pośredników, których jedynym zadaniem jest /homogenizacja/ systemu.
+
+Problem heterogeniczności dotyka również systemów rozproszonych, które działają na platformach homogenicznych, gdzie fizyczne maszyny są do siebie bardzo zbliżone, a często są komputerami ogólnego przeznaczenia. Przykład takiego systemu, zbudowanego w oparciu o zdobywającą popularność architekturę mikroserwisową [[cite:Richards2015]], został zawarty na schemacie [[fig:hetero-service]].
 
 #+begin_center
 #+label: fig:hetero-service
 #+caption: Przykład systemu heterogenicznego niezależnie od platformy sprzętowej.
-#+attr_latex: :width 0.8\textwidth :placement [H]
+#+attr_latex: :width 0.7\textwidth :placement [H]
 [[file:./img/heteroserviceexample.pdf]]
 #+end_center
 
-- Platform Awareness being the key (embracing the diversity)
-- This language is supposed to solve heterogeneity using Platform Awareness.
+Użytkownik systemu łączy się z głównym serwisem, który następnie komunikuje się z innymi serwisami, realizującymi wymagane przezeń zadania. W celu poprawienia /odporności na błędy/ takiego systemu, w strategicznych miejscach umieszczono serwery zarządzające ruchem (ang. /load-balancer/), których zadaniem, analogicznie do przykładu ze schematu [[fig:hetero-iot]], jest /homogenizacja/ systemu.
+
+W pierszym przypadku heterogeniczność wynika ze zróżnicowania maszyn należących do platformy sprzętowej, natomiast w drugim wynika ona z istnienia mikroserwisów, które realizują pojedyncze, konretnie sprecyzowane funkcjonalności. W obu przypadkach, heterogeniczność systemu prowadzi do powstania innych problemów, takich jak skalowalność i odporność na błędy, oraz konieczności wykorzystania dodatkowych elementów mających im zaradzić.
+
+Często, sytuacja ta wynika z nieadekwatności narzędzi (w szczególności języków programowania) wykorzystanych do tworzenia systemu. Popularne języki programowania dążą do osiągnięcia *niezalożności od platformy* (ang. /platform independence/) stosując maszyny wirtualne i inne techniki mające na celu homogenizację platformy sprzętowej, kiedy w rzeczywistości osiągają *ignorancję platformy* nie umożliwiając refleksji na jej temat.
+
+Jako alternatywę dla osiągnięcia niezależności od platformy, niniejsza praca wprowadza termin *świadomości platformy* (ang. /platform awareness/), czyli dążenia do udostępnienia wiedzy o strukturze budowanego systemu rozproszonego oraz platformy sprzętowej, na której działa, i umożliwienia refleksji na jej podstawie. Zaprezentowany w dalszej części pracy język programowania, roboczo zwany =FOOF= [fn:: Nazwa pochodzi od difluorku ditlenu, niezwykle reaktywnego, dysruptywnego i niebezpiecznego związku chemicznego, który nie ma zastosowania.], ma być uosobieniem ideologii świadomości platformy.
 
 ** Zawartość pracy
 - list what is found where in the thesis
