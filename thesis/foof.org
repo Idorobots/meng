@@ -77,11 +77,11 @@
 * Wstęp
 #+latex: \label{sec:intro}
 
-- describe the goal of the thesis - designing a programming language that:
-  - elegantly solving heterogenuity issues
-  - remains simple & highly ortogonal [cite:Backus1978]
-  - embodies Spartan Programming principles
-- implementing its compiler
+Tematem pracy jest projekt i implementacja języka programowania wspierającego /przetwarzanie współbieżne/ i umożliwiającego tworzenie /systemów rozproszonych/ działających na /platformach heterogenicznych/.
+
+Przetwarzanie współbieżne polega na podziale obliczeń na wiele procesów działających jednocześnie i konkurujących ze sobą o dostęp do ograniczonej ilości zasobów [[cite:McKenney2015]]. Procesy te mogą zostać rozproszone na wiele fizycznych maszyn, zachowując jednocześnie komunikację pomiędzy nimi, tworząc tym samym jeden koherentny system rozproszony [[cite:Tanenbaum2006]].
+
+Projektowany język programowania powinien więc udostępniać przejrzystą i ogólną notację umożliwiającą definiowanie komunikujących się procesów, jednocześnie pozostając językiem ogólnego przeznaczenia. Dodatkowym wymogiem jest prostota przy zachowaniu ekspresywności - język ten powinien być zbudowany w oparciu o niewielką liczbę ortogonalnych, dobrze współgrających ze sobą mechanizmów, które pozwalają na implementację szerokiej gamy funkcjonalności [[cite:Backus1978]].
 
 #+begin_center
 #+label: fig:lang-parts
@@ -90,7 +90,9 @@
 [[file:./img/langparts.pdf]]
 #+end_center
 
-- implementing its runtime system
+W tym celu wymagane jest stworzenie kompilatora, czyli programu transformującego kod źródłowy języka programowania na format możliwy do uruchomienia w pewnym środowisku uruchomieniowym (ang. /runtime system/). Na środowisko takie zazwyczaj składa się zestaw podstawowych procedur wspólnych i niezbędnych do działania każdego programu. Schemat interakcji poszczególnych elementów projektu zaprezentowano na schemacie [[fig:lang-parts]].
+
+Ostatnim wymogiem postawionym przed projektowanym językiem, jest wyjście naprzeciw licznym problemom występującym w systemach rozproszonych, w szczególności problemowi /heterogeniczności/, co umotywowano w następnej sekcji.
 
 ** Motywacja pracy
 - name and describe challenges of distributed systems - http://lycog.com/distributed-systems/challenges-distributed-systems/ [cite:McKenney2015] [cite:Tanenbaum2006]
