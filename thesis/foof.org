@@ -444,15 +444,251 @@ Jako alternatywę dla osiągnięcia niezależności od platformy, niniejsza prac
 - concrete language grammar in PEG or BNF
 
 * Przykładowe programy
-- hello world
-- some basic definitions & operations
-- fibonacci
-- parallell fibonacci
-- module system - logger
-- error handling - (raise (raise "fight the powa"))
-- RBS forward-chaining
-- RBS backward-chaining
-- task monitor example
+Poniżej zaprezentowano przykładowe programy w języku =FOOF= i krótki opis ich działania. Programy mogą zostać skompilowane i uruchomione za pomocą udostępnionego interfejsu kompilatora i środowiska uruchomieniowego języka. W konsoli systemu należy w tym celu wywołać odpowiednio funkcje =compile= i =run= podając interesujący program jako parametr, na przykład:
+
+#+BEGIN_EXAMPLE
+> (compile 'program)
+> (run 'program)
+#+END_EXAMPLE
+
+** Hello world!
+Program definuje funkcję =hello= obrazującą podstawowe operacje języka i następnie wywołuje ją z jednym parametrem. Po uruchomieniu program powoduje wypisanie wiadomości =Hello world!= na ekranie komputera.
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Popularny program \textit{Hello world!}.}}
+#+latex: \label{code:ex-hello-world}
+#+bind: org-export-latex-minted-options (("frame" "leftline") ("linenos" "true") ("mathescape" "true"))
+#+begin_src scheme
+(define (hello world)
+  (if (= nil world)
+      (raise 'nope)
+      (do (display "Hello ")
+          (display world)
+          (display "!")
+          (newline))))
+
+(hello "world")
+#+end_src
+#+bind: org-export-latex-minted-options ()
+#+latex: \end{listing}
+
+
+#+LaTeX: \pagebreak
+** Funkcja Fibonacciego
+Program prezentuje definicję funkcji Fibonacciego z wykorzystaniem konstrukcji =letrec=, służącej do definiowania funkcji rekursywnych. Następnie program oblicza wynik funkcji Fibonacciego dla liczby 23.
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Definicja funkcji Fibonacciego.}}
+#+latex: \label{code:ex-fibonacci}
+#+bind: org-export-latex-minted-options (("frame" "leftline") ("linenos" "true") ("mathescape" "true"))
+#+begin_src scheme
+(letrec ((fib (lambda (n)
+                (if (< n 2)
+                    n
+                    (+ (fib (- n 1))
+                       (fib (- n 2)))))))
+  (fib 23))
+#+end_src
+#+bind: org-export-latex-minted-options ()
+#+latex: \end{listing}
+
+** Współbieżne obliczenia funkcji Fibonacciego
+Program definiuje funkcję Fibonacciego oraz dodatkową funkcję wyświetlającą informacje o systemie. Następnie tworzone są trzy procesy współbieżnie obliczające wartość funkcji Fibonacciego dla liczby 30. Program periodycznie wyświetla różne informacje o działających procesach.
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Równoległe obliczanie funkcji Fibonacciego.}}
+#+latex: \label{code:ex-parallel-fibonacci}
+#+bind: org-export-latex-minted-options (("frame" "leftline") ("linenos" "true") ("mathescape" "true"))
+#+begin_src scheme
+(letrec ((fib (lambda (n)
+                (if (< n 2)
+                    n
+                    (+ (fib (- n 1))
+                       (fib (- n 2))))))
+         (monitor (lambda ()
+                    (task-info)
+                    (sleep 2000)
+                    (monitor))))
+  (spawn (lambda ()
+           (fib 30)))
+  (spawn (lambda ()
+           (fib 30)))
+  (spawn (lambda ()
+           (fib 30)))
+  (monitor))
+#+end_src
+#+bind: org-export-latex-minted-options ()
+#+latex: \end{listing}
+
+** Obsługa błędów
+Program prezentuje wykorzystanie wbudowanego w język systemu obsługi błędów. Deklarowana jest procedura obsługi błędów, która restartuje obliczenia z nową wartością. Następnie program dwukrotnie sygnalizuje wystąpienie błędu. Wynikiem działania programu jest liczba 24.
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Zastosowanie wbudowanego mechanizmu obsługi błędów.}}
+#+latex: \label{code:ex-error-handling}
+#+bind: org-export-latex-minted-options (("frame" "leftline") ("linenos" "true") ("mathescape" "true"))
+#+begin_src scheme
+(* 2 (handle (raise (raise 3))
+             (lambda (e restart)
+               (restart (* 2 e)))))
+#+end_src
+#+bind: org-export-latex-minted-options ()
+#+latex: \end{listing}
+
+** Model Aktorowy
+Program korzysta z dwóch komunikujących się procesów do zobrazowania sposobu wykorzystania zaimplementowanego w języku Modelu Aktorowego. Efektem działania programu jest wypisanie wiadomości =Hello world!= na ekranie komputera.
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Wykorzystanie prymitywnych operacji Modelu Aktorowego.}}
+#+latex: \label{code:ex-actor-model}
+#+bind: org-export-latex-minted-options (("frame" "leftline") ("linenos" "true") ("mathescape" "true"))
+#+begin_src scheme
+(let ((pid (spawn (lambda ()
+                    (let ((msg (recv)))
+                      (display (cdr msg))
+                      (newline)
+                      (send (car msg) " world!"))))))
+  (send pid (cons (self) "Hello"))
+  (display (recv))
+  (newline))
+#+end_src
+#+bind: org-export-latex-minted-options ()
+#+latex: \end{listing}
+
+
+#+LaTeX: \pagebreak
+** System modułowy
+Program definiuje dwa moduły - =logger= oraz =test=. Moduł =test= wymaga do działania implementacji modułu logowania. Program tworzy instancję modułu =logger= i następnie tworzy instancję modułu =test= wykorzystując uprzednio zdefiniowany moduł logowania. Efektem działania programu jest wypisanie dwóch wiadomości na ekranie komputera. Wiadomości są odpowiednio sformatowane przez moduł =logger=.
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Wykorzystanie wbudowanego systemu modułowego.}}
+#+latex: \label{code:ex-module-system}
+#+bind: org-export-latex-minted-options (("frame" "leftline") ("linenos" "true") ("mathescape" "true"))
+#+begin_src scheme
+(module (logger)
+  (define (log level string)
+    (display "[")
+    (display level)
+    (display "] ")
+    (display string)
+    (newline))
+
+  (define (debug string)
+    (log 'DEBUG string))
+
+  (define (info string)
+    (log 'INFO string))
+
+  (define (warn string)
+    (log 'WARN string))
+
+  (define (error string)
+    (log 'ERROR string)))
+
+(module (test logger)
+  (define (do-something)
+    (logger.info "doing something")
+    (logger.error "failed badly!")))
+
+(let ((t (test (logger))))
+  (t.do-something))
+#+end_src
+#+bind: org-export-latex-minted-options ()
+#+latex: \end{listing}
+
+** Wnioskowanie w przód
+Program prezentuje wykorzystanie wbudowanego w język systemu regułowego. Definiowane są trzy funkcje, jedna z nich co pewien czas sygnalizuje zajście pewnego zdarzenia - upływ czasu. Druga funkcja oczekuje notyfikacji od systemu regułowego i wyświetla informacje o przechwyconych zdarzeniach. Trzecia funkcja, jest pomocniczą funkcją wyświetlającą informacje o procesach uruchomionych w systemie. Następnie program definiuje prostą regułę i uruchamia wszystkie niezbędne procesy.
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Wykorzystanie wbudowanego systemu regułowego.}}
+#+latex: \label{code:ex-forward-chaining}
+#+bind: org-export-latex-minted-options (("frame" "leftline") ("linenos" "true") ("mathescape" "true"))
+#+begin_src scheme
+(letrec ((monitor (lambda ()
+                    (task-info)
+                    (sleep 10000)
+                    (monitor)))
+         (timer (lambda (t)
+                  (signal! `(curr-time ,t))
+                  (sleep 1000)
+                  (timer (+ t 1))))
+         (listen (lambda ()
+                   (let ((t (recv)))
+                     (display "Current time: ")
+                     (display (cdr (car t)))
+                     (newline)
+                     (listen)))))
+  (spawn (lambda () (timer 0)))
+  (notify-whenever (spawn (lambda ()
+                            (listen)))
+                   '(curr-time ?t))
+  (monitor))
+#+end_src
+#+bind: org-export-latex-minted-options ()
+#+latex: \end{listing}
+
+
+#+LaTeX: \pagebreak
+** Obsługa złożonych zdarzeń
+Program działa podobnie do przykładu z listingu [[code:ex-forward-chaining]]. Definiowana jest złożona reguła, która notyfikuje proces nasłuchujący jedynie, gdy wartości powiązane z faktami =foo= oraz =bar= osiągają odpowiednie wartości.
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Zastosowanie wbudowanego systemu regułowego do obsługi złożonych zdarzeń.}}
+#+latex: \label{code:ex-complex-events}
+#+bind: org-export-latex-minted-options (("frame" "leftline") ("linenos" "true") ("mathescape" "true"))
+#+begin_src scheme
+(letrec ((monitor (lambda ()
+                    (task-info)
+                    (sleep 10000)
+                    (monitor)))
+         (notify (lambda (prefix t)
+                   (assert! `(notify ,prefix ,(random)))
+                   (sleep t)
+                   (notify prefix t)))
+         (listen (lambda ()
+                   (let ((m (recv)))
+                     (display "Complex event: ")
+                     (display m)
+                     (newline)
+                     (listen)))))
+  (notify-whenever (spawn listen)
+                   '(filter (and (?notify foo ?foo)
+                                 (?notify bar ?bar))
+                            (>= ?foo 0.5)
+                            (< ?foo 0.75)
+                            (<= ?bar 0.1)))
+  (spawn (lambda ()
+           (notify 'foo 1000)))
+  (spawn (lambda ()
+           (notify 'bar 5000)))
+  (monitor))
+#+end_src
+#+bind: org-export-latex-minted-options ()
+#+latex: \end{listing}
+
+
+#+LaTeX: \pagebreak
+** Wnioskowanie wstecz
+Program prezentuje wykorzystanie wnioskowania wstecz wbudowanego w język systemu regułowego. Na bazie faktów wykonywany jest szereg operacji, a następnie program odpytuje bazę faktów o wartości, dla których wystąpiły fakty =foo= oraz =bar=. Wynikiem działania programu jest asocjacja =(?value . 2)=.
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Wykorzystanie wnioskowania wstecz.}}
+#+latex: \label{code:ex-backward-chaining}
+#+bind: org-export-latex-minted-options (("frame" "leftline") ("linenos" "true") ("mathescape" "true"))
+#+begin_src scheme
+(assert! '(foo 1))
+(assert! '(foo 2))
+(assert! '(foo 3))
+(assert! '(bar 2))
+(assert! '(bar 3))
+(retract! '(foo 2))
+(signal! '(foo 4))
+
+(select '(and (foo ?value)
+              (bar ?value)))
+#+end_src
+#+bind: org-export-latex-minted-options ()
+#+latex: \end{listing}
 
 * Spis wbudowanych funkcji języka =FOOF=
 - list contents of bootstrap.scm
