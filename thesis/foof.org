@@ -58,6 +58,10 @@
 #+LATEX_HEADER: \acknowledgements{Serdecznie dziękuję opiekunowi pracy za wsparcie merytoryczne oraz dobre rady edytorskie pomocne w tworzeniu pracy.}
 # #+LATEX_HEADER: \acknowledgements{Serdecznie dziękuję Lucynie oraz siostrze Alicji za cierpliwość i wsparcie podczas tworzenia pracy dyplomowej.}
 
+# Font stuff:
+#+LATEX_HEADER: \setmainfont{Times New Roman}
+#+LATEX_HEADER: \setmonofont{Consolas}
+
 # Title pages & table of contents:
 #+begin_latex
 \titlepages
