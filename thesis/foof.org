@@ -353,14 +353,16 @@ Realizacja Modelu Aktorowego w języku =FOOF= podobnie jak mechanizm obsługi b�
 - describe various ways of knowledge representation [cite:Hachem2011] [cite:Samimi2014] [cite:Wang2013]
 
 ** Makra
-- describe macros & macroexpansion
+Prawdobodobnie najciekawszą funkcjonalnością języków z rodziny Lisp jest ich podejście do metaprogramowania. Większość języków z tej rodziny wykorzystuje wersję systemu *makr*, który pozwala rozszerzać składnię języka i tworzyć dialekty domenowe (ang. /domain specific language/) w prosty i przystępny sposób. Język =FOOF= nie jest wyjątkiem i również został wyposażony w system makr.
+
+Listing [[ref:code:ex-macroexpansion]] prezentuje efekt działania *makroekspansji*, czyli substytucji wywołań makr na definicje ich ciał, na przykładzie kilku wbudowanych makr rozszerzających składnię języka =FOOF=.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Przykład działania systemu makr w języku \texttt{FOOF}.}}
 #+latex: \label{code:ex-macroexpansion}
 #+LaTeX: \begin{multicols}{2}
 #+begin_src scheme
-;; Przed makro-ekspansją:
+;; Przed makroekspansją:
 (and 23 42)
 
 
@@ -373,7 +375,7 @@ Realizacja Modelu Aktorowego w języku =FOOF= podobnie jak mechanizm obsługi b�
 #+end_src
 #+LaTeX: \columnbreak
 #+begin_src scheme
-;; Po makro-ekspansji:
+;; Po makroekspansji:
 (if 23
     42
     false)
@@ -387,8 +389,9 @@ Realizacja Modelu Aktorowego w języku =FOOF= podobnie jak mechanizm obsługi b�
 #+LaTeX: \end{multicols}
 #+latex: \end{listing}
 
-- note about the usage of quasiquote [cite:Bawden1999]
-- hint at problems of hygiene & add code example [cite:Queinnec1996]
+Efektem makroekspansji jest powstanie semantycznie ekwiwalentnego kodu, który wykorzystuje tylko dobrze zdefiniowane konstrukcje składniowe języka. Warto zwrócić uwagę na ostatni z przykładów, który prezentuje znaną z innych dialektów języka Lisp konstrukcję =quasiquote=. Konstrukcja ta umożliwia budowanie programów w łatwy, wizualny sposób bez konieczności samodzielnego budowania drzew programu z wykorzystaniem funkcji =cons=, =list= i pokrewnych. Szczegółowy opis działania =quasiquote= został zawarty w [[cite:Bawden1999]].
+
+Systemy makr czesto borykają się z problemami *higieniczności* generowanego kodu. Problem ten ilustruje przykład z listingu [[ref:code:macro-hygiene]].
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Przykład ilustrujący problem higieniczności systemu makr w języku Scheme.}}
@@ -405,9 +408,11 @@ Realizacja Modelu Aktorowego w języku =FOOF= podobnie jak mechanizm obsługi b�
 #+end_src
 #+latex: \end{listing}
 
-- compare different styles of macro systems (syntax-rules & define-macro) [cite:Sperber2010]
-- note that macros are not first-class [cite:Bawden2000]
-- contrast macros with other techniques (fexprs) [cite:Shutt2010]
+Zdefiniowane zostaje makro =unless=, którego zadaniem jest uruchamianie pewnych obliczeń jedynie, gdy podany warunek nie jest spełniony. W tym celu makro korzysta z konstrukcji =if= oraz funkcji =not=, nie zachowując, niestety, higieniczności, czego dowodzi druga część przykładu - lokalna zmiana wartości zmiennej =not= na funkcję tożsamości powoduje niewłaściwe działanie makra =unless=.
+
+Problem higieniczności jest problemem skomplikowanym i zazwyczaj jego rozwiązanie oznacza poświęcenie części funkcjonalności systemu makr, na przykład poprzez ograniczenie go do translacji szablonów [[cite:Sperber2010]], lub znacznego jego skomplikowania, przez konieczność wprowadzenia hierarchicznej refleksji makroekspansji [[cite:Queinnec1996]]. Niestety, system makr języka =FOOF= pozostawia ten problem otwartym.
+
+Alternatywnym podejściem do problemu metaprogramowania, o którym warto wspomnieć są *f-wyrażenia* (ang. /f-expressions/, /fexprs/), polegające na podziale funkcji na dwa fundamentalne kompotenty - aplikatywny, indukujący ewaluację argumentów oraz operatywny, analogiczny do substytucji nazw argumentów na ich wartości w wyrażeniach lambda rachunku lambda [[cite:Shutt2010]]. Podejście to drastycznie komplikuje kompilację kodu źródłowego, w związku z czym nie zostało wykorzystane w języku =FOOF=.
 
 ** System modułowy
 - describe the need for a module system [cite:Gasbichler2006]
