@@ -191,7 +191,11 @@ Jako, że język =FOOF= jest dialektem języka Lisp, programy kodowane są homoi
 Homoikoniczność i notację S-wyrażeń wykorzystano w wielu innych mechanizmach dostępnych w języku, które zostały opisane w dalszej części niniejszego rozdziału, w szczególności w implementacji systemu makr pozwalających na rozszerzenie składni języka.
 
 ** Funkcje
-- a note about lambda calculus [cite:Church1932] [cite:Church1933]
+Pierwszym złożonym typem danych, który nie ma reprezentacji literałowej w języku =FOOF= są funkcje. Funkcje są obiektami pierwszej klasy, to znaczy, po stworzeniu podczas działania programu, mogą być wykorzystywane tak jak każdy inny typ danych, a co za tym idzie, mogą być osadzane w listach, przekazywane do innych funkcji, a także z nich zwracane jako wynik obliczeń.
+
+Funkcje zostały zaprojektowane w oparciu o *rachunek Lambda*, wprowadzony w 1933 roku przez Alonzo Church'a jako alternatywny model logiki i, następnie, prowadzenia obliczeń [[cite:Church1932, Church1933]]. Rachunek ten wprowadza pojęcie *wyrażenia lambda*, które jest ekwiwalentem jednoargumentowych funkcji obecnych języków programowania, oraz szereg zasad substytucji, zwanych redukcjami, pozwalających na uproszczenie zagnieżdżonych wyrażeń lambda. Najważniejszą z wprowadzanych redukcji jest *\beta-redukcja*, która konceptualnie reprezentuje aplikacje funkcji z odpowiednimi argumentami i jednocześnie pozwala na prowadzenie obliczeń.
+
+Zasady rachunku lambda są fundamentalnie bardzo nieskomplikowane, a mimo to pozwalają na ekspresję skomplikowanych idei, takich jak logika Bool'a, arytmetyka, struktury danych a także rekurencja. Na listingu [[ref:code:ex-lambda-calculus]] zawarto przykład realizacji logiki boola wraz z kilkoma operatorami logicznymi w czystym rachunku lambda.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Przykład implementacji wartości i operatorów logicznych jedynie za pomocą wyrażeń lambda.}}
@@ -210,7 +214,11 @@ AND TRUE FALSE
 #+END_SRC
 #+latex: \end{listing}
 
-- describe closures
+Wartości logiczne kodowane są jako wyrażenia lambda konsumujące dwa argumenty i wybierające odpowiednio pierwszy z nich, dla logicznej wartości prawdy, lub drugi z nich, dla logicznej wartości fałszu. W podobny sposób kodowane są operatory logiczne, a wynik ich działania obliczany jest przez sukcesywne przeprowadzanie substytucji nazwy argumentu na jego wartość oraz redukowaniu otrzymanych wyrażeń za pomocą \beta-redukcji.
+
+Warto zauważyć, że wyrażenia lambda można interpretować jako tak zwane *domknięcia leksykalne*, czyli tworzone podczas \beta-redukcji otaczającego wyrażenia pary funkcji i map asocjacyjnych odzwierciedlających wartości zmiennych, które występują w ciele domknięcia leksykalnego, a nie są przez nie wprowadzane. Domknięcia leksykalne pozwalają opóźnić substytucję nazw argumentów wyrażeń lambda na odpowiadające im wartości, dzięki czemu są łatwiejsze w implementacji [[cite:PeytonJones1992]].
+
+Listing [[ref:code:closures-at-work]] pokazuje działanie domknięć leksykalnych w notacji języka =FOOF=.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Przykład ilustrujący działanie domknięć leksykalnych.}}
@@ -223,8 +231,13 @@ AND TRUE FALSE
 #+end_src
 #+latex: \end{listing}
 
-- mention funarg problem [cite:Abelson1996]
-- mention recursion problem [cite:Felleisen1991] [cite:Goldberg2005] [cite:Rzepecki2015]
+Funkcja =foo= zaprezentowana na listingu, korzysta z wartości *wolnej zmiennej* =x=, czyli takiej, której nie wprowadza w liście swoich argumentów. W dalszej części programu, funkcja =foo= pomimo lokalnej zmiany wartości zmiennej =x= poprawnie zwraca oryginalną jej wartość, ponieważ w momencie jej tworzenia wartość zmiennej =x= została zapisana razem z ciałem funkcji.
+
+Często pojawiającym się problemem związanym z funkcjami wzorowanymi na rachunku lambda, jest tak zwany problem *funarg*, polegający na niepoprawnym działaniu programów, które zwracają funkcje jako wynik obliczeń, lub przekazują je jako argumenty innych funcji. Problem ten sprowadza się do niewłaściwego budowania domknięć leksykalnych, co może doprowadzić do przedwczesnego usunięcia wartości zmiennych wolnych. Został on poruszony w [[cite:Abelson1996]].
+
+Kolejnym problemem towarzyszącym funkcjom zrealizowanym jako domknięcia leksykalne jest nietrywialna implementacja rekurencji, wynikająca z ustalonej kolejności wykonywania działań - tworzenie domknięcia leksykalnego funkcji rekurencyjnej jest uzależnione od jej uprzedniego istnienia, co prowadzi do sprzeczności.
+
+Oryginalna praca wprowadzająca rachunek lambda w celu osiągnięcia rekurencji wykorzystuje rachunek kombinatorów [[cite:Church1932]], a w szczególności *kombinator Y*. Sposób działania tego kombinatora został szczegółowo opisany w [[cite:Felleisen1991]], natomiast problem i propozycję implementacji rekurencji szerzej opisano w [[cite:Rzepecki2015]].
 
 ** Kontynuacje
 - describe the notion of a continuation [cite:Reynolds1993]
