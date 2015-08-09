@@ -285,7 +285,26 @@ Istnieją także sposoby komponowania kontynuacji, bazujące na tak zwanych kont
 Język =FOOF= wykorzystuje kontynuacje zarówno w implementacji kompilatora w sposób opisany powyżej, a także w szeregu innych mechanizmów kontroli przepływu sterowania, takich jak obsługa błędów, czy multiprocessing. Kontynuacje dostępne są dla programisty bezpośrednio, dzięki kostrukcjom =letcc=, =shift= oraz =reset=, a także pośrednio poprzez inne mechanizmy opisane w następujących sekcjach.
 
 ** Obsługa błędów
-- describe exceptions via continuations - handle & raise
+Jednym z najważniejszych mechanizmów, jakie powinien udostępniać język programowania, jest mechanizm obsługi błędów i sytuacji wyjątkowych.
+
+Język =FOOF= zapewnia mechanizm obsługi błędów, który bazuje na kontynuacjach, w związku z czym charakteryzuje się bardzo dużą ekspresywnością. Mechanizm ten umożliwia, analogicznie do większości popularnych języków programowania, zadeklarowanie procedury obsługi zdarzeń wyjątkowych za pomocą konstukcji =handle= oraz sygnalizację zajścia takiego zdarzenia poprzez =raise=.
+
+W przeciwieństwie do większości języków programowania, mechanizm dostępny w języku =FOOF= pozwala na kontynuację obliczeń w miejscu wystąpienia błędu z nową wartością, obliczoną w zadeklarowanej procedurze obsługi błędu. Przykład ilustrujący taki schemat został zaprezentowany na listingu [[ref:code:ex-restarts]].
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Przykład wykorzystania mechanizmu obsługi błędów.}}
+#+latex: \label{code:ex-restarts}
+#+begin_src scheme
+(handle (do ...
+            (raise 'error) ;; Błąd w trakcie wykonywania obliczeń.
+            ...)
+        (lambda (error restart)
+          ...
+          (restart new-value))) ;; Kontynuacja z nową wartością.
+#+end_src
+#+latex: \end{listing}
+
+Przykładowy program deklaruje procedurę obsługi sytuacji wyjątkowej, a następnie przechodzi do kosztownych obliczeń, które przedwcześnie sygnalizują wystąpienie błędu. Przepływ sterowania zostaje przekazany do zadeklarowanej procedury obsługi sytuacji wyjątkowej, która decyduje się zrestartować obliczenia dostarczając im nową, poprawną wartość. Następnie, program wraca do punktu wystąpienia błędu i kontynuuje obliczenia wykorzystują nową, poprawną wartość.
 
 ** Przetwarzanie współbieżne i rozproszone
 - briefly describe AMP vs SMP and contrast it with platform heterogeneity
