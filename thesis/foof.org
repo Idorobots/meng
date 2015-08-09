@@ -240,8 +240,15 @@ Kolejnym problemem towarzyszącym funkcjom zrealizowanym jako domknięcia leksyk
 Oryginalna praca wprowadzająca rachunek lambda w celu osiągnięcia rekurencji wykorzystuje rachunek kombinatorów [[cite:Church1932]], a w szczególności *kombinator Y*. Sposób działania tego kombinatora został szczegółowo opisany w [[cite:Felleisen1991]], natomiast problem i propozycję implementacji rekurencji szerzej opisano w [[cite:Rzepecki2015]].
 
 ** Kontynuacje
-- describe the notion of a continuation [cite:Reynolds1993]
-- briefly describe CPS transformation and comment on code equivalence [cite:Appel1992]
+Kolejnym mechanizmem będącym integralną częścią języka =FOOF= są kontynuacje, czyli abstrakcyjne reprezentacje przepływu sterowania programów, które pozwalają jednoznacznie określić kolejność wykonywania obliczeń.
+
+Kontynuacje można interpretować jako ciąg obliczeń pozostałych do wykonania z punktu widzenia danego miejsca programu, który został *reifikowany* jako funkcja i udostępniony z poziomu wykonywanego programu. W efekcie, programy mogą zadecydować by zrestartować obliczenia od pewnego momentu, albo wręcz przeciwnie, przerwać je odrzucając wartości pośrednie.
+
+Jako, że jest to mechanizm skomplikowany, który był odkrywany wielokrotnie [[cite:Reynolds1993]], często nieświadomie, istnieje wiele jego wersji i sposobów implementacji, a w związu z czym nie jest on powszechnie dostępny jako standardowa funkcjonalność popularnych języków programowania. Ze względu na swoje właściwości opisane powyżej, kontynuacje są częściej stosowane w implementacjach kompilatorów języków programowania, jako format pośredni reprezentacji programów [[cite:Appel1992]].
+
+Do tego celu służy technika przekazywania kontynuacji (ang. /Continuation Passing Style/, /CPS/) polegająca na automatycznej transformacji kodu źródłowego programu do formatu, w którym wszystkie funkcje przyjmują dodatkowy argument będący kontynuacją, którą przekazują dalej [[cite:Appel1992]].
+
+Listing [[ref:code:ex-cps-principle]] prezentuje przykład konwersji CPS prostej funkcji.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Przykład konwersji \textit{Continuation Passing Style}.}}
@@ -249,20 +256,35 @@ Oryginalna praca wprowadzająca rachunek lambda w celu osiągnięcia rekurencji 
 #+LaTeX: \begin{multicols}{2}
 #+begin_src scheme
 ;; Styl aplikatywny:
-(+ 2 (* 3 4))
+(lambda (x y)
+  (* 2 (+ x y)))
 #+end_src
 #+LaTeX: \columnbreak
 #+begin_src scheme
 ;; Styl Continuation Passing:
-(*& 3 4
-    (lambda (v)
-      (+& 2 v identity)))
+(lambda (x y cont)
+  (+& x y
+      (lambda (v)
+        (*& 2 v cont))))
+
+;; Transformacja wbudowanych funkcji:
+(define (+& a b cont)
+  (cont (+ a b)))
 #+end_src
 #+LaTeX: \end{multicols}
 #+latex: \end{listing}
 
-- list some popular primitives - letcc, call/cc [cite:Sperber2010] [cite:Harper1998]
-- hint at delimited control - shift & reset [cite:Dybvig2005]
+Po transformacji, funkcja ta przyjmuje dodatkowy argument =cont=, który następnie przekazuje dalej w ciągu obliczeń. Analogicznie, wbudowane funkcje dodawania =+= i mnożenia =*= również przyjmują dodatkowy argument, który wywołują z wynikiem odpowiedniej operacji, powodując aplikację kontynuacji.
+
+W przykładzie można zauważyć doprecyzowanie kolejności wykonywania działań po transformacji CPS - pierwszą wykonaną operacją jest dodawanie, a jego wynik przekazywany jest do, specjalnie w tym celu stworzonej, kontynuacji pośredniej i następnie od operacji mnożenia wraz z kontynuacją =cont= wywołania funkcji.
+
+Część języków programowania, które korzystają z kontynuacji udostępnia je także jako obiekty pierwszej klasy, które mogą być traktowane w taki sam sposób jak inne typy danych. Służy do tego wiele zróżnicowanych operacji prymitywnych, które różnią się semantyką. W przypadku języka Scheme operacja prymitywna służąca do przechwytywania kontynuacji to =call-with-current-continuation= (=call/cc=) [[cite:Sperber2010]], natomiast w języku Standard ML służy ku temu konstrukcja =letcc= [[cite:Harper1998]].
+
+Istnieją także sposoby komponowania kontynuacji, bazujące na tak zwanych kontynuacjach ograniczonych (ang. /delimited continuations/), które wykorzystują większą liczbę operacji prymitywnych, na przykład =shitf= oraz =reset= opisane w [[cite:Dybvig2005]], w celu zapewnienia większej kontroli nad przepływem sterowania programu.
+
+Język =FOOF= wykorzystuje kontynuacje zarówno w implementacji kompilatora w sposób opisany powyżej, a także w szeregu innych mechanizmów kontroli przepływu sterowania, takich jak obsługa błędów, czy multiprocessing. Kontynuacje dostępne są dla programisty bezpośrednio, dzięki kostrukcjom =letcc=, =shift= oraz =reset=, a także pośrednio poprzez inne mechanizmy opisane w następujących sekcjach.
+
+** Obsługa błędów
 - describe exceptions via continuations - handle & raise
 
 ** Przetwarzanie współbieżne i rozproszone
