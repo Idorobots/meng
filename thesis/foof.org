@@ -148,11 +148,16 @@ Jako alternatywę dla osiągnięcia niezależności od platformy, niniejsza prac
 
 * Język =FOOF=
 # Language ideology
-- simplicity but not crudeness [cite:Backus1978]
-- pragmatism [cite:Hoare1973]
-- platform awareness
-- orthogonal features [cite:Backus1978]
-- contrast with Scheme/Lisp (and SML ?) [cite:Sperber2010]
+- describe what was the driving force behind language design:
+  - simplicity but not crudeness [cite:Backus1978]
+  - orthogonal features [cite:Backus1978]
+  - pragmatism [cite:Hoare1973]
+  - platform awareness
+- contrast with Scheme/Lisp & SML [cite:Sperber2010] [cite:Milner1997]
+- hint at Spartan Programming (?)
+- list contents of the chapter
+- link to the full language grammar specification
+- link to the sample programs
 
 ** Podstawowe typy danych
 - describe lists - pairs of atoms|lists [cite:McCarthy1960]
@@ -165,18 +170,19 @@ Jako alternatywę dla osiągnięcia niezależności od platformy, niniejsza prac
 ** Funkcje
 - a note about lambda calculus [cite:Church1932] [cite:Church1933]
 - add a code fragment implementing booleans in lambda calculus ?
-- describe lambdas
+- describe closures
+- add a code fragment showing of closures at work
 - mention funarg problem [cite:Abelson1996]
 - mention recursion problem [cite:Felleisen1991] [cite:Goldberg2005]
-- describe named lambdas aka defines
 
 ** Kontynuacje
 - describe the notion of a continuation [cite:Reynolds1993]
+- add a code example showing off parts of a continuation
 - briefly describe CPS transformation and comment on code equivalence [cite:Appel1992]
 - add a code example of the CPS transform
-- hint at greater detail in a future section
-- hint at delimited control [cite:Dybvig2005]
-- describe exceptions via continuations
+- list some popular primitives - letcc, call/cc [cite:Sperber2010] [cite:Harper1998]
+- hint at delimited control - shift & reset [cite:Dybvig2005]
+- describe exceptions via continuations - handle & raise
 
 ** Przetwarzanie współbieżne i rozproszone
 - briefly describe AMP vs SMP and contrast it with platform heterogeneity
@@ -197,30 +203,36 @@ Jako alternatywę dla osiągnięcia niezależności od platformy, niniejsza prac
 
 - note that system doesn't need to run on a heterogenous platform to be heterogenous itself
 - describe Actor Model [cite:Hewitt1973] [cite:Clinger1981]
-- describe processes via continuations (trampolines)
-- describe actor model primitives [cite:Hewitt1973]
-- comment on adding distribution
+- describe actor model & distribution primitives [cite:Hewitt1973]
+- compare with Erlang [cite:Armstrong1996]
+- hint at processes implemented via continuations (trampolines)
 
 ** Reprezentacja wiedzy w języku
 - describe use cases in the language
 - describe various ways of knowledge representation [cite:Hachem2011] [cite:Samimi2014] [cite:Wang2013]
 - describe primitive operations
+- add some code examples of listed primitives
 - hint at using an RBS
 
 ** Makra
-- describe macros
-- add some code examples of available macros
-- hint at problems of hygiene & add code example [cite:Bawden2000] [cite:Queinnec1996]
-- hint at problems of macros & modules coexisting [cite:Gasbichler2006]
+- describe macros & macroexpansion
+- add some code examples of available macros (either of: quasiquote, define, and, let, letcc in terms of call/cc)
+- compare different styles of macro systems (syntax-rules & define-macro) [cite:Sperber2010]
+- note about the usage of quasiquote [cite:Bawden1999]
+- hint at problems of hygiene & add code example [cite:Queinnec1996]
+- note that macros are not first-class [cite:Bawden2000]
 - contrast macros with other techniques (fexprs) [cite:Shutt2010]
 
 ** System modułowy
 - describe the need for a module system [cite:Gasbichler2006]
 - describe structures - namespaces for definitions
 - describe modules - parameterized structures [cite:Rossberg2015]
+- note about special module access syntax - foo.bar
 - describe units - runnable modules
-- describe protocols - a set of capabilities of a module
+- describe protocols - a set of capabilities of a module (?)
 - hint at protocols & SOA connection ?
+- note about all these primitives being macros
+- hint at problems of macros & modules coexisting [cite:Gasbichler2006]
 
 * Kompilator języka =FOOF=
 - mention technology selection & limitations (large project, little time) [cite:Ghuloum2006]
@@ -296,6 +308,11 @@ Jako alternatywę dla osiągnięcia niezależności od platformy, niniejsza prac
 - describe how continuations are handled without getting into CFS (returning cont + hole aka trampoline, contrast to how G-machine/TIM reductions work) [cite:Appel1992] [cite:PeytonJones1992]
 - add a code example with step-by-step execution
 - hint at debugging potential using step by step continuation execution with debug info inbetween
+
+** Implementacja obsługi wyjątków
+- describe how continuations are used for error handling - handle & raise
+- note about restarts
+- note about implementing letcc using handle & raise ?
 
 ** Implementacja procesów
 - add a diagram of the uProc context - only include status, cont & handler registers
