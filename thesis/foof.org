@@ -155,17 +155,17 @@ Jako alternatywę dla osiągnięcia niezależności od platformy, niniejsza prac
 - list what is found where in the thesis
 
 * Język =FOOF=
-# Language ideology
-- describe what was the driving force behind language design:
-  - simplicity but not crudeness [cite:Backus1978]
-  - orthogonal features [cite:Backus1978]
-  - pragmatism [cite:Hoare1973]
-  - platform awareness
-- contrast with Scheme/Lisp & SML [cite:Sperber2010] [cite:Milner1997]
-- hint at Spartan Programming (?)
-- list contents of the chapter
-- link to the full language grammar specification
-- link to the sample programs
+Niniejszy rozdział szczegółowo opisuje projekt języka programowania =FOOF= począwszy od podstawowych typów danych, przez notację funkcji, kontynuacji i procesów, kończąc na zaawansowanych mechanizmach języka, takich jak przetwarzanie wiedzy i wbudowany system makr. W dodatku [[sec:foof-grammar]] zawarto formalny opis gramatyki języka, natomiast w dodatku [[sec:foof-examples]] zamieszczono kilka przykładowych programów.
+
+Język =FOOF= został zaprojektowany bazując na cennych wskazówkach przedstawionych przez John'a Backus'a w wykładzie wygłoszonym przez niego podczas odbierania Nagrody Turing'a w 1977 roku [[cite:Backus1978]]. Wskazówki te są ponadczasowe i stanowią dobrą podstawę do tworzenia języków programowania, a w dużym skrócie sprowadzają się do następujących punktów:
+
+- *prostota lecz nie surowość* (ang. /simplicity, not crudeness/) - języki programowania powinny cechować się prostotą, lecz nie ograniczać ekspresywności programisty przez brak możliwości zrealizowania pewnych funkcjonalności, a co za tym idzie:
+
+- *ortogonalne funkcjonalności* (ang. /orthogonal features/) - język programowania powinien składać się z niewielkiej liczby dobrze zdefiniowanych i dobrze współgrających mechanizmów, za pomocą których programista jest w stanie łatwo zbudować wszelkie inne potrzebne funkcjonalności.
+
+Oczywiście, zasady te nie są wystarczające do stworzenia funkcjonalnego języka programowania, dlatego kierowano się także *pragmatyzmem*, który w kontekście projektowania języków programowania sprowadza się do podejmowania kompromisów, pomiędzy /matematyczną czystością/ a faktyczną użytecznością potencjalnych funkcjonalności dostarczanych przez język. Podejście to zostało szczegółowo opisane w [[cite:Hoare1973]].
+
+Ze względu na podobne zasady, którymi kierowano się podczas projektowania, język =FOOF= przypomina pod względem składniowym i semantycznym odpowiednio języki *Scheme* (opisany szczegółowo w [[cite:Sperber2010]]) oraz *Standard ML* [[cite:Milner1997]]. Natomiast, cechami odróżniającymi =FOOF= od tych języków są: wsparcie dla programowania współbieżnego oraz wykorzystanie inżynierii wiedzy w celu osiągnięcia /świadomości platformy/ i rozwiązania problemu heterogeniczności systemów rozproszonych.
 
 ** Podstawowe typy danych
 Listing [[code:data-types]] prezentuje proste typy danych dostępne w języku =FOOF=, są to podstawowe elementy budulcowe programów, które mają swoją reprezentację literałową.
@@ -623,9 +623,11 @@ AND TRUE FALSE
 
 #+latex: \appendix
 * Gramatyka języka =FOOF=
+#+LaTeX: \label{sec:foof-grammar}
 - concrete language grammar in PEG or BNF
 
 * Przykładowe programy
+#+LaTeX: \label{sec:foof-examples}
 Poniżej zaprezentowano przykładowe programy w języku =FOOF= i krótki opis ich działania. Programy mogą zostać skompilowane i uruchomione za pomocą udostępnionego interfejsu kompilatora i środowiska uruchomieniowego języka. W konsoli systemu należy w tym celu wywołać odpowiednio funkcje =compile= i =run= podając interesujący program jako parametr, na przykład:
 
 #+BEGIN_EXAMPLE
