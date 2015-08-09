@@ -136,14 +136,14 @@ Każdy element takiego systemu, oznaczony na schemacie różnym kształtem oraz 
 
 Problem heterogeniczności dotyka również systemów rozproszonych, które działają na platformach homogenicznych, gdzie fizyczne maszyny są do siebie bardzo zbliżone, a często są komputerami ogólnego przeznaczenia. Przykład takiego systemu, zbudowanego w oparciu o zdobywającą popularność architekturę mikroserwisową [[cite:Richards2015]], został zawarty na schemacie [[fig:hetero-service]].
 
+Użytkownik systemu łączy się z głównym serwisem, który następnie komunikuje się z innymi serwisami, realizującymi wymagane przezeń zadania. W celu poprawienia /odporności na błędy/ takiego systemu, w strategicznych miejscach umieszczono serwery zarządzające ruchem (ang. /load-balancer/), których zadaniem, analogicznie do przykładu ze schematu [[fig:hetero-iot]], jest /homogenizacja/ systemu.
+
 #+begin_center
 #+label: fig:hetero-service
 #+caption: Przykład systemu heterogenicznego niezależnie od platformy sprzętowej.
 #+attr_latex: :width 0.7\textwidth :placement [H]
 [[file:./img/heteroserviceexample.pdf]]
 #+end_center
-
-Użytkownik systemu łączy się z głównym serwisem, który następnie komunikuje się z innymi serwisami, realizującymi wymagane przezeń zadania. W celu poprawienia /odporności na błędy/ takiego systemu, w strategicznych miejscach umieszczono serwery zarządzające ruchem (ang. /load-balancer/), których zadaniem, analogicznie do przykładu ze schematu [[fig:hetero-iot]], jest /homogenizacja/ systemu.
 
 W pierszym przypadku heterogeniczność wynika ze zróżnicowania maszyn należących do platformy sprzętowej, natomiast w drugim wynika ona z istnienia mikroserwisów, które realizują pojedyncze, konretnie sprecyzowane funkcjonalności. W obu przypadkach, heterogeniczność systemu prowadzi do powstania innych problemów, takich jak skalowalność i odporność na błędy, oraz konieczności wykorzystania dodatkowych elementów mających im zaradzić.
 
@@ -155,7 +155,7 @@ Jako alternatywę dla osiągnięcia niezależności od platformy, niniejsza prac
 - list what is found where in the thesis
 
 * Język =FOOF=
-Niniejszy rozdział szczegółowo opisuje projekt języka programowania =FOOF= począwszy od podstawowych typów danych, przez notację funkcji, kontynuacji i procesów, kończąc na zaawansowanych mechanizmach języka, takich jak przetwarzanie wiedzy i wbudowany system makr. W dodatku [[sec:foof-grammar]] zawarto formalny opis gramatyki języka, natomiast w dodatku [[sec:foof-examples]] zamieszczono kilka przykładowych programów.
+Niniejszy rozdział szczegółowo opisuje projekt języka programowania =FOOF= począwszy od podstawowych typów danych, przez notację funkcji, kontynuacji i procesów, kończąc na zaawansowanych mechanizmach języka, takich jak przetwarzanie wiedzy i wbudowany system makr. W dodatku [[ref:sec:foof-grammar]] zawarto formalny opis gramatyki języka, natomiast w dodatku [[ref:sec:foof-examples]] zamieszczono kilka przykładowych programów.
 
 Język =FOOF= został zaprojektowany bazując na cennych wskazówkach przedstawionych przez John'a Backus'a w wykładzie wygłoszonym przez niego podczas odbierania Nagrody Turing'a w 1977 roku [[cite:Backus1978]]. Wskazówki te są ponadczasowe i stanowią dobrą podstawę do tworzenia języków programowania, a w dużym skrócie sprowadzają się do następujących punktów:
 
@@ -168,7 +168,7 @@ Oczywiście, zasady te nie są wystarczające do stworzenia funkcjonalnego języ
 Ze względu na podobne zasady, którymi kierowano się podczas projektowania, język =FOOF= przypomina pod względem składniowym i semantycznym odpowiednio języki *Scheme* (opisany szczegółowo w [[cite:Sperber2010]]) oraz *Standard ML* [[cite:Milner1997]]. Natomiast, cechami odróżniającymi =FOOF= od tych języków są: wsparcie dla programowania współbieżnego oraz wykorzystanie inżynierii wiedzy w celu osiągnięcia /świadomości platformy/ i rozwiązania problemu heterogeniczności systemów rozproszonych.
 
 ** Podstawowe typy danych
-Listing [[code:data-types]] prezentuje proste typy danych dostępne w języku =FOOF=; są to podstawowe elementy budulcowe programów, które mają swoją reprezentację literałową.
+Listing [[ref:code:basic-data-types]] prezentuje proste typy danych dostępne w języku =FOOF=; są to podstawowe elementy budulcowe programów, które mają swoją reprezentację literałową.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Podstawowe typy danych dostępne w języku \texttt{FOOF}.}}
@@ -666,8 +666,6 @@ Program definuje funkcję =hello= obrazującą podstawowe operacje języka i nas
 #+end_src
 #+latex: \end{listing}
 
-
-#+LaTeX: \pagebreak
 ** Funkcja Fibonacciego
 Program prezentuje definicję funkcji Fibonacciego z wykorzystaniem konstrukcji =letrec=, służącej do definiowania funkcji rekursywnych. Następnie program oblicza wynik funkcji Fibonacciego dla liczby 23.
 
@@ -681,32 +679,6 @@ Program prezentuje definicję funkcji Fibonacciego z wykorzystaniem konstrukcji 
                     (+ (fib (- n 1))
                        (fib (- n 2)))))))
   (fib 23))
-#+end_src
-#+latex: \end{listing}
-
-** Współbieżne obliczenia funkcji Fibonacciego
-Program definiuje funkcję Fibonacciego oraz dodatkową funkcję wyświetlającą informacje o systemie. Następnie tworzone są trzy procesy współbieżnie obliczające wartość funkcji Fibonacciego dla liczby 30. Program periodycznie wyświetla różne informacje o działających procesach.
-
-#+latex: \begin{listing}[H]
-#+latex: \caption{\mylisting{Równoległe obliczanie funkcji Fibonacciego.}}
-#+latex: \label{code:ex-parallel-fibonacci}
-#+begin_src scheme
-(letrec ((fib (lambda (n)
-                (if (< n 2)
-                    n
-                    (+ (fib (- n 1))
-                       (fib (- n 2))))))
-         (monitor (lambda ()
-                    (task-info)
-                    (sleep 2000)
-                    (monitor))))
-  (spawn (lambda ()
-           (fib 30)))
-  (spawn (lambda ()
-           (fib 30)))
-  (spawn (lambda ()
-           (fib 30)))
-  (monitor))
 #+end_src
 #+latex: \end{listing}
 
@@ -741,8 +713,32 @@ Program korzysta z dwóch komunikujących się procesów do zobrazowania sposobu
 #+end_src
 #+latex: \end{listing}
 
+** Współbieżne obliczenia funkcji Fibonacciego
+Program definiuje funkcję Fibonacciego oraz dodatkową funkcję wyświetlającą informacje o systemie. Następnie tworzone są trzy procesy współbieżnie obliczające wartość funkcji Fibonacciego dla liczby 30. Program periodycznie wyświetla różne informacje o działających procesach.
 
-#+LaTeX: \pagebreak
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Równoległe obliczanie funkcji Fibonacciego.}}
+#+latex: \label{code:ex-parallel-fibonacci}
+#+begin_src scheme
+(letrec ((fib (lambda (n)
+                (if (< n 2)
+                    n
+                    (+ (fib (- n 1))
+                       (fib (- n 2))))))
+         (monitor (lambda ()
+                    (task-info)
+                    (sleep 2000)
+                    (monitor))))
+  (spawn (lambda ()
+           (fib 30)))
+  (spawn (lambda ()
+           (fib 30)))
+  (spawn (lambda ()
+           (fib 30)))
+  (monitor))
+#+end_src
+#+latex: \end{listing}
+
 ** System modułowy
 Program definiuje dwa moduły - =logger= oraz =test=. Moduł =test= wymaga do działania implementacji modułu logowania. Program tworzy instancję modułu =logger= i następnie tworzy instancję modułu =test= wykorzystując uprzednio zdefiniowany moduł logowania. Efektem działania programu jest wypisanie dwóch wiadomości na ekranie komputera. Wiadomości są odpowiednio sformatowane przez moduł =logger=.
 
@@ -809,10 +805,9 @@ Program prezentuje wykorzystanie wbudowanego w język systemu regułowego. Defin
 #+end_src
 #+latex: \end{listing}
 
-
 #+LaTeX: \pagebreak
 ** Obsługa złożonych zdarzeń
-Program działa podobnie do przykładu z listingu [[code:ex-forward-chaining]]. Definiowana jest złożona reguła, która notyfikuje proces nasłuchujący jedynie, gdy wartości powiązane z faktami =foo= oraz =bar= osiągają odpowiednie wartości.
+Program działa podobnie do przykładu z listingu [[ref:code:ex-forward-chaining]]. Definiowana jest złożona reguła, która notyfikuje proces nasłuchujący jedynie, gdy wartości powiązane z faktami =foo= oraz =bar= osiągają odpowiednie wartości.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Zastosowanie wbudowanego systemu regułowego do obsługi złożonych zdarzeń.}}
@@ -846,8 +841,6 @@ Program działa podobnie do przykładu z listingu [[code:ex-forward-chaining]]. 
 #+end_src
 #+latex: \end{listing}
 
-
-#+LaTeX: \pagebreak
 ** Wnioskowanie wstecz
 Program prezentuje wykorzystanie wnioskowania wstecz wbudowanego w język systemu regułowego. Na bazie faktów wykonywany jest szereg operacji, a następnie program odpytuje bazę faktów o wartości, dla których wystąpiły fakty =foo= oraz =bar=. Wynikiem działania programu jest asocjacja =(?value . 2)=.
 
