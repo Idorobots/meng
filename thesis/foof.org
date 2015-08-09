@@ -103,7 +103,7 @@ W tym celu wymagane jest stworzenie kompilatora, czyli programu transformująceg
 Ostatnim wymogiem postawionym przed projektowanym językiem, jest wyjście naprzeciw licznym problemom występującym w systemach rozproszonych, w szczególności problemowi /heterogeniczności/, co umotywowano w następnej sekcji.
 
 ** Motywacja pracy
-Tworzenie systemów rozproszonych jest zadaniem bardzo trudnym i wymaga wykorzystania specjalnie do tego przeznaczonych narzędzi - języków programowania, systemów bazodanowych i infrastruktury sieciowej. Na przestrzeni lat zidentyfikowano wiele kluczowych problemów manifestujących się we wszystkich systemach rozproszonych niezależnie od ich przeznaczenia. Tanenbaum oraz Van Steen w [[cite:Tanenbaum2006]] wymieniają nestępujące problemy:
+Tworzenie systemów rozproszonych jest zadaniem bardzo trudnym i wymaga wykorzystania specjalnie do tego przeznaczonych narzędzi - języków programowania, systemów bazodanowych i infrastruktury sieciowej. Na przestrzeni lat zidentyfikowano wiele kluczowych problemów manifestujących się we wszystkich systemach rozproszonych niezależnie od ich przeznaczenia. Tanenbaum oraz Van Steen w [[cite:Tanenbaum2006]] wymieniają następujące problemy:
 
 - *dostępność* - systemy rozproszone działają zwykle na wielu odrębnych maszynach, istotnym jest więc zachowanie dostępu do wspólnych zasobów z każdej części systemu,
 
@@ -384,7 +384,7 @@ AND TRUE FALSE
     (a.foo 5)))
 
 (let ((b (B (A))))
-  (display (b.bar))) ;; Wyświetla liczbę 28.
+  (display (b.bar))) ;; Wyświetla liczbę 28
 #+end_src
 #+latex: \end{listing}
 
@@ -515,7 +515,7 @@ AND TRUE FALSE
 #+label: fig:uproc-actor-model
 #+caption: Dodatkowe rejestry kontekstu mikroprocesu wymagade do implementacji Modelu Aktorowego.
 #+attr_latex: :width 0.8\textwidth :placement [H]
-[[file:./img/uproactormodel.pdf]]
+[[file:./img/uprocactormodel.pdf]]
 #+end_center
 
 - describe modifications to the runtime required by actor model (*current-uproc*, uproc list, context fields)
@@ -864,6 +864,7 @@ Program prezentuje wykorzystanie wnioskowania wstecz wbudowanego w język system
 #+begin_latex
 \begingroup
   \listoffigures
+  \pagebreak
   \listofmylisting
 \endgroup
 #+end_latex
