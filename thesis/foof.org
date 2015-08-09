@@ -168,7 +168,7 @@ Oczywiście, zasady te nie są wystarczające do stworzenia funkcjonalnego języ
 Ze względu na podobne zasady, którymi kierowano się podczas projektowania, język =FOOF= przypomina pod względem składniowym i semantycznym odpowiednio języki *Scheme* (opisany szczegółowo w [[cite:Sperber2010]]) oraz *Standard ML* [[cite:Milner1997]]. Natomiast, cechami odróżniającymi =FOOF= od tych języków są: wsparcie dla programowania współbieżnego oraz wykorzystanie inżynierii wiedzy w celu osiągnięcia /świadomości platformy/ i rozwiązania problemu heterogeniczności systemów rozproszonych.
 
 ** Podstawowe typy danych
-Listing [[code:data-types]] prezentuje proste typy danych dostępne w języku =FOOF=, są to podstawowe elementy budulcowe programów, które mają swoją reprezentację literałową.
+Listing [[code:data-types]] prezentuje proste typy danych dostępne w języku =FOOF=; są to podstawowe elementy budulcowe programów, które mają swoją reprezentację literałową.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Podstawowe typy danych dostępne w języku \texttt{FOOF}.}}
@@ -184,12 +184,11 @@ symbol
 #+end_src
 #+latex: \end{listing}
 
-- describe lists - pairs of atoms|lists [cite:McCarthy1960]
-- describe numbers
-- describe symbols
-- describe strings
-- describe vectors ?
-- describe maps ?
+Typy te to w kolejności: liczby, symbole, słowa kluczowe i ciągi znaków tekstowych, stanowiące wspólnie klasę wartości atomowych oraz listy pojedynczo-wiązane, wektory i mapy asocjacyjne. Każdy nieatomowy typ danych składa się z określonej liczby podwartości, które mogą być atomowe, lub nieatomowe. Semantyka każdego wymienionego typu danych jest zgodna z opisem zawartym w [[cite:Sperber2010]].
+
+Jako, że język =FOOF= jest dialektem języka Lisp, programy kodowane są homoikonicznie przez opisane powyżej typy danych - stosowana jest notacja *S-wyrażeń*, która została wprowadzona w [[cite:McCarthy1960]]. Notacja ta rozmywa granicę pomiędzy programami a danymi, pozwalając programom na manipulację, budowę i transformację innych programów.
+
+Homoikoniczność i notację S-wyrażeń wykorzystano w wielu innych mechanizmach dostępnych w języku, które zostały opisane w dalszej części niniejszego rozdziału, w szczególności w implementacji systemu makr pozwalających na rozszerzenie składni języka.
 
 ** Funkcje
 - a note about lambda calculus [cite:Church1932] [cite:Church1933]
