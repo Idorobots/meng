@@ -225,7 +225,7 @@ AND TRUE FALSE
 #+latex: \end{listing}
 
 - mention funarg problem [cite:Abelson1996]
-- mention recursion problem [cite:Felleisen1991] [cite:Goldberg2005]
+- mention recursion problem [cite:Felleisen1991] [cite:Goldberg2005] [cite:Rzepecki2015]
 
 ** Kontynuacje
 - describe the notion of a continuation [cite:Reynolds1993]
