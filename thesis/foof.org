@@ -287,25 +287,13 @@ W przeciwieństwie do większości języków programowania, mechanizm dostępny 
 Przykładowy program deklaruje procedurę obsługi sytuacji wyjątkowej, a następnie przechodzi do kosztownych obliczeń, które przedwcześnie sygnalizują wystąpienie błędu. Przepływ sterowania zostaje przekazany do zadeklarowanej procedury obsługi sytuacji wyjątkowej, która decyduje się zrestartować obliczenia dostarczając im nową, poprawną wartość. Następnie, program wraca do punktu wystąpienia błędu i kontynuuje obliczenia wykorzystują nową, poprawną wartość.
 
 ** Przetwarzanie współbieżne i rozproszone
-- briefly describe AMP vs SMP and contrast it with platform heterogeneity
+Jednym z głównych założeń języka jest wsparcie dla przetwarzania współbieżnego i rozproszonego, dlatego istotnym jest, by abstrakcja to umożliwiająca była prosta, ekspresywna i wygodna w użyciu, ponieważ będzie stanowiła kluczowy element każdego programu, który powstanie w języku =FOOF=.
 
-#+begin_center
-#+label: fig:homo-vs-hetero
-#+caption: Podstawowe różnice pomiędzy platformami homogenicznymi oraz heterogenicznymi.
-#+attr_latex: :width 0.8\textwidth :placement [H]
-[[file:./img/homovshetero.pdf]]
-#+end_center
+Abstrakcją, która spełnia wszystkie te wymogi jest *Model Aktorowy* zaproponowany przez Carl'a Hewitt'a w 1973 roku [[cite:Hewitt1973]] i rozszerzony o formalny opis semantyki przez Williama Clingera w roku 1981 [[cite:Clinger1981]].
 
-#+begin_center
-#+label: fig:amp-vs-smp
-#+caption: Podstawowe różnice pomiędzy systemami asymetrycznymi i symetrycznymi.
-#+attr_latex: :width 0.8\textwidth :placement [H]
-[[file:./img/ampvssmp.pdf]]
-#+end_center
+Model Aktorowy bazuje na kilku prostych koncepcjach, takich jak podział programu na wiele działających wspłóbieżnie procesów (aktorów), porozumiewających się poprzez przesyłanie wiadomości, na których podstawie mogą podejmować lokalne decyzje, tworzyć kolejne procesy, lub wysyłać kolejne wiadomości.
 
-- note that system doesn't need to run on a heterogenous platform to be heterogenous itself
-- describe Actor Model [cite:Hewitt1973] [cite:Clinger1981]
-- describe actor model primitives [cite:Hewitt1973]
+Listing [[ref:code:ex-actor-model-usage]] prezentuje wszystkie operacje prymitywne udostępniane przez Model Aktorowy.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Przykład wykorzystania prymitywnych operacji Modelu Aktorowego w języku.}}
@@ -320,13 +308,32 @@ Przykładowy program deklaruje procedurę obsługi sytuacji wyjątkowej, a nast�
 #+end_src
 #+latex: \end{listing}
 
-- compare with Erlang [cite:Armstrong1996]
-- hint at processes implemented via continuations (trampolines)
-- comment on extending this framework to add distribution
+Program ten tworzy nowy proces korzystając z funkcji =spawn=, któremu natychmiastowo wysyła wiadomość za pośrednictwem funkcji =send=, w której zawiera swój identyfikator =self=, po czym przechodzi do oczekiwania na odpowiedź wywołując funkcję =recv=. Tymczasem, nowopowstały proces zostaje uśpiony na 1000 milisekund (=sleep=) po czym odbiera przesłaną do niego wiadomość i odpowiada na nią wysyłając symbol =message=.
+
+Interfejs ten jest bardzo zbliżony do interfejsu Modelu Aktorowego dostępnego w języku Erlang [[cite:Armstrong1996]] i zaiste był na nim wzorowany. W odróżnieniu od języka Erlang, odbieranie wiadomości nie wykorzystuje dopasowywania wzorców bezpośrednio w prymitywnej operacji =recv=, lecz umożliwia jego osobną implementację. Podobnie, jak w przypadku języka Erlang, projekt przewiduje rozszerzenie listy prymitywnych operacji o identyfikację węzłów, na których działają procesy.
+
+Realizacja Modelu Aktorowego w języku =FOOF= podobnie jak mechanizm obsługi błędów, została oparta o kontynuacje.
 
 ** Reprezentacja wiedzy w języku
+- briefly describe AMP vs SMP and contrast it with platform heterogeneity
+
+#+begin_center
+#+label: fig:homo-vs-hetero
+#+caption: Podstawowe różnice pomiędzy platformami homogenicznymi oraz heterogenicznymi.
+#+attr_latex: :width 0.8\textwidth :placement [H]
+[[file:./img/homovshetero.pdf]]
+#+end_center
+
+- note that system doesn't need to run on a heterogenous platform to be heterogenous itself
+
+#+begin_center
+#+label: fig:amp-vs-smp
+#+caption: Podstawowe różnice pomiędzy systemami asymetrycznymi i symetrycznymi.
+#+attr_latex: :width 0.8\textwidth :placement [H]
+[[file:./img/ampvssmp.pdf]]
+#+end_center
+
 - describe use cases in the language
-- describe various ways of knowledge representation [cite:Hachem2011] [cite:Samimi2014] [cite:Wang2013]
 - describe primitive operations
 
 #+latex: \begin{listing}[H]
@@ -343,6 +350,7 @@ Przykładowy program deklaruje procedurę obsługi sytuacji wyjątkowej, a nast�
 #+latex: \end{listing}
 
 - hint at using an RBS
+- describe various ways of knowledge representation [cite:Hachem2011] [cite:Samimi2014] [cite:Wang2013]
 
 ** Makra
 - describe macros & macroexpansion
