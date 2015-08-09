@@ -19,6 +19,9 @@
 
 # Helpers & Stuff
 #+begin_src emacs-lisp :exports none
+  (setq org-latex-minted-options
+        '(("frame" "leftline") ("linenos" "true") ("mathescape" "true")))
+
   (setq org-export-latex-title-command "")
   (add-to-list 'org-latex-classes
                '("aghdpl"
@@ -30,6 +33,7 @@
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")
                  ))
+
   (setq org-latex-classes (cdr org-latex-classes))
 #+end_src
 
@@ -160,6 +164,22 @@ Jako alternatywę dla osiągnięcia niezależności od platformy, niniejsza prac
 - link to the sample programs
 
 ** Podstawowe typy danych
+Listing [[code:data-types]] prezentuje proste typy danych dostępne w języku =FOOF=, są to podstawowe elementy budulcowe programów, które mają swoją reprezentację literałową.
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Podstawowe typy danych dostępne w języku \texttt{FOOF}.}}
+#+latex: \label{code:basic-data-types}
+#+begin_src clojure
+23.5
+symbol
+:symbol
+"ciąg znaków"
+(1 2 3)
+[1 2 3]
+{:a 1 :b 2}
+#+end_src
+#+latex: \end{listing}
+
 - describe lists - pairs of atoms|lists [cite:McCarthy1960]
 - describe numbers
 - describe symbols
@@ -169,17 +189,62 @@ Jako alternatywę dla osiągnięcia niezależności od platformy, niniejsza prac
 
 ** Funkcje
 - a note about lambda calculus [cite:Church1932] [cite:Church1933]
-- add a code fragment implementing booleans in lambda calculus ?
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Przykład implementacji wartości i operatorów logicznych jedynie za pomocą wyrażeń lambda.}}
+#+latex: \label{code:ex-lambda-calculus}
+#+BEGIN_SRC text
+TRUE := λx.λy.x
+FALSE := λx.λy.y
+
+AND := λp.λq.p q p
+OR := λp.λq.p p q
+NOT := λp.λa.λb.p b a
+
+AND TRUE FALSE
+    ≡ (λp.λq.p q p) TRUE FALSE →β TRUE FALSE TRUE
+    ≡ (λx.λy.x) FALSE TRUE →β FALSE
+#+END_SRC
+#+latex: \end{listing}
+
 - describe closures
-- add a code fragment showing of closures at work
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Przykład ilustrujący działanie domknięć leksykalnych.}}
+#+latex: \label{code:closures-at-work}
+#+begin_src scheme
+(let* ((x 23)
+       (foo (lambda () x)))
+  (let ((x 5))
+    (display (foo)))) ;; Wyświetla liczbę 23
+#+end_src
+#+latex: \end{listing}
+
 - mention funarg problem [cite:Abelson1996]
 - mention recursion problem [cite:Felleisen1991] [cite:Goldberg2005]
 
 ** Kontynuacje
 - describe the notion of a continuation [cite:Reynolds1993]
-- add a code example showing off parts of a continuation
 - briefly describe CPS transformation and comment on code equivalence [cite:Appel1992]
-- add a code example of the CPS transform
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Przykład konwersji \textit{Continuation Passing Style}.}}
+#+latex: \label{code:ex-cps-principle}
+#+LaTeX: \begin{multicols}{2}
+#+begin_src scheme
+;; Styl aplikatywny:
+(+ 2 (* 3 4))
+#+end_src
+#+LaTeX: \columnbreak
+#+begin_src scheme
+;; Styl Continuation Passing:
+(*& 3 4
+    (lambda (v)
+      (+& 2 v identity)))
+#+end_src
+#+LaTeX: \end{multicols}
+#+latex: \end{listing}
+
 - list some popular primitives - letcc, call/cc [cite:Sperber2010] [cite:Harper1998]
 - hint at delimited control - shift & reset [cite:Dybvig2005]
 - describe exceptions via continuations - handle & raise
@@ -203,35 +268,131 @@ Jako alternatywę dla osiągnięcia niezależności od platformy, niniejsza prac
 
 - note that system doesn't need to run on a heterogenous platform to be heterogenous itself
 - describe Actor Model [cite:Hewitt1973] [cite:Clinger1981]
-- describe actor model & distribution primitives [cite:Hewitt1973]
+- describe actor model primitives [cite:Hewitt1973]
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Przykład wykorzystania prymitywnych operacji Modelu Aktorowego w języku.}}
+#+latex: \label{code:ex-actor-model-usage}
+#+begin_src scheme
+(send (spawn (lambda ()
+               (sleep 1000)
+               (send (recv) 'message)))
+      (self))
+
+(equal? (recv) 'message)
+#+end_src
+#+latex: \end{listing}
+
 - compare with Erlang [cite:Armstrong1996]
 - hint at processes implemented via continuations (trampolines)
+- comment on extending this framework to add distribution
 
 ** Reprezentacja wiedzy w języku
 - describe use cases in the language
 - describe various ways of knowledge representation [cite:Hachem2011] [cite:Samimi2014] [cite:Wang2013]
 - describe primitive operations
-- add some code examples of listed primitives
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Przykład wykorzystania prymitywnych operacji bazy wiedzy w języku.}}
+#+latex: \label{code:ex-rbs-usage}
+#+begin_src scheme
+(signal! an-event)
+
+(whenever set-of-conditions
+  (lambda (_)
+    (retract! some-fact)
+    (assert! another-fact)))
+#+end_src
+#+latex: \end{listing}
+
 - hint at using an RBS
 
 ** Makra
 - describe macros & macroexpansion
-- add some code examples of available macros (either of: quasiquote, define, and, let, letcc in terms of call/cc)
-- compare different styles of macro systems (syntax-rules & define-macro) [cite:Sperber2010]
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Przykład działania systemu makr w języku \texttt{FOOF}.}}
+#+latex: \label{code:ex-macroexpansion}
+#+LaTeX: \begin{multicols}{2}
+#+begin_src scheme
+;; Przed makro-ekspansją:
+(and 23 42)
+
+
+
+(let ((x 23))
+  (display x))
+
+
+`(4 is ,(* 2 2))
+#+end_src
+#+LaTeX: \columnbreak
+#+begin_src scheme
+;; Po makro-ekspansji:
+(if 23
+    42
+    false)
+
+((lambda (x)
+   (display x))
+ 23)
+
+(list '4 'is (* 2 2))
+#+end_src
+#+LaTeX: \end{multicols}
+#+latex: \end{listing}
+
 - note about the usage of quasiquote [cite:Bawden1999]
 - hint at problems of hygiene & add code example [cite:Queinnec1996]
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Przykład ilustrujący problem higieniczności systemu makr w języku Scheme.}}
+#+latex: \label{code:macro-hygiene}
+#+begin_src scheme
+(define-macro (unless c . b)
+  `(if (not ,c)
+       (begin ,@b)
+       #void))
+
+(let ((not identity))
+  (unless #t
+    (display "Hello world!")))
+#+end_src
+#+latex: \end{listing}
+
+- compare different styles of macro systems (syntax-rules & define-macro) [cite:Sperber2010]
 - note that macros are not first-class [cite:Bawden2000]
 - contrast macros with other techniques (fexprs) [cite:Shutt2010]
 
 ** System modułowy
 - describe the need for a module system [cite:Gasbichler2006]
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Przykład wykorzystania systemu modułowego języka \texttt{FOOF}.}}
+#+latex: \label{code:ex-module-system-usage}
+#+begin_src scheme
+(module (A)
+  (define (foo x)
+    (+ 23 x)))
+
+(module (B a)
+  (define (bar)
+    (a.foo 5)))
+
+(let ((b (B (A))))
+  (display (b.bar))) ;; Wyświetla liczbę 28.
+#+end_src
+#+latex: \end{listing}
+
 - describe structures - namespaces for definitions
+- note about special structure access syntax - foo.bar
 - describe modules - parameterized structures [cite:Rossberg2015]
-- note about special module access syntax - foo.bar
 - describe units - runnable modules
 - describe protocols - a set of capabilities of a module (?)
 - hint at protocols & SOA connection ?
 - note about all these primitives being macros
+- contrast described system with SML [cite:Milner1997]
+
 - hint at problems of macros & modules coexisting [cite:Gasbichler2006]
 
 * Kompilator języka =FOOF=
@@ -474,7 +635,6 @@ Program definuje funkcję =hello= obrazującą podstawowe operacje języka i nas
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Popularny program \textit{Hello world!}.}}
 #+latex: \label{code:ex-hello-world}
-#+bind: org-export-latex-minted-options (("frame" "leftline") ("linenos" "true") ("mathescape" "true"))
 #+begin_src scheme
 (define (hello world)
   (if (= nil world)
@@ -486,7 +646,6 @@ Program definuje funkcję =hello= obrazującą podstawowe operacje języka i nas
 
 (hello "world")
 #+end_src
-#+bind: org-export-latex-minted-options ()
 #+latex: \end{listing}
 
 
@@ -497,7 +656,6 @@ Program prezentuje definicję funkcji Fibonacciego z wykorzystaniem konstrukcji 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Definicja funkcji Fibonacciego.}}
 #+latex: \label{code:ex-fibonacci}
-#+bind: org-export-latex-minted-options (("frame" "leftline") ("linenos" "true") ("mathescape" "true"))
 #+begin_src scheme
 (letrec ((fib (lambda (n)
                 (if (< n 2)
@@ -506,7 +664,6 @@ Program prezentuje definicję funkcji Fibonacciego z wykorzystaniem konstrukcji 
                        (fib (- n 2)))))))
   (fib 23))
 #+end_src
-#+bind: org-export-latex-minted-options ()
 #+latex: \end{listing}
 
 ** Współbieżne obliczenia funkcji Fibonacciego
@@ -515,7 +672,6 @@ Program definiuje funkcję Fibonacciego oraz dodatkową funkcję wyświetlając�
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Równoległe obliczanie funkcji Fibonacciego.}}
 #+latex: \label{code:ex-parallel-fibonacci}
-#+bind: org-export-latex-minted-options (("frame" "leftline") ("linenos" "true") ("mathescape" "true"))
 #+begin_src scheme
 (letrec ((fib (lambda (n)
                 (if (< n 2)
@@ -534,7 +690,6 @@ Program definiuje funkcję Fibonacciego oraz dodatkową funkcję wyświetlając�
            (fib 30)))
   (monitor))
 #+end_src
-#+bind: org-export-latex-minted-options ()
 #+latex: \end{listing}
 
 ** Obsługa błędów
@@ -543,13 +698,11 @@ Program prezentuje wykorzystanie wbudowanego w język systemu obsługi błędów
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Zastosowanie wbudowanego mechanizmu obsługi błędów.}}
 #+latex: \label{code:ex-error-handling}
-#+bind: org-export-latex-minted-options (("frame" "leftline") ("linenos" "true") ("mathescape" "true"))
 #+begin_src scheme
 (* 2 (handle (raise (raise 3))
              (lambda (e restart)
                (restart (* 2 e)))))
 #+end_src
-#+bind: org-export-latex-minted-options ()
 #+latex: \end{listing}
 
 ** Model Aktorowy
@@ -558,7 +711,6 @@ Program korzysta z dwóch komunikujących się procesów do zobrazowania sposobu
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Wykorzystanie prymitywnych operacji Modelu Aktorowego.}}
 #+latex: \label{code:ex-actor-model}
-#+bind: org-export-latex-minted-options (("frame" "leftline") ("linenos" "true") ("mathescape" "true"))
 #+begin_src scheme
 (let ((pid (spawn (lambda ()
                     (let ((msg (recv)))
@@ -569,7 +721,6 @@ Program korzysta z dwóch komunikujących się procesów do zobrazowania sposobu
   (display (recv))
   (newline))
 #+end_src
-#+bind: org-export-latex-minted-options ()
 #+latex: \end{listing}
 
 
@@ -580,7 +731,6 @@ Program definiuje dwa moduły - =logger= oraz =test=. Moduł =test= wymaga do dz
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Wykorzystanie wbudowanego systemu modułowego.}}
 #+latex: \label{code:ex-module-system}
-#+bind: org-export-latex-minted-options (("frame" "leftline") ("linenos" "true") ("mathescape" "true"))
 #+begin_src scheme
 (module (logger)
   (define (log level string)
@@ -610,7 +760,6 @@ Program definiuje dwa moduły - =logger= oraz =test=. Moduł =test= wymaga do dz
 (let ((t (test (logger))))
   (t.do-something))
 #+end_src
-#+bind: org-export-latex-minted-options ()
 #+latex: \end{listing}
 
 ** Wnioskowanie w przód
@@ -619,7 +768,6 @@ Program prezentuje wykorzystanie wbudowanego w język systemu regułowego. Defin
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Wykorzystanie wbudowanego systemu regułowego.}}
 #+latex: \label{code:ex-forward-chaining}
-#+bind: org-export-latex-minted-options (("frame" "leftline") ("linenos" "true") ("mathescape" "true"))
 #+begin_src scheme
 (letrec ((monitor (lambda ()
                     (task-info)
@@ -641,7 +789,6 @@ Program prezentuje wykorzystanie wbudowanego w język systemu regułowego. Defin
                    '(curr-time ?t))
   (monitor))
 #+end_src
-#+bind: org-export-latex-minted-options ()
 #+latex: \end{listing}
 
 
@@ -652,7 +799,6 @@ Program działa podobnie do przykładu z listingu [[code:ex-forward-chaining]]. 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Zastosowanie wbudowanego systemu regułowego do obsługi złożonych zdarzeń.}}
 #+latex: \label{code:ex-complex-events}
-#+bind: org-export-latex-minted-options (("frame" "leftline") ("linenos" "true") ("mathescape" "true"))
 #+begin_src scheme
 (letrec ((monitor (lambda ()
                     (task-info)
@@ -680,7 +826,6 @@ Program działa podobnie do przykładu z listingu [[code:ex-forward-chaining]]. 
            (notify 'bar 5000)))
   (monitor))
 #+end_src
-#+bind: org-export-latex-minted-options ()
 #+latex: \end{listing}
 
 
@@ -691,7 +836,6 @@ Program prezentuje wykorzystanie wnioskowania wstecz wbudowanego w język system
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Wykorzystanie wnioskowania wstecz.}}
 #+latex: \label{code:ex-backward-chaining}
-#+bind: org-export-latex-minted-options (("frame" "leftline") ("linenos" "true") ("mathescape" "true"))
 #+begin_src scheme
 (assert! '(foo 1))
 (assert! '(foo 2))
@@ -704,7 +848,6 @@ Program prezentuje wykorzystanie wnioskowania wstecz wbudowanego w język system
 (select '(and (foo ?value)
               (bar ?value)))
 #+end_src
-#+bind: org-export-latex-minted-options ()
 #+latex: \end{listing}
 
 * Spis wbudowanych funkcji języka =FOOF=
