@@ -184,18 +184,18 @@ symbol
 #+end_src
 #+latex: \end{listing}
 
-Typy te to w kolejności: liczby, symbole, słowa kluczowe i ciągi znaków tekstowych, stanowiące wspólnie klasę wartości atomowych oraz listy pojedynczo-wiązane, wektory i mapy asocjacyjne. Każdy nieatomowy typ danych składa się z określonej liczby podwartości, które mogą być atomowe, lub nieatomowe. Semantyka każdego wymienionego typu danych jest zgodna z opisem zawartym w [[cite:Sperber2010]].
+Typy te to w kolejności: liczby, symbole, słowa kluczowe i ciągi znaków tekstowych, stanowiące wspólnie klasę wartości atomowych oraz listy pojedynczo-wiązane, wektory i mapy asocjacyjne. Każdy nieatomowy typ danych składa się z określonej liczby podwartości, które mogą być atomowe, lub nieatomowe. Semantyka każdego wymienionego typu danych jest zgodna z analogicznymi konstrukcjami opisanymi w [[cite:Sperber2010]].
 
 Jako, że język =FOOF= jest dialektem języka Lisp, programy kodowane są homoikonicznie przez opisane powyżej typy danych - stosowana jest notacja *S-wyrażeń*, która została wprowadzona w [[cite:McCarthy1960]]. Notacja ta rozmywa granicę pomiędzy programami a danymi, pozwalając programom na manipulację, budowę i transformację innych programów.
 
-Homoikoniczność i notację S-wyrażeń wykorzystano w wielu innych mechanizmach dostępnych w języku, które zostały opisane w dalszej części niniejszego rozdziału, w szczególności w implementacji systemu makr pozwalających na rozszerzenie składni języka.
+Homoikoniczność i notację S-wyrażeń wykorzystano w wielu innych mechanizmach dostępnych w języku, które zostały opisane w dalszej części niniejszego rozdziału, w szczególności w implementacji systemu makr pozwalającego na rozszerzenie składni języka.
 
 ** Funkcje
 Pierwszym złożonym typem danych, który nie ma reprezentacji literałowej w języku =FOOF= są funkcje. Funkcje są obiektami pierwszej klasy, to znaczy, po stworzeniu podczas działania programu, mogą być wykorzystywane tak jak każdy inny typ danych, a co za tym idzie, mogą być osadzane w listach, przekazywane do innych funkcji, a także z nich zwracane jako wynik obliczeń.
 
-Funkcje zostały zaprojektowane w oparciu o *rachunek Lambda*, wprowadzony w 1933 roku przez Alonzo Church'a jako alternatywny model logiki i, następnie, prowadzenia obliczeń [[cite:Church1932, Church1933]]. Rachunek ten wprowadza pojęcie *wyrażenia lambda*, które jest ekwiwalentem jednoargumentowych funkcji obecnych języków programowania, oraz szereg zasad substytucji, zwanych redukcjami, pozwalających na uproszczenie zagnieżdżonych wyrażeń lambda. Najważniejszą z wprowadzanych redukcji jest *\beta-redukcja*, która konceptualnie reprezentuje aplikacje funkcji z odpowiednimi argumentami i jednocześnie pozwala na prowadzenie obliczeń.
+Funkcje zostały zaprojektowane w oparciu o *Rachunek Lambda*, wprowadzony w 1933 roku przez Alonzo Church'a jako alternatywny model logiki i, następnie, prowadzenia obliczeń [[cite:Church1932, Church1933]]. Rachunek ten wprowadza pojęcie *wyrażenia lambda*, które jest ekwiwalentem jednoargumentowych funkcji obecnych języków programowania, oraz szereg zasad substytucji, zwanych redukcjami, pozwalających na uproszczenie zagnieżdżonych wyrażeń lambda. Najważniejszą z wprowadzanych redukcji jest *\beta-redukcja*, która konceptualnie reprezentuje aplikację funkcji z odpowiednimi argumentami i jednocześnie pozwala na prowadzenie obliczeń.
 
-Zasady rachunku lambda są fundamentalnie bardzo nieskomplikowane, a mimo to pozwalają na ekspresję skomplikowanych idei, takich jak logika Bool'a, arytmetyka, struktury danych a także rekurencja. Na listingu [[ref:code:ex-lambda-calculus]] zawarto przykład realizacji logiki boola wraz z kilkoma operatorami logicznymi w czystym rachunku lambda.
+Zasady Rachunku Lambda są fundamentalnie bardzo nieskomplikowane, a mimo to pozwalają na ekspresję skomplikowanych idei, takich jak logika Bool'a, arytmetyka, struktury danych oraz rekurencja. Na listingu [[ref:code:ex-lambda-calculus]] zawarto przykład realizacji logiki boola wraz z kilkoma operatorami logicznymi w czystym Rachunku Lambda.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Przykład implementacji wartości i operatorów logicznych jedynie za pomocą wyrażeń lambda.}}
@@ -231,13 +231,13 @@ Listing [[ref:code:closures-at-work]] pokazuje działanie domknięć leksykalnyc
 #+end_src
 #+latex: \end{listing}
 
-Funkcja =foo= zaprezentowana na listingu, korzysta z wartości *wolnej zmiennej* =x=, czyli takiej, której nie wprowadza w liście swoich argumentów. W dalszej części programu, funkcja =foo= pomimo lokalnej zmiany wartości zmiennej =x= poprawnie zwraca oryginalną jej wartość, ponieważ w momencie jej tworzenia wartość zmiennej =x= została zapisana razem z ciałem funkcji.
+Funkcja =foo= zaprezentowana na listingu, korzysta z wartości *wolnej zmiennej* =x=, czyli takiej, której nie wprowadza w liście swoich argumentów. W dalszej części programu, funkcja =foo=, pomimo lokalnej zmiany wartości zmiennej =x=, poprawnie zwraca oryginalną jej wartość, ponieważ w momencie jej tworzenia wartość zmiennej =x= została zapisana razem z ciałem funkcji.
 
-Często pojawiającym się problemem związanym z funkcjami wzorowanymi na rachunku lambda, jest tak zwany problem *funarg*, polegający na niepoprawnym działaniu programów, które zwracają funkcje jako wynik obliczeń, lub przekazują je jako argumenty innych funcji. Problem ten sprowadza się do niewłaściwego budowania domknięć leksykalnych, co może doprowadzić do przedwczesnego usunięcia wartości zmiennych wolnych. Został on poruszony w [[cite:Abelson1996]].
+Często pojawiającym się problemem związanym z funkcjami wzorowanymi na Rachunku Lambda, jest tak zwany problem *funarg*, polegający na niepoprawnym działaniu programów, które zwracają funkcje jako wynik obliczeń, lub przekazują je jako argumenty innych funcji. Problem ten sprowadza się do niewłaściwego budowania domknięć leksykalnych, co może doprowadzić do przedwczesnego usunięcia wartości zmiennych wolnych. Został on poruszony w [[cite:Abelson1996]].
 
 Kolejnym problemem towarzyszącym funkcjom zrealizowanym jako domknięcia leksykalne jest nietrywialna implementacja rekurencji, wynikająca z ustalonej kolejności wykonywania działań - tworzenie domknięcia leksykalnego funkcji rekurencyjnej jest uzależnione od jej uprzedniego istnienia, co prowadzi do sprzeczności.
 
-Oryginalna praca wprowadzająca rachunek lambda w celu osiągnięcia rekurencji wykorzystuje rachunek kombinatorów [[cite:Church1932]], a w szczególności *kombinator Y*. Sposób działania tego kombinatora został szczegółowo opisany w [[cite:Felleisen1991]], natomiast problem i propozycję implementacji rekurencji szerzej opisano w [[cite:Rzepecki2015]].
+Oryginalna praca wprowadzająca Rachunek Lambda w celu osiągnięcia rekurencji wykorzystuje rachunek kombinatorów [[cite:Church1932]], a w szczególności *kombinator Y*. Sposób działania tego kombinatora został szczegółowo opisany w [[cite:Felleisen1991]], natomiast problem i propozycję implementacji rekurencji szerzej opisano w [[cite:Rzepecki2015]].
 
 ** Kontynuacje
 Kolejnym mechanizmem będącym integralną częścią języka =FOOF= są kontynuacje, czyli abstrakcyjne reprezentacje przepływu sterowania programów, które pozwalają jednoznacznie określić kolejność wykonywania obliczeń.
@@ -269,7 +269,7 @@ Jednym z najważniejszych mechanizmów, jakie powinien udostępniać język prog
 
 Język =FOOF= zapewnia mechanizm obsługi błędów, który bazuje na kontynuacjach, w związku z czym charakteryzuje się bardzo dużą ekspresywnością. Mechanizm ten umożliwia, analogicznie do większości popularnych języków programowania, zadeklarowanie procedury obsługi zdarzeń wyjątkowych za pomocą konstukcji =handle= oraz sygnalizację zajścia takiego zdarzenia poprzez =raise=.
 
-W przeciwieństwie do większości języków programowania, mechanizm dostępny w języku =FOOF= pozwala na kontynuację obliczeń w miejscu wystąpienia błędu z nową wartością, obliczoną w zadeklarowanej procedurze obsługi błędu. Przykład ilustrujący taki schemat został zaprezentowany na listingu [[ref:code:ex-restarts]].
+W przeciwieństwie do większości języków programowania, mechanizm dostępny w języku =FOOF= pozwala na kontynuowanie obliczeń w miejscu wystąpienia błędu z nową wartością, obliczoną w zadeklarowanej procedurze obsługi błędu. Przykład ilustrujący taki schemat został zaprezentowany na listingu [[ref:code:ex-restarts]].
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Przykład wykorzystania mechanizmu obsługi błędów.}}
@@ -287,13 +287,9 @@ W przeciwieństwie do większości języków programowania, mechanizm dostępny 
 Przykładowy program deklaruje procedurę obsługi sytuacji wyjątkowej, a następnie przechodzi do kosztownych obliczeń, które przedwcześnie sygnalizują wystąpienie błędu. Przepływ sterowania zostaje przekazany do zadeklarowanej procedury obsługi sytuacji wyjątkowej, która decyduje się zrestartować obliczenia dostarczając im nową, poprawną wartość. Następnie, program wraca do punktu wystąpienia błędu i kontynuuje obliczenia wykorzystują nową, poprawną wartość.
 
 ** Przetwarzanie współbieżne i rozproszone
-Jednym z głównych założeń języka jest wsparcie dla przetwarzania współbieżnego i rozproszonego, dlatego istotnym jest, by abstrakcja to umożliwiająca była prosta, ekspresywna i wygodna w użyciu, ponieważ będzie stanowiła kluczowy element każdego programu, który powstanie w języku =FOOF=.
+Jednym z głównych założeń języka jest wsparcie dla przetwarzania współbieżnego i rozproszonego, dlatego istotnym jest, by abstrakcja to umożliwiająca była prosta, ekspresywna i wygodna w użyciu, ponieważ będzie stanowiła kluczowy element każdego programu, który powstanie w języku =FOOF=. Abstrakcją, która spełnia wszystkie te wymogi jest *Model Aktorowy* zaproponowany przez Carl'a Hewitt'a w 1973 roku [[cite:Hewitt1973]] i rozszerzony o formalny opis semantyki przez Williama Clingera w roku 1981 [[cite:Clinger1981]].
 
-Abstrakcją, która spełnia wszystkie te wymogi jest *Model Aktorowy* zaproponowany przez Carl'a Hewitt'a w 1973 roku [[cite:Hewitt1973]] i rozszerzony o formalny opis semantyki przez Williama Clingera w roku 1981 [[cite:Clinger1981]].
-
-Model Aktorowy bazuje na kilku prostych koncepcjach, takich jak podział programu na wiele działających wspłóbieżnie procesów (aktorów), porozumiewających się poprzez przesyłanie wiadomości, na których podstawie mogą podejmować lokalne decyzje, tworzyć kolejne procesy, lub wysyłać kolejne wiadomości.
-
-Listing [[ref:code:ex-actor-model-usage]] prezentuje wszystkie operacje prymitywne udostępniane przez Model Aktorowy.
+Model Aktorowy bazuje na kilku prostych koncepcjach, takich jak podział programu na wiele działających wspłóbieżnie procesów (aktorów), porozumiewających się poprzez przesyłanie wiadomości, na których podstawie mogą podejmować lokalne decyzje, tworzyć kolejne procesy, lub wysyłać kolejne wiadomości. Listing [[ref:code:ex-actor-model-usage]] prezentuje wszystkie operacje prymitywne udostępniane przez Model Aktorowy.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Przykład wykorzystania prymitywnych operacji Modelu Aktorowego w języku.}}
@@ -308,52 +304,14 @@ Listing [[ref:code:ex-actor-model-usage]] prezentuje wszystkie operacje prymityw
 #+end_src
 #+latex: \end{listing}
 
-Program ten tworzy nowy proces korzystając z funkcji =spawn=, któremu natychmiastowo wysyła wiadomość za pośrednictwem funkcji =send=, w której zawiera swój identyfikator =self=, po czym przechodzi do oczekiwania na odpowiedź wywołując funkcję =recv=. Tymczasem, nowopowstały proces zostaje uśpiony na 1000 milisekund (=sleep=) po czym odbiera przesłaną do niego wiadomość i odpowiada na nią wysyłając symbol =message=.
+Program ten tworzy nowy proces korzystając z funkcji =spawn=, któremu natychmiastowo wysyła wiadomość za pośrednictwem funkcji =send=, zawierając w niej swój identyfikator =self=, po czym przechodzi do oczekiwania na odpowiedź wywołując funkcję =recv=. Tymczasem, nowopowstały proces zostaje uśpiony na 1000 milisekund (=sleep=) po czym odbiera przesłaną do niego wiadomość i odpowiada na nią wysyłając symbol =message=.
 
-Interfejs ten jest bardzo zbliżony do interfejsu Modelu Aktorowego dostępnego w języku Erlang [[cite:Armstrong1996]] i zaiste był na nim wzorowany. W odróżnieniu od języka Erlang, odbieranie wiadomości nie wykorzystuje dopasowywania wzorców bezpośrednio w prymitywnej operacji =recv=, lecz umożliwia jego osobną implementację. Podobnie, jak w przypadku języka Erlang, projekt przewiduje rozszerzenie listy prymitywnych operacji o identyfikację węzłów, na których działają procesy.
+Interfejs ten jest bardzo zbliżony do interfejsu Modelu Aktorowego dostępnego w języku Erlang [[cite:Armstrong1996]] i zaiste był na nim wzorowany. W odróżnieniu od języka Erlang, odbieranie wiadomości nie wykorzystuje dopasowywania wzorców bezpośrednio w prymitywnej operacji =recv=, lecz umożliwia jego osobną implementację. Podobnie, jak w przypadku języka Erlang, projekt przewiduje rozszerzenie listy prymitywnych operacji o identyfikację maszyn, na których działają procesy.
 
-Realizacja Modelu Aktorowego w języku =FOOF= podobnie jak mechanizm obsługi błędów, została oparta o kontynuacje.
-
-** Reprezentacja wiedzy w języku
-- briefly describe AMP vs SMP and contrast it with platform heterogeneity
-
-#+begin_center
-#+label: fig:homo-vs-hetero
-#+caption: Podstawowe różnice pomiędzy platformami homogenicznymi oraz heterogenicznymi.
-#+attr_latex: :width 0.8\textwidth :placement [H]
-[[file:./img/homovshetero.pdf]]
-#+end_center
-
-- note that system doesn't need to run on a heterogenous platform to be heterogenous itself
-
-#+begin_center
-#+label: fig:amp-vs-smp
-#+caption: Podstawowe różnice pomiędzy systemami asymetrycznymi i symetrycznymi.
-#+attr_latex: :width 0.8\textwidth :placement [H]
-[[file:./img/ampvssmp.pdf]]
-#+end_center
-
-- describe use cases in the language
-- describe primitive operations
-
-#+latex: \begin{listing}[H]
-#+latex: \caption{\mylisting{Przykład wykorzystania prymitywnych operacji bazy wiedzy w języku.}}
-#+latex: \label{code:ex-rbs-usage}
-#+begin_src scheme
-(signal! an-event)
-
-(whenever set-of-conditions
-  (lambda (_)
-    (retract! some-fact)
-    (assert! another-fact)))
-#+end_src
-#+latex: \end{listing}
-
-- hint at using an RBS
-- describe various ways of knowledge representation [cite:Hachem2011] [cite:Samimi2014] [cite:Wang2013]
+Implementacja Modelu Aktorowego w języku =FOOF= podobnie jak mechanizm obsługi błędów, została oparta o kontynuacje i zostanie opisana szczegółowo w następnych rozdziałach.
 
 ** Makra
-Prawdobodobnie najciekawszą funkcjonalnością języków z rodziny Lisp jest ich podejście do metaprogramowania. Większość języków z tej rodziny wykorzystuje wersję systemu *makr*, który pozwala rozszerzać składnię języka i tworzyć dialekty domenowe (ang. /domain specific language/) w prosty i przystępny sposób. Język =FOOF= nie jest wyjątkiem i również został wyposażony w system makr.
+Prawdobodobnie najciekawszą funkcjonalnością języków z rodziny Lisp jest ich podejście do metaprogramowania i generowania kodu. Większość języków z tej rodziny wykorzystuje wersję systemu *makr*, który pozwala rozszerzać składnię języka i tworzyć dialekty domenowe (ang. /domain specific language/) w prosty i przystępny sposób. Język =FOOF= nie jest wyjątkiem i również został wyposażony w system makr.
 
 Listing [[ref:code:ex-macroexpansion]] prezentuje efekt działania *makroekspansji*, czyli substytucji wywołań makr na definicje ich ciał, na przykładzie kilku wbudowanych makr rozszerzających składnię języka =FOOF=.
 
@@ -412,7 +370,7 @@ Zdefiniowane zostaje makro =unless=, którego zadaniem jest uruchamianie pewnych
 
 Problem higieniczności jest problemem skomplikowanym i zazwyczaj jego rozwiązanie oznacza poświęcenie części funkcjonalności systemu makr, na przykład poprzez ograniczenie go do translacji szablonów [[cite:Sperber2010]], lub znacznego jego skomplikowania, przez konieczność wprowadzenia hierarchicznej refleksji makroekspansji [[cite:Queinnec1996]]. Niestety, system makr języka =FOOF= pozostawia ten problem otwartym.
 
-Alternatywnym podejściem do problemu metaprogramowania, o którym warto wspomnieć są *f-wyrażenia* (ang. /f-expressions/, /fexprs/), polegające na podziale funkcji na dwa fundamentalne kompotenty - aplikatywny, indukujący ewaluację argumentów oraz operatywny, analogiczny do substytucji nazw argumentów na ich wartości w wyrażeniach lambda rachunku lambda [[cite:Shutt2010]]. Podejście to drastycznie komplikuje kompilację kodu źródłowego, w związku z czym nie zostało wykorzystane w języku =FOOF=.
+Alternatywnym podejściem do problemu metaprogramowania, o którym warto wspomnieć są *f-wyrażenia* (ang. /f-expressions/, /fexprs/), polegające na podziale funkcji na dwa fundamentalne kompotenty - aplikatywny, indukujący ewaluację argumentów oraz operatywny, analogiczny do substytucji nazw argumentów na ich wartości w wyrażeniach lambda Rachunku Lambda [[cite:Shutt2010]]. Podejście to drastycznie komplikuje kompilację kodu źródłowego, w związku z czym nie zostało wykorzystane w języku =FOOF=.
 
 ** System modułowy
 - describe the need for a module system [cite:Gasbichler2006]
@@ -438,12 +396,51 @@ Alternatywnym podejściem do problemu metaprogramowania, o którym warto wspomni
 - note about special structure access syntax - foo.bar
 - describe modules - parameterized structures [cite:Rossberg2015]
 - describe units - runnable modules
-- describe protocols - a set of capabilities of a module (?)
-- hint at protocols & SOA connection ?
 - note about all these primitives being macros
-- contrast described system with SML [cite:Milner1997]
+- contrast described system with SML & other systems [cite:Milner1997] [cite:Gasbichler2006]
 
 - hint at problems of macros & modules coexisting [cite:Gasbichler2006]
+
+** Reprezentacja wiedzy w języku
+- briefly describe AMP vs SMP and contrast it with platform heterogeneity
+
+#+begin_center
+#+label: fig:homo-vs-hetero
+#+caption: Podstawowe różnice pomiędzy platformami homogenicznymi oraz heterogenicznymi.
+#+attr_latex: :width 0.8\textwidth :placement [H]
+[[file:./img/homovshetero.pdf]]
+#+end_center
+
+- note that system doesn't need to run on a heterogenous platform to be heterogenous itself
+
+#+begin_center
+#+label: fig:amp-vs-smp
+#+caption: Podstawowe różnice pomiędzy systemami asymetrycznymi i symetrycznymi.
+#+attr_latex: :width 0.8\textwidth :placement [H]
+[[file:./img/ampvssmp.pdf]]
+#+end_center
+
+- describe use cases in the language
+- describe primitive operations
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Przykład wykorzystania prymitywnych operacji bazy wiedzy w języku.}}
+#+latex: \label{code:ex-rbs-usage}
+#+begin_src scheme
+(signal! an-event)
+
+(whenever set-of-conditions
+  (lambda (_)
+    (retract! some-fact)
+    (assert! another-fact)))
+#+end_src
+#+latex: \end{listing}
+
+- describe protocols - a set of facts about a module (?)
+- hint at protocols & SOA connection ?
+
+- hint at using an RBS
+- describe various ways of knowledge representation [cite:Hachem2011] [cite:Samimi2014] [cite:Wang2013]
 
 * Kompilator języka =FOOF=
 - mention technology selection & limitations (large project, little time) [cite:Ghuloum2006]
