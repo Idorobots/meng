@@ -373,33 +373,35 @@ Problem higieniczności jest problemem skomplikowanym i zazwyczaj jego rozwiąza
 Alternatywnym podejściem do problemu metaprogramowania, o którym warto wspomnieć są *f-wyrażenia* (ang. /f-expressions/, /fexprs/), polegające na podziale funkcji na dwa fundamentalne kompotenty - aplikatywny, indukujący ewaluację argumentów oraz operatywny, analogiczny do substytucji nazw argumentów na ich wartości w wyrażeniach lambda Rachunku Lambda [[cite:Shutt2010]]. Podejście to drastycznie komplikuje kompilację kodu źródłowego, w związku z czym nie zostało wykorzystane w języku =FOOF=.
 
 ** System modułowy
-- describe the need for a module system [cite:Gasbichler2006]
+W celu umożliwienia podziału kodu źródłowego programów na logicznie związane części i ułatwienia zarządzania nimi, nowoczesne języki programowania często udostępniają systemy modułowe, wraz z niezbędnymi do ich działania rozszerzeniami składniowymi.
+
+Systemy takie, w zależności od języka programowania, na potrzeby którego zostały zaprojektowane, różnią się sposobem działania oraz ekspresywnością. Mniej skomplikowane systemy modułowe polegają na zwyczajnych podstawieniach tekstowych z opcjonalnym wsparciem dla /przestrzeni nazw/ w celu uniknięcia konfliktów identyfikatorów, natomiast bardziej skomplikowane umożliwiają kontrolę dostępu oraz definiowanie zależności pomiędzy poszczególnymi modułami.
+
+System modułowy wykorzystywany w języku =FOOF= jest zbliżony w swojej funkcjonalności do analogicznego systemu języka Standard ML [[cite:Harper1998]], a właściwe jego modyfikacji opisanej w [[cite:Rossberg2015]], gdzie mamy do czynienia ze *strukturami* wiążącymi ze sobą definicje funkcji i zmiennych, oraz *funktorami*, które pozwalają parametryzować struktury. Listing [[ref:code:ex-module-system-usage]] prezentuje przykład wykorzystania systemu modułowego języka =FOOF=.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Przykład wykorzystania systemu modułowego języka \texttt{FOOF}.}}
 #+latex: \label{code:ex-module-system-usage}
 #+begin_src scheme
-(module (A)
-  (define (foo x)
-    (+ 23 x)))
+(structure A
+ (define (foo x)
+   (+ 23 x)))
 
 (module (B a)
   (define (bar)
     (a.foo 5)))
 
-(let ((b (B (A))))
+(let ((b (B A)))
   (display (b.bar))) ;; Wyświetla liczbę 28
 #+end_src
 #+latex: \end{listing}
 
-- describe structures - namespaces for definitions
-- note about special structure access syntax - foo.bar
-- describe modules - parameterized structures [cite:Rossberg2015]
-- describe units - runnable modules
-- note about all these primitives being macros
-- contrast described system with SML & other systems [cite:Milner1997] [cite:Gasbichler2006]
+W przykładzie definiowana jest struktura =A= dostarczającą funkcję =foo= oraz moduł (odpowiednik funktora) =B= parametryzowany przez submoduł =a=. Następnie, tworzona jest instancja modułu =B=, wykorzystując zdefiniowaną uprzednio strukturę =A=, i używana w dalszej części programu. Korzystanie z sytemu modułowego jest ułatwione, dzięki specjalnej składni dostępu do zawartości modułu =module.member=.
 
-- hint at problems of macros & modules coexisting [cite:Gasbichler2006]
+System ten pozwala w łatwy sposób zarządzać zależnościami modułów - wystarczy zmienić parametr przekazany przy tworzeniu instancji modułu =B= na inną strukturę, bez modyfikacji jego definicji, by osiągnać zamierzone cele. Funkcjonalność ta jest bardzo przydatna przy tworzeniu bibliotek programistycznych, które mogą być parametryzowane modułami służącymi do powszechnych zadań, takimi jak moduł do logowania, lub moduł zawierający parametry konfiguracji aplikacji. W efekcie, biblioteki te nie narzucają z góry implementacji modułów parametryzujących, dzięki czemu mogą być łatwiej zintegrowane z różnymi programami.
+
+Zasadniczą wadą systemu modułowego w zaprezentowanej powyżej formie, jest konieczność istnienia osobnej fazy *linkowania*, czyli tworzenia instancji modułów. Problem ten został szczegółowo przeanalizowany w [[cite:Gasbichler2006]], skutkując stworzeniem notacji /interfejsów modułów/ ułatwiającej automatyczną rezolucję zależności. Rozwiązanie to jest dalekie od doskonałego, toteż język =FOOF= stosuje inne podejście opisane w następnej sekcji.
+
 
 ** Reprezentacja wiedzy w języku
 - briefly describe AMP vs SMP and contrast it with platform heterogeneity
