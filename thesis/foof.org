@@ -402,47 +402,34 @@ System ten pozwala w łatwy sposób zarządzać zależnościami modułów - wyst
 
 Zasadniczą wadą systemu modułowego w zaprezentowanej powyżej formie, jest konieczność istnienia osobnej fazy *linkowania*, czyli tworzenia instancji modułów. Problem ten został szczegółowo przeanalizowany w [[cite:Gasbichler2006]], skutkując stworzeniem notacji /interfejsów modułów/ ułatwiającej automatyczną rezolucję zależności. Rozwiązanie to jest dalekie od doskonałego, toteż język =FOOF= stosuje inne podejście opisane w następnej sekcji.
 
+** Inżynieria wiedzy w języku
+Ostatnią i zarazem najbardziej zaawansowaną funkcjonalnością języka =FOOF= jest jego wsparcie dla inżynierii wiedzy (ang. /knowledge engineering/), objawiające się umożliwieniem refleksji na podstawie pewnych /informacji/, które zostały odkryte podczas działania programów. Wspomniane, powiązane ze sobą logicznie informacje, czyli *wiedza*, mogą dotyczyć wielu różnych aspektów działania aplikacji i są w dużej mierze uzależnione od domeny rozwiązywanych problemów.
 
-** Reprezentacja wiedzy w języku
-- briefly describe AMP vs SMP and contrast it with platform heterogeneity
+Istnieje wiele metod reprezentacji i przetwarzania wiedzy, które różnią się sposobem dostępu do zdobytych informacji, a co za tym idzie, stosownością do rozwiązywania danych klas problemów [[cite:Wang2013]]. Dlatego też, wybór konkretnej reprezentacji i mechanizmu przetwarzania wiedzy w języku =FOOF= uzależniony jest od pragmatycznego jego zastosowania.
 
-#+begin_center
-#+label: fig:homo-vs-hetero
-#+caption: Podstawowe różnice pomiędzy platformami homogenicznymi oraz heterogenicznymi.
-#+attr_latex: :width 0.8\textwidth :placement [H]
-[[file:./img/homovshetero.pdf]]
-#+end_center
+Wiodącym zadaniem inżynierii wiedzy w języku =FOOF= jest realizacja jednego z główych założeń języka, czyli osiągnięcia *świadomości platformy* poprzez zdobycie i udostępnienie wiedzy o platformie sprzętowej i samej aplikacji na niej działającej. Wiedza ta ma stanowić bazę do podejmowania decyzji o rozwoju obliczeń prowadzonych w aplikacji, a także o samej strukturze systemu.
 
-- note that system doesn't need to run on a heterogenous platform to be heterogenous itself
+W założeniu ma to umożliwić automatyczną konfigurację i ewolucję rozproszonych aplikacji zbudowanych z wykorzystaniem języka =FOOF=. Na przykład, system inteligentnego domu, po wykryciu podłączenia w odpowiednim pomieszczeniu czujnika temperatury o wyższej dokładności pomiarów niż dotychczasowo dostępna, powinien bez modyfikacji programu, ani ingerencji jego użytkownika, zacząć z niego korzystać. Natomiast, w przypadku katastrofalnego błędu rzeczonego czujnika, system powinien wrócić do korzystania z poprzedniego czujnika.
 
-#+begin_center
-#+label: fig:amp-vs-smp
-#+caption: Podstawowe różnice pomiędzy systemami asymetrycznymi i symetrycznymi.
-#+attr_latex: :width 0.8\textwidth :placement [H]
-[[file:./img/ampvssmp.pdf]]
-#+end_center
+Literatura związana z tą dziedziną nauki, która zarazem dotyczy systemów rozproszonych o wysokiej heterogeniczności, takich jak Internet Rzeczy, bardzo często wykorzystuje podejście ontologiczne [[cite:Hachem2011, Wang2013, Samimi2014]]. Polega ono na budowie ontologii domenowej na potrzeby systemu, gdzie wiedza jest reprezentowana jako instancje i klasy obiektów powiązanych ze sobią pewnymi zależnościami. Ontologia ta może być następnie odpytywana, a działający w niej algorytm rozumowania (ang. /reasoner/) pozwala odkrywać nowe zależności pomiędzy obiektami.
 
-- describe use cases in the language
-- describe primitive operations
+Rozwiązane to wchodzi w konflikt z założeniami języka =FOOF= przez swoje skomplikowanie, relatywną restrykcyjność i statyczność bazy wiedzy oraz kosztowność obliczeniową, toteż, pomimo niewątpliwych zalet, nie mogło zostać wdrożone. Alternatywnym rozwiązaniem zastosowanym w języku jest podejście regułowe, polegające na reprezentacji wiedzy w formie *faktów* o nienarzuconej strukturze i przetwarzaniu tej wiedzy za pomocą *reguł* weryfikujących ową strukturę. Listing [[ref:code:ex-rbs-usage]] pokazuje podstawowe operacje związane z inżynierią wiedzy dostępne w języku =FOOF=.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Przykład wykorzystania prymitywnych operacji bazy wiedzy w języku.}}
 #+latex: \label{code:ex-rbs-usage}
 #+begin_src scheme
-(signal! an-event)
-
 (whenever set-of-conditions
   (lambda (_)
     (retract! some-fact)
     (assert! another-fact)))
+(signal! an-event)
 #+end_src
 #+latex: \end{listing}
 
-- describe protocols - a set of facts about a module (?)
-- hint at protocols & SOA connection ?
+Przykład ten definiuje jedną regułę bez zagłębiania się w szczegóły implementacji systemu regułowego języka =FOOF=. Reguła ta, bazując na spełnialności pewnego zbioru warunków =set-of-conditions= modyfikuje wbudowaną bazę faktów przez *asercję* i *retrakcję* rożnych faktów. Dodatkowo, przykład *sygnalizuje* zaistnienie pewnego zdarzenia =an-event=, co konceptualnie jest tożsame z asercją i późniejszą retrakcją faktu opisującego zajście tego zdarzenia w systemie.
 
-- hint at using an RBS
-- describe various ways of knowledge representation [cite:Hachem2011] [cite:Samimi2014] [cite:Wang2013]
+Projekt przewiduje wykorzystanie opisanych powyżej podstawowych operacji oraz wiedzy możliwej do zdobycia podczas kompilacji programów języka =FOOF= poprzez *inferencję* faktów dotyczących struktury ich kodu źródłowego, do rozwiązania opisanego w poprzedniej sekcji problemu linkowania modułów. Rozwiązanie to polega na przetworzaniu inferowanej wiedzy za pomocą zbioru reguł, zwanych kolektywnie *protokołem modułu*, w celu rezolucji zależności je spełniających w sposób automatyczny. Moduły, zamiast dokładnego sprecyzowania swoich zależności, mogą podać protokóły, które są konieczne i wystarczające do poprawnego, wspólnego działania, a system regułowy automatycznie wybierze spełniające je, dostępne submoduły.
 
 * Kompilator języka =FOOF=
 - mention technology selection & limitations (large project, little time) [cite:Ghuloum2006]
