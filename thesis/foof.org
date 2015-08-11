@@ -432,12 +432,13 @@ Przykład ten definiuje jedną regułę bez zagłębiania się w szczegóły imp
 Projekt przewiduje wykorzystanie opisanych powyżej podstawowych operacji oraz wiedzy możliwej do zdobycia podczas kompilacji programów języka =FOOF= poprzez *inferencję* faktów dotyczących struktury ich kodu źródłowego, do rozwiązania opisanego w poprzedniej sekcji problemu linkowania modułów. Rozwiązanie to polega na przetworzaniu inferowanej wiedzy za pomocą zbioru reguł, zwanych kolektywnie *protokołem modułu*, w celu rezolucji zależności je spełniających w sposób automatyczny. Moduły, zamiast dokładnego sprecyzowania swoich zależności, mogą podać protokóły, które są konieczne i wystarczające do poprawnego, wspólnego działania, a system regułowy automatycznie wybierze spełniające je, dostępne submoduły.
 
 * Kompilator języka =FOOF=
-- define what a compiler is
-- contrast it with interpreters
-- mention technology selection & limitations (large project, little time) [cite:Ghuloum2006]
-- hint at using Scheme for the boring details (datatypes etc)
-- briefly touch on the architecture [cite:Aho2006]
-- mention possible bootstrapping
+Niniejszy rozdział przedstawia implementację kompilatora języka programowania =FOOF= szczegółowo opisując jego architekturę i poszczególne fazy kompilacji programów.
+
+Kompilator jest programem komputerowym, którego głównym zadaniem jest *transformacja kodu źródłowego* programów do formatu bardziej odpowiedniego do uruchomienia przez maszynę [[cite:Aho2006]]. Wynikiem działania kompilatora jest najczęśniej plik wykonywalny zawierający instrukcje możliwe do uruchomienia przez procesor lub /maszynę wirtualną/ w przypadku kompilatorów /kodu bajtowego/. Kompilacja jest zwykle podzielona na kilka osobnych faz, takich jak analiza leksykalna, analiza semantyczna, optymalizacja i generacja kodu [[cite:Aho2006]].
+
+Kompilator języka =FOOF= jest w założeniu kompilatorem /kodu maszynowego/, wynikiem działania którego jest strumień instrukcji możliwych do uruchomienia przez procesor komputera. Niestety, w wyniku ograniczeń czasowych i samej wielkości takiego projektu, ostatnie fazy kompilacji odpowiedzialne za generację kodu maszynowego zostały pominięte, a kompilacja programów kończy się na uruchamialnej reprezentacji pośredniej programów.
+
+Towarzyszący pracy program został napisany w sposób inkrementalny [[cite:Ghuloum2006]] z wykorzystaniem wspólnego podzbioru języków Scheme oraz =FOOF=, celem późniejszego osiągnięcia auto-kompilacji (ang. /bootstrapping compiler/). Podczas tworzenia kompilatora nieocenione okazały się wskazówki na temat implementacji /języków funkcyjnych/, do których należy również język =FOOF=, przedstawione w [[cite:PeytonJones1992]].
 
 ** Architektura kompilatora
 #+begin_center
