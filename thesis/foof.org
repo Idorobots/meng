@@ -468,10 +468,12 @@ Ostatnie dwie fazy kompilacji, czyli fazy *optymalizacji* i *generacji kodu masz
 
 Kompilator działa w pojedynczym przebiegu, podczas którego każda z faz jest uruchamiana dokładnie jeden raz. Szczegółowy opis działania i implementacji poszczególnych faz został zawarty w dalszej części rozdziału.
 
-** Parser
-- briefly describe how Scheme praser works and what it produces [cite:Sperber2010] [cite:Abelson1996]
-- hint at a possibility of replacing this with a PEG-based packrat [cite:Hutton1996] [cite:Ford2004]
-- note about homoiconicity & quasiquote syntax [cite:Bawden1999]
+** Parsowanie
+Pierwszym logicznym elementem kompilatora jest *parser* przeprowadzający analizę leksykalną i syntaktyczną. Jego zadaniem jest transformacja tekstu reprezentującego programy języka =FOOF= do drzewiastej reprezentacji bazującej na podstawowych typach danych udostępnianych przez język.
+
+W związku z wyborem technologii wykorzystanych do implementacji kompilatora, budowa parsera przez niego używanego została oparta o dostępne w języku Scheme podstawowe funkcje operujące na plikach i kodzie źródłowym, takie jak =with-input-from-file= oraz =read= [[cite:Sperber2010]]. Implementacja dedykowanych parserów jest żmudna i nie prezentuje zbyt wysokiej wartości poznawczej, natomiast tworzenie generatora parserów, pomimo niewątpliwej ciekawości i przydatności z punktu widzenia użyteczności języka programowania, nie stanowi tematu niniejszej pracy. Powstała implementacja jest więc minimalną wersją niezbędną do umożliwienia dalszej kompilacji programów.
+
+Opisany parser wspiera podstawową składnię języka =FOOF= wynikającą z jego homoikoniczności oraz jedno rozszerzenie składniowe usprawniające generowanie programów wewnątrz kompilatora. Rozszerzenie to polega na transformacji kombinacji znaków specjalnych specjalnych \texttt{'}, =`=, \texttt{,} oraz \texttt{,@} do odpowiadających im konstrukcji w formacie S-wyrażeń. Listing [[ref:code:ex-syntax-expansion]] pokazuje kod źródłowy i kod powstały po ekspansji syntaktycznej przeprowadzonej przez parser.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Obsługa rozszerzeń składniowych S-wyrażeń w języku \texttt{FOOF}.}}
@@ -492,7 +494,13 @@ Kompilator działa w pojedynczym przebiegu, podczas którego każda z faz jest u
 #+LaTeX: \end{multicols}
 #+latex: \end{listing}
 
+Należy zauważyć, że ekspansja syntaktyczna powyższego rozszerzenia składniowego nie jest jednoznacza z ekspansją wynikającą z jego znaczenia, która jest przeprowadzana w fazie makroekspansji opisanej w sekcji [[ref:sec:macroexpansion-impl]].
+
+Naturalnie, istnieje możliwość łatwej wymiany implementacji parsera w przyszłości na mechanizm bardziej rozbudowany, wspierający dowolną ilość rozszerzeń składniowych. Można do tego celu wykorzystać generator parserów zbudowany w oparciu o gramatyki PEG (ang. /Parsing Expression Grammars/) [[cite:Ford2004]] oraz monadyczne kombinatory parserów [[cite:Hutton1996]], które szczególnie dobrze nadają się do budowy parserów dla języków o nieskomplikowanej podstawowej gramatyce, takich jak =FOOF=.
+
 ** Makro-ekspansja
+#+LaTeX: \label{sec:macroexpansion-impl}
+
 - describe macroexpantion phase role
 - describe the macroexpansion algorithm
 
