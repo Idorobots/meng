@@ -567,12 +567,43 @@ Obecna implementacja nie wspiera definiowania nowych makr przez użytkowników j
 
 Innym problemem manifestującym się w wielu systemach makr jest opisany w sekcji [[ref:sec:macros-description]] problem higieniczności, polegający na nieoczekiwanej injekcji nieprawidłowych wartości do kodu generowanego przez makra. W zwązku z opisaną powyżej niedogodnością, problem ten nie jest obecny w implementacji języka =FOOF= i jego rozwiązanie stanowi problem otwarty. Znanych jest kilka sposobów rozwiązania problemu higieniczności systemu makr, na przykład wykorzystanie specjalnego systemu typów [[cite:Bawden2000]], lub wieży refleksji makroekspansji [[cite:Queinnec1996]].
 
-** Obsługa Systemu Modułowego
-- describe how modules are handled right now [cite:Gasbichler2006] [cite:Rossberg2015]
-- show some examples of macro-expanded structures & modules
-- hint at special module access syntax (foo.bar.baz)
+** Obsługa systemu modułowego
+Implementacja systemu modułowego języka =FOOF= wymaga niewielkiego wsparcia, w chwili obecnej, ze strony kompilatora.
+
+Możliwość definiowania modułów została zreazilowana z wykorzystaniem systemu makr jako wywołania makr =structure= oraz =module= odpowiadające odpowiednio strukturom i funktorom opisanym w sekcji [[ref:sec:module-system]]. Makra te generują wywołania specjalnej funkcji =&make-structure= budującej struktury z prostych wartości. Listing [[ref:code:ex-module-expansion]] prezentuje wynik makroekspansji makra =module=, której pośrednim krokiem jest ekspansja makra =structure=.
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Przykład ekspansji makra \texttt{module}.}}
+#+latex: \label{code:ex-module-expansion}
+#+LaTeX: \begin{multicols}{2}
+#+begin_src scheme
+;; Kod źródłowy:
+(module (X a b)
+  (define (foo x)
+    ...)
+  (define (bar y)
+    ...))
+#+end_src
+#+LaTeX: \columnbreak
+#+begin_src scheme
+;; Po makroekspansji:
+(define (X a b)
+  (letrec ((foo (lambda (x)
+                  ...))
+           (bar (lambda (y)
+                  ...)))
+    (&make-structure
+     'foo foo
+     'bar bar)))
+#+end_src
+#+LaTeX: \end{multicols}
+#+latex: \end{listing}
+
+Definicje należące do zdefiniowanego modułu =X= transformowane są do postaci wzajemnie rekurencyjnej za sprawą konstrukcji =letrec=, a następnie ich wartości łączone są w jeden obiekt struktury. Do definicji należących do tak otrzymanej wartości można odnosić się z wykorzystaniem specjalnej składni =module.member=, która została zrealizowana jako ekspansja symboli w fastępnej fazie kompilacji opisanej w sekcji [[ref:sec:cps-impl]]. Wywołanie funkcji =bar= instancji =x= modułu =X= wygląda więc następująco: =(x.bar 23)=.
 
 ** Transformacja /Continuation Passing Style/
+#+LaTeX: \label{sec:cps-impl}
+
 - reformat this to fit the narrative
 
 Do tego celu służy technika przekazywania kontynuacji (ang. /Continuation Passing Style/, /CPS/) polegająca na automatycznej transformacji kodu źródłowego programu do formatu, w którym wszystkie funkcje przyjmują dodatkowy argument będący kontynuacją, którą przekazują dalej [[cite:Appel1992]].
