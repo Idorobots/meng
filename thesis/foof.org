@@ -202,7 +202,7 @@ Funkcje zostały zaprojektowane w oparciu o *Rachunek Lambda*, wprowadzony w 193
 Zasady Rachunku Lambda są fundamentalnie bardzo nieskomplikowane, a mimo to pozwalają na ekspresję skomplikowanych idei, takich jak logika Bool'a, arytmetyka, struktury danych oraz rekurencja. Na listingu [[ref:code:ex-lambda-calculus]] zawarto przykład realizacji logiki boola wraz z kilkoma operatorami logicznymi w czystym Rachunku Lambda.
 
 #+latex: \begin{listing}[H]
-#+latex: \caption{\mylisting{Przykład implementacji wartości i operatorów logicznych jedynie za pomocą wyrażeń lambda.}}
+#+latex: \caption{\mylisting{Przykład implementacji wartości i operatorów logicznych w Rachunku Lambda.}}
 #+latex: \label{code:ex-lambda-calculus}
 #+BEGIN_SRC text
 TRUE := λx.λy.x
@@ -220,9 +220,7 @@ AND TRUE FALSE
 
 Wartości logiczne kodowane są jako wyrażenia lambda konsumujące dwa argumenty i wybierające odpowiednio pierwszy z nich, dla logicznej wartości prawdy, lub drugi z nich, dla logicznej wartości fałszu. W podobny sposób kodowane są operatory logiczne, a wynik ich działania obliczany jest przez sukcesywne przeprowadzanie substytucji nazwy argumentu na jego wartość oraz redukowaniu otrzymanych wyrażeń za pomocą \beta-redukcji.
 
-Warto zauważyć, że wyrażenia lambda można interpretować jako tak zwane *domknięcia leksykalne*, czyli tworzone podczas \beta-redukcji otaczającego wyrażenia pary funkcji i map asocjacyjnych odzwierciedlających wartości zmiennych, które występują w ciele domknięcia leksykalnego, a nie są przez nie wprowadzane. Domknięcia leksykalne pozwalają opóźnić substytucję nazw argumentów wyrażeń lambda na odpowiadające im wartości, dzięki czemu są łatwiejsze w implementacji [[cite:PeytonJones1992]].
-
-Listing [[ref:code:closures-at-work]] pokazuje działanie domknięć leksykalnych w notacji języka =FOOF=.
+Warto zauważyć, że wyrażenia lambda można interpretować jako tak zwane *domknięcia leksykalne*, czyli tworzone podczas \beta-redukcji otaczającego wyrażenia pary funkcji i map asocjacyjnych odzwierciedlających wartości zmiennych, które występują w ciele domknięcia leksykalnego, a nie są przez nie wprowadzane. Domknięcia leksykalne pozwalają opóźnić substytucję nazw argumentów wyrażeń lambda na odpowiadające im wartości, dzięki czemu są łatwiejsze w implementacji [[cite:PeytonJones1992]]. Listing [[ref:code:closures-at-work]] pokazuje działanie domknięć leksykalnych w notacji języka =FOOF=.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Przykład ilustrujący działanie domknięć leksykalnych.}}
