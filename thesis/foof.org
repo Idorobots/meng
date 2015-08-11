@@ -456,11 +456,80 @@ Projekt przewiduje wykorzystanie opisanych powyżej podstawowych operacji oraz w
 - hint at a possibility of replacing this with a PEG-based packrat [cite:Hutton1996] [cite:Ford2004]
 - note about homoiconicity & quasiquote syntax [cite:Bawden1999]
 
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Obsługa rozszerzeń składniowych S-wyrażeń w języku \texttt{FOOF}.}}
+#+latex: \label{code:ex-syntax-expansion}
+#+LaTeX: \begin{multicols}{2}
+#+begin_src scheme
+;; Kod źródłowy:
+'(some value)
+`(a ,b ,@c)
+#+end_src
+#+LaTeX: \columnbreak
+#+begin_src scheme
+;; Po ekspansji:
+(quote (some value))
+(quasiquote (a (unquote b)
+               (unquote-splicing c)))
+#+end_src
+#+LaTeX: \end{multicols}
+#+latex: \end{listing}
+
 ** Makro-ekspansja
 - describe macroexpantion phase role
 - describe the macroexpansion algorithm
-- list available macros
-- show some examples of macro-expanded code
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Pseudokod algorytmu makroekspansji w notacji języka \texttt{FOOF}.}}
+#+latex: \label{code:macro-expansion-pseudocode}
+#+begin_src scheme
+(define (macroexpand expression defined-macros)
+  (if (and (list? expression)
+           (not (quote? expression)))
+      (if (macro-defined? (macro-name expression) macros)
+          (macroexpand (apply-expander (macro-name expression)
+                                       defined-macros
+                                       expression)
+                       defined-macros)
+          (map (lambda (subexpression)
+                 (macroexpand subexpression macros))
+               expression))
+      expression))
+#+end_src
+#+latex: \end{listing}
+
+- link to the list of available macros
+- a step-by-step example of macroexpansion
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Przykład działania algorytmu makroekspansji.}}
+#+latex: \label{code:ex-macro-expansion-steps}
+#+begin_src scheme
+;; Kod źródłowy:
+(let* ((a 23)
+       (b (+ a 5)))
+  (* 2 b))
+
+;; Pierwszy krok makroekspansji:
+(let ((a 23))
+  (let ((b (+ a 5)))
+    (* 2 b)))
+
+;; Drugi krok makroekspansji:
+((lambda (a)
+   (let ((b (+ a 5)))
+     (* 2 b)))
+ 23)
+
+;; Trzeci krok makroekspansji:
+((lambda (a)
+   ((lambda (b)
+      (* 2 b))
+    (+ a 5)))
+ 23)
+#+end_src
+#+latex: \end{listing}
+
 - describe why macroexpansion is hardcoded [cite:Gasbichler2006]
 - hint at alternative implementations etc
 
@@ -513,6 +582,38 @@ W przykładzie można zauważyć doprecyzowanie kolejności wykonywania działa�
 
 - note on recursion problems & solution via mutation
 
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Przykład transformacji konstrukcji \textt{letrec}.}}
+#+latex: \label{code:cps-letrec}
+#+LaTeX: \begin{multicols}{2}
+#+begin_src scheme
+'(letrec ((even? (lambda (x)
+                   ...
+                   odd?
+                   ...))
+          (odd? (lambda (x)
+                  ...
+                  even?
+                  ...)))
+   (even? 7))
+#+end_src
+#+LaTeX: \columnbreak
+#+BEGIN_SRC scheme
+(let ((even? nil)
+      (odd? nil))
+  (set! even? (lambda (x)
+                ...
+                odd?
+                ...))
+  (set! odd? (lambda (x)
+               ...
+               even?
+               ...))
+  (even? 7))
+#+END_SRC
+#+LaTeX: \end{multicols}
+#+latex: \end{listing}
+
 - mention the need to support uprocs & error handling (to be expanded upon in future sections)
 - hint at emitting calls to primitive functions =&yield-cont=, =&uproc-error-handler= etc
 
@@ -522,6 +623,40 @@ W przykładzie można zauważyć doprecyzowanie kolejności wykonywania działa�
 - contrast it with core erlang (its a true subset, so emitted code is executable in both, kinda) [cite:Carlsson2001] [cite:Carlsson2004]
 - hint at further development using LLVM [cite:SomethingAboutLLVM]
 - mention a requirement to perform closure conversion or lambda lifting [cite:PeytonJones1992]
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Przykład ilustrujący różnice pomiędzy algorytmami lambda-unoszenia oraz konwersji domknięć leksykalnych.}}
+#+latex: \label{code:lambda-lift-vs-closure-conv}
+#+begin_src scheme
+;; Oryginalny kod źródłowy:
+(let* ((x 23)
+       (plus-x (lambda (n)
+                (+ n x))))
+  (plus-x 5))
+#+end_src
+#+LaTeX: \begin{multicols}{2}
+#+begin_src scheme
+;; Lambda-unoszenie:
+(define (plus-x x n)
+  (+ n x))
+
+(let* ((x 23))
+  (plus-x x 5))
+#+end_src
+#+LaTeX: \columnbreak
+#+begin_src scheme
+;; Konwersja domknięć-leksykalnych:
+(define __lambda0 (self n)
+  (+ n (&value-of self 'x)))
+
+(let* ((x 23)
+       (plus-x (&closure __lambda0
+                        'x x)))
+  (&apply plus-x 5))
+#+end_src
+#+LaTeX: \end{multicols}
+#+latex: \end{listing}
+
 - add a code example contrasting closure conversion and lambda lifting
 - mention other optimizations (partial evaluation, constant folding and such)
 
