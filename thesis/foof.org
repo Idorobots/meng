@@ -100,9 +100,11 @@ Projektowany język programowania powinien więc udostępniać przejrzystą i og
 
 W tym celu wymagane jest stworzenie kompilatora, czyli programu transformującego kod źródłowy języka programowania na format możliwy do uruchomienia w pewnym środowisku uruchomieniowym (ang. /runtime system/). Na środowisko takie zazwyczaj składa się zestaw podstawowych procedur wspólnych i niezbędnych do działania każdego programu. Schemat interakcji poszczególnych elementów projektu zaprezentowano na schemacie [[fig:lang-parts]].
 
-Ostatnim wymogiem postawionym przed projektowanym językiem, jest wyjście naprzeciw licznym problemom występującym w systemach rozproszonych, w szczególności problemowi /heterogeniczności/, co umotywowano w następnej sekcji.
+Ostatnim wymogiem postawionym przed projektowanym językiem, jest wyjście naprzeciw licznym problemom występującym w systemach rozproszonych, w szczególności problemowi /heterogeniczności/, co umotywowano w sekcji [[ref:sec:thesis-motivation]].
 
 ** Motywacja pracy
+#+LaTeX: \label{sec:thesis-motivation}
+
 Tworzenie systemów rozproszonych jest zadaniem bardzo trudnym i wymaga wykorzystania specjalnie do tego przeznaczonych narzędzi - języków programowania, systemów bazodanowych i infrastruktury sieciowej. Na przestrzeni lat zidentyfikowano wiele kluczowych problemów manifestujących się we wszystkich systemach rozproszonych niezależnie od ich przeznaczenia. Tanenbaum oraz Van Steen w [[cite:Tanenbaum2006]] wymieniają następujące problemy:
 
 - *dostępność* - systemy rozproszone działają zwykle na wielu odrębnych maszynach, istotnym jest więc zachowanie dostępu do wspólnych zasobów z każdej części systemu,
@@ -155,6 +157,8 @@ Jako alternatywę dla osiągnięcia niezależności od platformy, niniejsza prac
 - list what is found where in the thesis
 
 * Język =FOOF=
+#+LaTeX: \label{sec:lang-description}
+
 Niniejszy rozdział szczegółowo opisuje projekt języka programowania =FOOF= począwszy od podstawowych typów danych, przez notację funkcji, kontynuacji i procesów, kończąc na zaawansowanych mechanizmach języka, takich jak przetwarzanie wiedzy i wbudowany system makr. W dodatku [[ref:sec:foof-grammar]] zawarto formalny opis gramatyki języka, natomiast w dodatku [[ref:sec:foof-examples]] zamieszczono kilka przykładowych programów.
 
 Język =FOOF= został zaprojektowany bazując na cennych wskazówkach przedstawionych przez John'a Backus'a w wykładzie wygłoszonym przez niego podczas odbierania Nagrody Turing'a w 1977 roku [[cite:Backus1978]]. Wskazówki te są ponadczasowe i stanowią dobrą podstawę do tworzenia języków programowania, a w dużym skrócie sprowadzają się do następujących punktów:
@@ -373,6 +377,8 @@ Problem higieniczności jest problemem skomplikowanym i zazwyczaj jego rozwiąza
 Alternatywnym podejściem do problemu metaprogramowania, o którym warto wspomnieć są *f-wyrażenia* (ang. /f-expressions/, /fexprs/), polegające na podziale funkcji na dwa fundamentalne kompotenty - aplikatywny, indukujący ewaluację argumentów oraz operatywny, analogiczny do substytucji nazw argumentów na ich wartości w wyrażeniach lambda Rachunku Lambda [[cite:Shutt2010]]. Podejście to drastycznie komplikuje kompilację kodu źródłowego, w związku z czym nie zostało wykorzystane w języku =FOOF=.
 
 ** System modułowy
+#+LaTeX: \label{sec:module-system}
+
 W celu umożliwienia podziału kodu źródłowego programów na logicznie związane części i ułatwienia zarządzania nimi, nowoczesne języki programowania często udostępniają systemy modułowe, wraz z niezbędnymi do ich działania rozszerzeniami składniowymi.
 
 Systemy takie, w zależności od języka programowania, na potrzeby którego zostały zaprojektowane, różnią się sposobem działania oraz ekspresywnością. Mniej skomplikowane systemy modułowe polegają na zwyczajnych podstawieniach tekstowych z opcjonalnym wsparciem dla /przestrzeni nazw/ w celu uniknięcia konfliktów identyfikatorów, natomiast bardziej skomplikowane umożliwiają kontrolę dostępu oraz definiowanie zależności pomiędzy poszczególnymi modułami.
@@ -400,9 +406,11 @@ W przykładzie definiowana jest struktura =A= dostarczającą funkcję =foo= ora
 
 System ten pozwala w łatwy sposób zarządzać zależnościami modułów - wystarczy zmienić parametr przekazany przy tworzeniu instancji modułu =B= na inną strukturę, bez modyfikacji jego definicji, by osiągnać zamierzone cele. Funkcjonalność ta jest bardzo przydatna przy tworzeniu bibliotek programistycznych, które mogą być parametryzowane modułami służącymi do powszechnych zadań, takimi jak moduł do logowania, lub moduł zawierający parametry konfiguracji aplikacji. W efekcie, biblioteki te nie narzucają z góry implementacji modułów parametryzujących, dzięki czemu mogą być łatwiej zintegrowane z różnymi programami.
 
-Zasadniczą wadą systemu modułowego w zaprezentowanej powyżej formie, jest konieczność istnienia osobnej fazy *linkowania*, czyli tworzenia instancji modułów. Problem ten został szczegółowo przeanalizowany w [[cite:Gasbichler2006]], skutkując stworzeniem notacji /interfejsów modułów/ ułatwiającej automatyczną rezolucję zależności. Rozwiązanie to jest dalekie od doskonałego, toteż język =FOOF= stosuje inne podejście opisane w następnej sekcji.
+Zasadniczą wadą systemu modułowego w zaprezentowanej powyżej formie, jest konieczność istnienia osobnej fazy *linkowania*, czyli tworzenia instancji modułów. Problem ten został szczegółowo przeanalizowany w [[cite:Gasbichler2006]], skutkując stworzeniem notacji /interfejsów modułów/ ułatwiającej automatyczną rezolucję zależności. Rozwiązanie to jest dalekie od doskonałego, toteż język =FOOF= stosuje inne podejście opisane w sekcji [[ref:knowledge-engineering]].
 
 ** Inżynieria wiedzy w języku
+#+LaTeX: \label{set:knowledge-engineering}
+
 Ostatnią i zarazem najbardziej zaawansowaną funkcjonalnością języka =FOOF= jest jego wsparcie dla inżynierii wiedzy (ang. /knowledge engineering/), objawiające się umożliwieniem refleksji na podstawie pewnych /informacji/, które zostały odkryte podczas działania programów. Wspomniane, powiązane ze sobą logicznie informacje, czyli *wiedza*, mogą dotyczyć wielu różnych aspektów działania aplikacji i są w dużej mierze uzależnione od domeny rozwiązywanych problemów.
 
 Istnieje wiele metod reprezentacji i przetwarzania wiedzy, które różnią się sposobem dostępu do zdobytych informacji, a co za tym idzie, stosownością do rozwiązywania danych klas problemów [[cite:Wang2013]]. Dlatego też, wybór konkretnej reprezentacji i mechanizmu przetwarzania wiedzy w języku =FOOF= uzależniony jest od pragmatycznego jego zastosowania.
@@ -429,7 +437,7 @@ Rozwiązane to wchodzi w konflikt z założeniami języka =FOOF= przez swoje sko
 
 Przykład ten definiuje jedną regułę bez zagłębiania się w szczegóły implementacji systemu regułowego języka =FOOF=. Reguła ta, bazując na spełnialności pewnego zbioru warunków =set-of-conditions= modyfikuje wbudowaną bazę faktów przez *asercję* i *retrakcję* rożnych faktów. Dodatkowo, przykład *sygnalizuje* zaistnienie pewnego zdarzenia =an-event=, co konceptualnie jest tożsame z asercją i późniejszą retrakcją faktu opisującego zajście tego zdarzenia w systemie.
 
-Projekt przewiduje wykorzystanie opisanych powyżej podstawowych operacji oraz wiedzy możliwej do zdobycia podczas kompilacji programów języka =FOOF= poprzez *inferencję* faktów dotyczących struktury ich kodu źródłowego, do rozwiązania opisanego w poprzedniej sekcji problemu linkowania modułów. Rozwiązanie to polega na przetworzaniu inferowanej wiedzy za pomocą zbioru reguł, zwanych kolektywnie *protokołem modułu*, w celu rezolucji zależności je spełniających w sposób automatyczny. Moduły, zamiast dokładnego sprecyzowania swoich zależności, mogą podać protokóły, które są konieczne i wystarczające do poprawnego, wspólnego działania, a system regułowy automatycznie wybierze spełniające je, dostępne submoduły.
+Projekt przewiduje wykorzystanie opisanych powyżej podstawowych operacji oraz wiedzy możliwej do zdobycia podczas kompilacji programów języka =FOOF= poprzez *inferencję* faktów dotyczących struktury ich kodu źródłowego, do rozwiązania opisanego w sekcji [[ref:sec:module-system]] problemu linkowania modułów. Rozwiązanie to polega na przetworzaniu inferowanej wiedzy za pomocą zbioru reguł, zwanych kolektywnie *protokołem modułu*, w celu rezolucji zależności je spełniających w sposób automatyczny. Moduły, zamiast dokładnego sprecyzowania swoich zależności, mogą podać protokóły, które są konieczne i wystarczające do poprawnego, wspólnego działania, a system regułowy automatycznie wybierze spełniające je, dostępne submoduły.
 
 * Kompilator języka =FOOF=
 Niniejszy rozdział przedstawia implementację kompilatora języka programowania =FOOF= szczegółowo opisując jego architekturę i poszczególne fazy kompilacji programów.
