@@ -315,6 +315,8 @@ Interfejs ten jest bardzo zbliżony do interfejsu Modelu Aktorowego dostępnego 
 Implementacja Modelu Aktorowego w języku =FOOF= podobnie jak mechanizm obsługi błędów, została oparta o kontynuacje i zostanie opisana szczegółowo w następnych rozdziałach.
 
 ** Makra
+#+LaTeX: \label{sec:macros-description}
+
 Prawdobodobnie najciekawszą funkcjonalnością języków z rodziny Lisp jest ich podejście do metaprogramowania i generowania kodu. Większość języków z tej rodziny wykorzystuje wersję systemu *makr*, który pozwala rozszerzać składnię języka i tworzyć dialekty domenowe (ang. /domain specific language/) w prosty i przystępny sposób. Język =FOOF= nie jest wyjątkiem i również został wyposażony w system makr.
 
 Listing [[ref:code:ex-macroexpansion]] prezentuje efekt działania *makroekspansji*, czyli substytucji wywołań makr na definicje ich ciał, na przykładzie kilku wbudowanych makr rozszerzających składnię języka =FOOF=.
@@ -498,11 +500,10 @@ Należy zauważyć, że ekspansja syntaktyczna powyższego rozszerzenia składni
 
 Naturalnie, istnieje możliwość łatwej wymiany implementacji parsera w przyszłości na mechanizm bardziej rozbudowany, wspierający dowolną ilość rozszerzeń składniowych. Można do tego celu wykorzystać generator parserów zbudowany w oparciu o gramatyki PEG (ang. /Parsing Expression Grammars/) [[cite:Ford2004]] oraz monadyczne kombinatory parserów [[cite:Hutton1996]], które szczególnie dobrze nadają się do budowy parserów dla języków o nieskomplikowanej podstawowej gramatyce, takich jak =FOOF=.
 
-** Makro-ekspansja
+** Makroekspansja
 #+LaTeX: \label{sec:macroexpansion-impl}
 
-- describe macroexpantion phase role
-- describe the macroexpansion algorithm
+Pierwszą fazą transformującą w znaczący sposob kod źródłowy języka =FOOF=, jest faza makroekspansji. Jej głównym zadaniem jest umożliwienie istnienia opisanego w rozdziale [[ref:sec:lang-description]] systemu makr, a polega ona na aplikacji definicji makr do fragmentów kodu źródłowego znajdujących się w miejscu ich wywołań. Listing [[ref:code:macro-expansion-pseudocode]] prezentuje pseudokod algorytmu realizującego fazę makroekspansji w notacji języka =FOOF=.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Pseudokod algorytmu makroekspansji w notacji języka \texttt{FOOF}.}}
@@ -523,8 +524,17 @@ Naturalnie, istnieje możliwość łatwej wymiany implementacji parsera w przysz
 #+end_src
 #+latex: \end{listing}
 
-- link to the list of available macros
-- a step-by-step example of macroexpansion
+Algorytm ten jest rekurencyjny i przebiega w następujący sposób:
+
+- Jeśli wyrażenie jest listą, której pierwszy element jest nazwą zdefiniowanego uprzednio makra, to następuje makroekspansja wyrażenia otrzymanego przez aplikację definicji makra do owego wyrażenia.
+
+- Jeśli wyrażenie jest listą, ale jej pierwzy element nie identyfikuje zdefiniowanego uprzednio makra, to następuje makroekspansja każdego podwyrażenia wchodzącego w skład tego wyrażenia.
+
+- Jeśli wyrażenie nie jest listą to zostaje zwrócone bez zmian.
+
+Powyższy algortym uwzględnia możliwość, w której analizowanym wyrażeniem jest specjalna formuła =(quote ...)= przerywająca makroekspansję. Podobnie jak w przypadku wyrażeń nie będących listami, formuła =(quote ...)= zostaje zwrócona bez zmian. Algorytm uwzględnia również sytuację, w której wynikiem ekspansji jednego makra jest wywołanie innego makra, dzięki rekurencyjnemu wywołaniu makroekspansji po aplikacji definicji makra. Sytuację tę obrazuje listing [[ref:code:ex-macro-expansion-steps]].
+
+W przykładzie została wykorzystana konstrukcja =let*=, która semantycznie oznacza zagnieżdżoną deklarację zmiennych lokalnych =a= oraz =b=. Makro odpowiedzialne za ekspansję konstrukcji =let*= skutkuje wygenerowaniem dwóch wywołań makra =let=, które następnie jest zamieniane na wywołania funkcji anonimowych (tworzonych za pomocą konstrukcji =lambda=) z odpowiednimi parametrami.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Przykład działania algorytmu makroekspansji.}}
@@ -555,8 +565,9 @@ Naturalnie, istnieje możliwość łatwej wymiany implementacji parsera w przysz
 #+end_src
 #+latex: \end{listing}
 
-- describe why macroexpansion is hardcoded [cite:Gasbichler2006]
-- hint at alternative implementations etc
+Obecna implementacja nie wspiera definiowania nowych makr przez użytkowników języka =FOOF=. Powodem tej niedogodności jest nietrywialna interakcja systemu makr i systemu modułów zastosowanego w języku, która została szczegółowo przeanalizowana w [[cite:Gasbichler2006]]. System makr do poprawnego funkcjonowania wymaga znajomości definicji makr, które znajdują się w różnych modułach, przed uruchomieniem programu, natomiast system modułowy wymaga uruchomienia programu w celu przeprowadzenia linkowania modułów. Rozwiązanie tego problemu jest nietrywialne, w związku z czym nie zostało uwzględnione w projekcie języka. Lista predefiniowanych makr dostępnych w języku =FOOF= została zawarta w dodatku [[ref:sec:built-ins]].
+
+Innym problemem manifestującym się w wielu systemach makr jest opisany w sekcji [[ref:sec:macros-description]] problem higieniczności, polegający na nieoczekiwanej injekcji nieprawidłowych wartości do kodu generowanego przez makra. W zwązku z opisaną powyżej niedogodnością, problem ten nie jest obecny w implementacji języka =FOOF= i jego rozwiązanie stanowi problem otwarty. Znanych jest kilka sposobów rozwiązania problemu higieniczności systemu makr, na przykład wykorzystanie specjalnego systemu typów [[cite:Bawden2000]], lub wieży refleksji makroekspansji [[cite:Queinnec1996]].
 
 ** Obsługa Systemu Modułowego
 - describe how modules are handled right now [cite:Gasbichler2006] [cite:Rossberg2015]
@@ -1085,9 +1096,12 @@ Program prezentuje wykorzystanie wnioskowania wstecz wbudowanego w język system
 #+end_src
 #+latex: \end{listing}
 
-* Spis wbudowanych funkcji języka =FOOF=
+* Spis wbudowanych funkcji i makr języka =FOOF=
+#+LaTeX: \label{sec:built-ins}
+
 - list contents of bootstrap.scm
 - describe what =&make-structure=, =&yield-cont= etc do
+- list available macros
 
 * Spisy rysunków i fragmentów kodu
 #+latex: \label{sec:misc}
