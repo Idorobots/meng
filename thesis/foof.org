@@ -449,16 +449,24 @@ Kompilator języka =FOOF= jest w założeniu kompilatorem /kodu maszynowego/, wy
 Towarzyszący pracy program został napisany w sposób inkrementalny [[cite:Ghuloum2006]] z wykorzystaniem wspólnego podzbioru języków Scheme oraz =FOOF=, celem późniejszego osiągnięcia auto-kompilacji (ang. /bootstrapping compiler/). Podczas tworzenia kompilatora nieocenione okazały się wskazówki na temat implementacji /języków funkcyjnych/, do których należy również język =FOOF=, przedstawione w [[cite:PeytonJones1992]].
 
 ** Architektura kompilatora
+Architektura kompilatora języka =FOOF= jest typowa dla tego typu programów [[cite:Aho2006]], kompilacja została podzielona na jeden przebieg, na który składa się kilka logicznie po sobie następujących faz. Schemat [[ref:fig:compilation-phases]] prezentuje obecnie zaimplementowane w kompilatorze fazy oraz te, których implementacja została przewidziana w przyszłości, wraz z przykładami pośrednich reprezentacji programów w nich występujących.
+
 #+begin_center
 #+label: fig:compilation-phases
 #+caption: Schemat poszczególnych faz kompilacji i przykładowych danych będących wynikiem ich działania.
-#+attr_latex: :width 0.8\textwidth :placement [H]
+#+attr_latex: :width 1.0\textwidth :placement [H]
 [[file:./img/compilationphases.pdf]]
 #+end_center
 
-- describe the diagram shortly [cite:Aho2006] [cite:Ghuloum2006] [cite:Appel1992]
-- briefly describe the compilation phases
-- list which phases have been actually implemented
+Pierwszą fazą jest faza *analizy leksykalnej i syntaktycznej* polegająca na transformacji kodu źródłowego - tekstu enkodującego programy - do formatu wewnętrznego możliwego do przetworzenia przez następne fazy kompilacji. Analiza syntaktyczna wykorzystuje opisaną w rozdziale [[ref:sec:lang-description]] homoikoniczność języka =FOOF= i reprezentuje programy jako drzewa zbudowane z podstawowych typów danych dostarczanych przez język.
+
+Druga faza kompilacji to faza *makroekspansji* polegająca na uproszczeniu konstrukcji syntaktycznych występujących w programach za pomocą szeregu transformacji. Faza ta pozwala uprościć analizę semantyczną pojawiającą się w późniejszych fazach kompilacji dzięki redukcji rożnych konstrukcji języka, które muszą być brane pod uwagę.
+
+Trzecią fazą jest faza *konwersji /Continuation Passing Style/* polegająca na syntaktycznej transformacji kodu źródłowego programów celem wplecenia do niego *kontynuacji* [[cite:Appel1992]]. Reprezentacja pośrednia programów po tej fazie kompilacji różni się zasadniczo od dotychczasowej reprezentacji, dzięki czemu umożliwia implementację szeregu opisanych wcześniej funkcjonalności języka.
+
+Ostatnie dwie fazy kompilacji, czyli fazy *optymalizacji* i *generacji kodu maszynowego* w dużej mierze polegają na uproszczeniu przetworzonego kodu programów i przetłumaczeniu go na strumień prostych instrukcji możliwych do uruchomienia przez procesor komputera.
+
+Kompilator działa w pojedynczym przebiegu, podczas którego każda z faz jest uruchamiana dokładnie jeden raz. Szczegółowy opis działania i implementacji poszczególnych faz został zawarty w dalszej części rozdziału.
 
 ** Parser
 - briefly describe how Scheme praser works and what it produces [cite:Sperber2010] [cite:Abelson1996]
