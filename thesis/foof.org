@@ -432,10 +432,12 @@ Przykład ten definiuje jedną regułę bez zagłębiania się w szczegóły imp
 Projekt przewiduje wykorzystanie opisanych powyżej podstawowych operacji oraz wiedzy możliwej do zdobycia podczas kompilacji programów języka =FOOF= poprzez *inferencję* faktów dotyczących struktury ich kodu źródłowego, do rozwiązania opisanego w poprzedniej sekcji problemu linkowania modułów. Rozwiązanie to polega na przetworzaniu inferowanej wiedzy za pomocą zbioru reguł, zwanych kolektywnie *protokołem modułu*, w celu rezolucji zależności je spełniających w sposób automatyczny. Moduły, zamiast dokładnego sprecyzowania swoich zależności, mogą podać protokóły, które są konieczne i wystarczające do poprawnego, wspólnego działania, a system regułowy automatycznie wybierze spełniające je, dostępne submoduły.
 
 * Kompilator języka =FOOF=
+- define what a compiler is
+- contrast it with interpreters
 - mention technology selection & limitations (large project, little time) [cite:Ghuloum2006]
-- mention possible bootstrapping
-- briefly touch on the architecture [cite:Aho2006]
 - hint at using Scheme for the boring details (datatypes etc)
+- briefly touch on the architecture [cite:Aho2006]
+- mention possible bootstrapping
 
 ** Architektura kompilatora
 #+begin_center
@@ -445,26 +447,27 @@ Projekt przewiduje wykorzystanie opisanych powyżej podstawowych operacji oraz w
 [[file:./img/compilationphases.pdf]]
 #+end_center
 
-- list compilation phases [cite:Aho2006] [cite:Ghuloum2006] [cite:Appel1992]
+- describe the diagram shortly [cite:Aho2006] [cite:Ghuloum2006] [cite:Appel1992]
+- briefly describe the compilation phases
 - list which phases have been actually implemented
-- list which phases have been skipped and say why (optimization, code-gen, parsing)
 
 ** Parser
 - briefly describe how Scheme praser works and what it produces [cite:Sperber2010] [cite:Abelson1996]
 - hint at a possibility of replacing this with a PEG-based packrat [cite:Hutton1996] [cite:Ford2004]
-- note about special quasiquote syntax [cite:Bawden1999]
+- note about homoiconicity & quasiquote syntax [cite:Bawden1999]
 
 ** Makro-ekspansja
-- describe macroexpantion phase
-- describe why macroexpansion is hardcoded [cite:Gasbichler2006]
+- describe macroexpantion phase role
+- describe the macroexpansion algorithm
 - list available macros
 - show some examples of macro-expanded code
+- describe why macroexpansion is hardcoded [cite:Gasbichler2006]
+- hint at alternative implementations etc
 
 ** Obsługa Systemu Modułowego
 - describe how modules are handled right now [cite:Gasbichler2006] [cite:Rossberg2015]
 - show some examples of macro-expanded structures & modules
-- maby combine this with the previous section ?
-- maby hint at special module access syntax (foo.bar.baz)
+- hint at special module access syntax (foo.bar.baz)
 
 ** Transformacja /Continuation Passing Style/
 - reformat this to fit the narrative
@@ -501,18 +504,26 @@ Po transformacji, funkcja ta przyjmuje dodatkowy argument =cont=, który następ
 
 W przykładzie można zauważyć doprecyzowanie kolejności wykonywania działań po transformacji CPS - pierwszą wykonaną operacją jest dodawanie, a jego wynik przekazywany jest do, specjalnie w tym celu stworzonej, kontynuacji pośredniej i następnie od operacji mnożenia wraz z kontynuacją =cont= wywołania funkcji.
 
+- describe the algorithm
+- note about lazy continuation code generation
+- add a comparison example
+
 - describe in detail how to transform simple stuff
 - describe in detail how to transform functions (recursion problems & crude solution via mutation [cite:German1995], [cite:Kaser1993], [cite:Felleisen1991])
-- describe in detail how to handle exceptions
-- describe in detail why this is useful (partial evaluation, constant folding etc) [cite:Bacon2002]
+
+- note on recursion problems & solution via mutation
+
+- mention the need to support uprocs & error handling (to be expanded upon in future sections)
 - hint at emitting calls to primitive functions =&yield-cont=, =&uproc-error-handler= etc
 
-** Generacja kodu
-- describe how a subset of both Scheme and FOOF is emitted (contrast with Core Erlang) [cite:Carlsson2001] [cite:Carlsson2004]
-- describe how Scheme is used for direct code execution
+** Optymalizacja i generacja kodu
+- describe & motivate this phase
+- mention emitting a subset of both Scheme and FOOF
+- contrast it with core erlang (its a true subset, so emitted code is executable in both, kinda) [cite:Carlsson2001] [cite:Carlsson2004]
 - hint at further development using LLVM [cite:SomethingAboutLLVM]
 - mention a requirement to perform closure conversion or lambda lifting [cite:PeytonJones1992]
 - add a code example contrasting closure conversion and lambda lifting
+- mention other optimizations (partial evaluation, constant folding and such)
 
 * Środowisko uruchomieniowe języka
 - briefly touch on the architecture
