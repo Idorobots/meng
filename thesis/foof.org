@@ -762,18 +762,124 @@ Obecna implementacja, w związku z ograniczeniami czasowymi narzuconymi na proje
 W przyszłości istnieje możliwość rozwinięcia implementacji w celu wsparcia wielowątkowości, na przykład poprzez wykorzystanie *barier pamięci*, *operacji atomowych* oraz *pamięci lokalnej dla wątku* (ang. /thread-local storage/), co pozwoli osiągnać przyspieszenie aplikacji języka =FOOF=.
 
 ** Implementacja podstawowych typów danych
-- describe scheme bootstrap [cite:Sperber2010]
-- describe equivalence of various constructs such as lambdas
+- mention scheme bootstrap yet again [cite:Sperber2010]
+
+#+begin_center
+#+label: fig:object-representation
+#+caption: Schemat przykładowej reprezentacji typów danych języków funkcyjnych.
+#+attr_latex: :width 0.8\textwidth :placement [H]
+[[file:./img/objectrepr.pdf]]
+#+end_center
+
+- describe how it's usually done [[cite:PeytonJones1992]], [[cite:Aho2006]], [cite:Gudeman1993]
+
+- add a datatype equivalence example
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Porównanie wbudowanych typów danych języków Scheme i \texttt{FOOF}.}}
+#+latex: \label{code:datatype-equivalence}
+#+LaTeX: \begin{multicols}{2}
+#+begin_src clojure
+; Język FOOF:
+23.5
+symbol
+:symbol
+"ciąg znaków"
+(1 2 3)
+[1 2 3]
+{:a 1 :b 2}
+#+end_src
+#+LaTeX: \columnbreak
+#+begin_src scheme
+;; Język Scheme:
+23.5
+symbol
+:symbol
+"ciąg znaków"
+(1 2 3)
+#(1 2 3)
+#hash((:a . 1) (:b . 2))
+#+end_src
+#+LaTeX: \end{multicols}
+#+latex: \end{listing}
+
+- describe equivalence of various complex types such as lambdas
+- mention which datatypes aren't really implemented right now
 
 ** Implementacja kontynuacji
-- describe how continuations are handled without getting into CFS (returning cont + hole aka trampoline, contrast to how G-machine/TIM reductions work) [cite:Appel1992] [cite:PeytonJones1992]
+- describe trampolines (returning cont + hole aka trampoline,) [cite:Appel1992]
+- contrast to how G-machine/TIM reductions work [cite:PeytonJones1992]
+
 - add a code example with step-by-step execution
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Przykład uruchomienia funkcji z listing \ref{code:ex-cps-principle}.}}
+#+latex: \label{code:ex-cps-execution}
+#+LaTeX: \begin{multicols}{2}
+#+begin_src scheme
+;; Styl Continuation Passing:
+((lambda (x y cont)
+   (__+ x y
+        (lambda (v)
+          (__* 2 v cont))))
+ 23
+ 5
+ identity)
+#+END_SRC
+#+LaTeX: \columnbreak
+#+BEGIN_SRC scheme
+;; Po pierwszym kroku:
+(&yield-cont (lambda (v)
+               (__* 2 v cont))
+             (+ 23 5))
+
+;; Po drugim kroku:
+(&yield-cont cont
+             (* 2 28))
+
+;; Po trzecim kroku:
+56
+#+end_src
+#+LaTeX: \end{multicols}
+#+latex: \end{listing}
+
 - hint at debugging potential using step by step continuation execution with debug info inbetween
 
-** Implementacja obsługi wyjątków
+- mention the need to store prompts in order to fully support composable, delimited continuations
+- describe why wasn't it implemented - complicates structure of the continuation stack, poses a real overhead and makes continuation management in other flow-control structures way more complex
+
+** Implementacja obsługi błędów
 - describe how continuations are used for error handling - handle & raise
-- note about restarts
-- note about implementing letcc using handle & raise ?
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Wykorzystanie kontynuacji do implementacji obsługi błędów.}}
+#+latex: \label{code:ex-cps-errors}
+#+BEGIN_SRC scheme
+;; (raise error)
+(let ((__handler (&uproc-error-handler)))
+  (__handler __error
+             (lambda (__value __ignored)
+               (&set-uproc-error-handler! __handler)
+               ...
+               __value
+               ...)))
+
+;; (handle expression new-handler)
+(let ((__handler (&uproc-error-handler)))
+  (&set-uproc-error-handler!
+   (lambda (__error __restart)
+     (&set-uproc-error-handler! __handler)
+     ...
+     __new-handler
+     ...))
+  ...
+  __expression
+  ...
+  (&set-uproc-error-handler! __handler)
+  ...)
+#+end_src
+#+latex: \end{listing}
+
+- describe restarts
+- mention the need to properly unwind the continuation during error signalization & restarts
 
 ** Implementacja procesów
 - add a diagram of the uProc context - only include status, cont & handler registers
