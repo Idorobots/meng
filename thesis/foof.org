@@ -689,11 +689,13 @@ Transformacja CPS w tym przypadku umożliwia implementację funkcji rekurencyjny
 Warto zauważyć, iż proste modyfikacje podstawowego algorytmu konwersji /Continuation Passing Style/, polegające na generowaniu wywołań wbudowanych funkcji w stategicznych miejscach, mogą pomóc w implementacji szerokiej gamy mechanizmów kontroli przepływu sterowania, jakich jaki obsługa błędów oraz multiprocessing. Fakt ten został wdrożony do implementacji kompilatora języka =FOOF= i szczegółowo opisany w rozdziale [[ref:sec:runtime-system]].
 
 ** Optymalizacja i generacja kodu
-- describe & motivate this phase
-- mention emitting a subset of both Scheme and FOOF
-- contrast it with core erlang (its a true subset, so emitted code is executable in both, kinda) [cite:Carlsson2001] [cite:Carlsson2004]
-- hint at further development using LLVM [cite:SomethingAboutLLVM]
-- mention a requirement to perform closure conversion or lambda lifting [cite:PeytonJones1992]
+Ostatnie dwie fazy kompilacji to optymalizacja i generacja kodu wynikowego. Zadaniem tych faz jest uproszczenie, przyspieszenie i przygotowanie przetransformowanego w poprzednich fazach kodu do postaci możliwej do uruchomienia przez komputer.
+
+Fazy te zostały niestety pominięte w związku z ich skomplikowaniem i ograniczeniami czasowymi nałożonymi na projekt. W chwili obecnej, kompilator języka =FOOF= kończy działanie produkując kod pośredni, będący uruchamialnym podzbiorem języków Scheme i =FOOF=, dzięki czemu może zostać uruchomiony przez interpretery i kompilatory tych języków.
+
+W przyszłości istnieje możliwość relatywnie łatwego dodania pozostałych faz kompilacji. W szczególności, zaimplementowana już faza konwersji /Continuation Passing Style/ opisana w sekcji [[ref:sec:cps-impl]] ułatwia implementację szerokiej gamy ciekawych optymalizacji, takich jak częściowa ewaluacja statycznych wartości (ang. /partial evaluation/), prowadząca do zwijania wartości stałych (ang. /constant folding/), oraz eliminacji jednakowych podwyrażeń (ang. /common subexpression elimination/) [[cite:Bacon2002]].
+
+Implementacja fazy generacji kodu maszynowego wymagać będzie dodatkowo *konwersji domknięć leksykalnych* (ang. /closure conversion/) i opcjonalnie *lambda-unoszenia* (ang. /lambda lifting/) [[cite:PeytonJones1992]], których zadaniem jest przeniesienie definicji funkcji anonimowych wygenerowanego kodu do globalnej przestrzeni nazw. Listing [[ref:code:lambda-lift-vs-closure-conv]] ilustruje działanie obu tych transformacji.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Przykład ilustrujący różnice pomiędzy algorytmami lambda-unoszenia oraz konwersji domknięć leksykalnych.}}
@@ -728,8 +730,7 @@ Warto zauważyć, iż proste modyfikacje podstawowego algorytmu konwersji /Conti
 #+LaTeX: \end{multicols}
 #+latex: \end{listing}
 
-- add a code example contrasting closure conversion and lambda lifting
-- mention other optimizations (partial evaluation, constant folding and such)
+Konwersja domknięć leksykalnych polega na przeniesieniu definicji funkcji anonimowych do globalnej przestrzeni nazw oraz odpowiedniej modyfikacji miejsc tworzenia domknięć leksykalnych. Technika lambda-unoszenia, która zwykle jest wykonywana tuż po konwersji domknięć leksykalnych, polega na redukcji ilości stworzonych obiektów funkcyjnych przez promocję zmiennych wolnych domknięć leksykalnych do listy argumentów funkcji i modyfikacji miejsc wywołań funkcji w celu przekazania dodatkowych wartości. Technika ta pozwala ominać proces budowania domknięcia leksykalnego i jednocześnie przyspieszyć miejsca jego wywołań.
 
 * Środowisko uruchomieniowe języka
 #+LaTeX: \label{sec:runtime-system}
