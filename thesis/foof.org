@@ -735,8 +735,11 @@ Konwersja domknięć leksykalnych polega na przeniesieniu definicji funkcji anon
 * Środowisko uruchomieniowe języka
 #+LaTeX: \label{sec:runtime-system}
 
-- briefly touch on the architecture
-- mention Scheme bootstrap
+Niniejszy rozdział przedstawia architekturę środowiska uruchomieniowego (ang. /runtime system/) języka =FOOF=, czyli środowiska zawierającego procedury niezbędne do uruchamiania programów napisanych w tym języku. Do procedur takich należą te odpowiedzialne za budowę podstawowych typów danych dostarczanych przez język programowania, procedury zarządzania pamiecią programów, a także te niezbędne do działania zaawansowanych funkcjonalności języka.
+
+W związku ze zróżnicowaniem funkcjonalności dostępnych w różnych językach programowania, nie istnieje jedna kanoniczna metoda implementacji ich środowisk uruchomieniowych. Sytuacja jest wręcz przeciwna, dwie różne implementacje tego samego języka programowania mogą posiadać zupełnie odmienne środowiska uruchomieniowe, natomiast dwa zupełnie różne języki mogą korzstać z tego samego środowiska uruchomieniowego, co często ma miejsce w przypadku /maszyn wirtualnych/. Przykładem takiej sytuacji jest wykorzystanie maszyny wirtualnej BEAM [[cite:Armstrong1996]], oryginalnie zaprojektowanej dla języka Erlang, przez kilka innych języków programowania, takich jak Elixir i Joxa.
+
+Język =FOOF= korzysta w obecnej postaci ze środowiska uruchomieniowego języka Scheme, rozszerzając jego funkcjonalność o mechanizmy niezbędne do implementacji przetwarzania współbieżnego, zaawansowanej obsługi błędów, a także zapewnienia wsparcia dla inżynierii wiedzy.
 
 ** Architektura środowiska uruchomieniowego
 #+begin_center
