@@ -242,6 +242,8 @@ Kolejnym problemem towarzyszącym funkcjom zrealizowanym jako domknięcia leksyk
 Oryginalna praca wprowadzająca Rachunek Lambda w celu osiągnięcia rekurencji wykorzystuje rachunek kombinatorów [[cite:Church1932]], a w szczególności *kombinator Y*. Sposób działania tego kombinatora został szczegółowo opisany w [[cite:Felleisen1991]], natomiast problem i propozycję implementacji rekurencji szerzej opisano w [[cite:Rzepecki2015]].
 
 ** Kontynuacje
+#+LaTeX: \label{sec:continuations-description}
+
 Kolejnym mechanizmem będącym integralną częścią języka =FOOF= są kontynuacje, czyli abstrakcyjne reprezentacje przepływu sterowania programów, które pozwalają jednoznacznie określić kolejność wykonywania obliczeń.
 
 Kontynuacje można interpretować jako ciąg obliczeń pozostałych do wykonania z punktu widzenia danego miejsca programu, który został *reifikowany* jako funkcja i udostępniony z poziomu wykonywanego programu. W efekcie, programy mogą zadecydować by zrestartować obliczenia od pewnego momentu, albo wręcz przeciwnie, przerwać je odrzucając wartości pośrednie.
@@ -604,18 +606,16 @@ Definicje należące do zdefiniowanego modułu =X= transformowane są do postaci
 ** Transformacja /Continuation Passing Style/
 #+LaTeX: \label{sec:cps-impl}
 
-- reformat this to fit the narrative
+Kolejną fazą kompilacji jest faza konwersji przekazywania kontynuacji (ang. /Continuation Passing Style/, /CPS/) polegająca na automatycznej transformacji kodu źródłowego programu do formatu, w którym wszystkie funkcje przyjmują dodatkowy argument będący kontynuacją, którą przekazują dalej [[cite:Appel1992]].
 
-Do tego celu służy technika przekazywania kontynuacji (ang. /Continuation Passing Style/, /CPS/) polegająca na automatycznej transformacji kodu źródłowego programu do formatu, w którym wszystkie funkcje przyjmują dodatkowy argument będący kontynuacją, którą przekazują dalej [[cite:Appel1992]].
-
-Listing [[ref:code:ex-cps-principle]] prezentuje przykład konwersji CPS prostej funkcji.
+Celem tej fazy jest wplecenie notacji kontynuacji opisanych w sekcji [[ref:sec:continuations-description]] do pośredniej reprezentacji programów. Listing [[ref:code:ex-cps-principle]] prezentuje przykład konwersji CPS prostej funkcji.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Przykład konwersji \textit{Continuation Passing Style}.}}
 #+latex: \label{code:ex-cps-principle}
 #+LaTeX: \begin{multicols}{2}
 #+begin_src scheme
-;; Styl aplikatywny:
+;; Styl bespośredni:
 (lambda (x y)
   (* 2 (+ x y)))
 #+end_src
@@ -623,12 +623,12 @@ Listing [[ref:code:ex-cps-principle]] prezentuje przykład konwersji CPS prostej
 #+begin_src scheme
 ;; Styl Continuation Passing:
 (lambda (x y cont)
-  (+& x y
-      (lambda (v)
-        (*& 2 v cont))))
+  (__+ x y
+       (lambda (v)
+         (__* 2 v cont))))
 
-;; Transformacja wbudowanych funkcji:
-(define (+& a b cont)
+;; Konwersja wbudowanych funkcji:
+(define (__+ a b cont)
   (cont (+ a b)))
 #+end_src
 #+LaTeX: \end{multicols}
@@ -638,49 +638,55 @@ Po transformacji, funkcja ta przyjmuje dodatkowy argument =cont=, który następ
 
 W przykładzie można zauważyć doprecyzowanie kolejności wykonywania działań po transformacji CPS - pierwszą wykonaną operacją jest dodawanie, a jego wynik przekazywany jest do, specjalnie w tym celu stworzonej, kontynuacji pośredniej i następnie od operacji mnożenia wraz z kontynuacją =cont= wywołania funkcji.
 
-- describe the algorithm
-- note about lazy continuation code generation
-- add a comparison example
+Algorytm automatycznej konwersji /CPS/ polega na analizie struktury kodu źródłowego metodą /dziel i zwyciężaj/ i przeprowadzeniu serii prostych podstawień, z których najważniejsze to:
 
-- describe in detail how to transform simple stuff
-- describe in detail how to transform functions (recursion problems & crude solution via mutation [cite:German1995], [cite:Kaser1993], [cite:Felleisen1991])
+- Transformacja identyfikatorów przebiega przez dodanie prefixu =__= i unormowanie znaków specjalnych w celu wyraźnego odseparowania wartości przed i po konwersji.
 
-- note on recursion problems & solution via mutation
+- Transformacja wartości prostych polega na wywołaniu /aktualnej kontynuacji/ z ich wartością.
+
+- Transformacja funkcji polega na rozszerzeniu listy ich argumentów o dodatkowy argument reprezentujący /kontynuację wywołania funkcji/ i rekurencyjnym przeprowadzeniu transformacji ciała funkcji przy jednoczesnej podmianie aktualnej kontynuacji na wprowadzoną uprzednio kontynuację wywołania funkcji.
+
+Dokłady opis algorytmu konwersji /Continuation Passing Style/ zawarto w [[cite:Appel1992]]. Ponieważ konwersja CPS ma miejsce podczas kompilacji i przed uruchomieniem programu, toteż wartość /aktualnej kontynuacji/ nie jest ustalona. W związku z tym, powyższy *algorytm generuje kod*, który będzie się składał na faktyczną wartość aktualnej podczas uruchomienia programu kontynuacji.
+
+Jedną z cech konwersji CPS jest dokładne sprecyzowanie kolejności zachodzenia operacji w transfomowanych programach, co uwydatnia problem implementacji rekurencji. Zgodnie z opisem problemu z sekcji [[ref:sec:continuations-description]], funkcje rekurencyjne (a także funkcje wzajemnie-rekurencyjne) wymagają istnienia własnej (pośrednio w przypadku funkcji wzajemnie-rekurencyjnych) wartości zanim będą mogły zostać zbudowane, co prowadzi do powstania sprzeczności. Nie jest to jednak do końca prawdziwe stwierdzenie, otóż funkcje rekurencyjne wymagają pewnej *lokacji*, w której znajdzie się ich wartość, podczas budowy tejże wartości, dzięki czemu ich implementacja jest możliwa. Listing [[ref:code:cps-letrec]] prezentuje wynik transformacji CPS konstrukcji =letrec= służącej do definiowania wzajemnie-rekurencyjnych funkcji.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Przykład transformacji konstrukcji \textt{letrec}.}}
 #+latex: \label{code:cps-letrec}
 #+LaTeX: \begin{multicols}{2}
 #+begin_src scheme
-'(letrec ((even? (lambda (x)
-                   ...
-                   odd?
-                   ...))
-          (odd? (lambda (x)
+(letrec ((even? (lambda (x)
                   ...
-                  even?
-                  ...)))
-   (even? 7))
+                  odd?
+                  ...))
+         (odd? (lambda (x)
+                 ...
+                 even?
+                 ...)))
+  (even? 7))
 #+end_src
 #+LaTeX: \columnbreak
 #+BEGIN_SRC scheme
-(let ((even? nil)
-      (odd? nil))
-  (set! even? (lambda (x)
-                ...
-                odd?
-                ...))
-  (set! odd? (lambda (x)
-               ...
-               even?
-               ...))
-  (even? 7))
+(let ((__even? nil)
+      (__odd? nil))
+  (set! __even? (lambda (x)
+                  ...
+                  __odd?
+                  ...))
+  (set! __odd? (lambda (x)
+                 ...
+                 __even?
+                 ...))
+  (__even? 7
+           (lambda (value)
+             value)))
 #+END_SRC
 #+LaTeX: \end{multicols}
 #+latex: \end{listing}
 
-- mention the need to support uprocs & error handling (to be expanded upon in future sections)
-- hint at emitting calls to primitive functions =&yield-cont=, =&uproc-error-handler= etc
+Transformacja CPS w tym przypadku umożliwia implementację funkcji rekurencyjnych tworząc dla ich wartości lokacje (=__even?= oraz =__odd?=), do których następnie wpisuje za pomocą konstrukcji =set!= zbudowane wartości. W efekcie, obie funkcje mają wszystkie niezbędne informacje i mogą korzystać z pozostałych funkcji wprowadzonych przez konstrukcję =letrec=. Rozwiązanie to jest analogiczne do techniki wprowadzonej w [[cite:German1995]] oraz stanowi preferowalną (pod warunkiem dopuszczenia mutacji) alternatywę dla wykorzystania kombinatora =Y= [[cite:Felleisen1991]], którego implementacja dla funkcji wzajemnie-rekurencyjnych jest nietrywialna. Innym podejściem do rozwiązania problemu rekurencji jest automatyczna eliminacja wzajemnej rekursji [[cite:Kaser1993]].
+
+Warto zauważyć, iż proste modyfikacje podstawowego algorytmu konwersji /Continuation Passing Style/, polegające na generowaniu wywołań wbudowanych funkcji w stategicznych miejscach, mogą pomóc w implementacji szerokiej gamy mechanizmów kontroli przepływu sterowania, jakich jaki obsługa błędów oraz multiprocessing. Fakt ten został wdrożony do implementacji kompilatora języka =FOOF= i szczegółowo opisany w rozdziale [[ref:sec:runtime-system]].
 
 ** Optymalizacja i generacja kodu
 - describe & motivate this phase
@@ -726,6 +732,8 @@ W przykładzie można zauważyć doprecyzowanie kolejności wykonywania działa�
 - mention other optimizations (partial evaluation, constant folding and such)
 
 * Środowisko uruchomieniowe języka
+#+LaTeX: \label{sec:runtime-system}
+
 - briefly touch on the architecture
 - mention Scheme bootstrap
 
