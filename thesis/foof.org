@@ -762,7 +762,7 @@ Obecna implementacja, w związku z ograniczeniami czasowymi narzuconymi na proje
 W przyszłości istnieje możliwość rozwinięcia implementacji w celu wsparcia wielowątkowości, na przykład poprzez wykorzystanie *barier pamięci*, *operacji atomowych* oraz *pamięci lokalnej dla wątku* (ang. /thread-local storage/), co pozwoli osiągnać przyspieszenie aplikacji języka =FOOF=.
 
 ** Implementacja podstawowych typów danych
-- mention scheme bootstrap yet again [cite:Sperber2010]
+Wybór sposóbu reprezentacji podstawowych typów danych w językach programowania jest bardzo ważny i często stanowi pole do czynienia kompromisów i optymalizacji [[cite:Aho2006]]. Języki funkcyjne, do których należy język =FOOF=, z racji swojego nacisku na przejrzystą semantykę charakteryzują się relatywną prostotą reprezentacji wbudowanych typów danych [[cite:PeytonJones1992]]. Schemat [[ref:fig:object-representation]] prezentuje przykład reprezentacji typów danych wprowadzony w [[cite:Gudeman1993]] na potrzeby języków /dynamicznie typowanych/, czyli nie weryfikujących typów zmiennych podczas kompilacji.
 
 #+begin_center
 #+label: fig:object-representation
@@ -771,11 +771,16 @@ W przyszłości istnieje możliwość rozwinięcia implementacji w celu wsparcia
 [[file:./img/objectrepr.pdf]]
 #+end_center
 
-- describe how it's usually done [[cite:PeytonJones1992]], [[cite:Aho2006]], [cite:Gudeman1993]
+Reprezentacja ta przewiduje istnienie dwóch klas obiektów:
 
-- add a datatype equivalence example
+- *prostych* - reprezentowanych przez jedno słowo procesora i posiadających krótki, trzybitowy tag określający ich dokładny typ,
+
+-  *złożonych* - reprezentowanych przez kilka kolejnych słów procesora, z których pierwsze zawiera nieco dłuższy, ośmiobitowy tag określający ich dokłady typ oraz pewien zestaw metadanych do wykorzystania przez środowisko uruchomieniowe, a następne są obiektami prostymi.
+
+Reprezentacja taka pozwala w łatwy sposób enkodować wszystkie podstawowe typy danych języka =FOOF=. Na przykład, listy pojedynczo-wiązane mogą być zrealizowane jako ciąg par reprezentowanych przez obiekty złożone składające się z dwóch obiektów prostych - wskaźników wskazujących na inne obiekty złożone będące elementami pary. Integracja ze środowiskiem uruchomieniowym języka Scheme pozwoliła pominąć żmudną implementację reprezentacji i procedur konstrukcji wbudowanych typów danych języka. Ich semantyka jest więc zgodna z opisem zawartym w [[cite:Sperber2010]], a ekwiwalencję składniową zaprezentowano na listingu [[ref:code:datatype-equivalence]].
+
 #+latex: \begin{listing}[H]
-#+latex: \caption{\mylisting{Porównanie wbudowanych typów danych języków Scheme i \texttt{FOOF}.}}
+#+latex: \caption{\mylisting{Porównanie wbudowanych typów danych języka \texttt{FOOF} i dialektu języka Scheme o nazwie Racket.}}
 #+latex: \label{code:datatype-equivalence}
 #+LaTeX: \begin{multicols}{2}
 #+begin_src clojure
@@ -802,8 +807,7 @@ symbol
 #+LaTeX: \end{multicols}
 #+latex: \end{listing}
 
-- describe equivalence of various complex types such as lambdas
-- mention which datatypes aren't really implemented right now
+Wszystkie podstawowe typy danych języka =FOOF= mają swoje dokładne, semantyczne odpowiedniki w języku Scheme, a odróżnia je jedynie reprezentacja literałowa. Warto zauważyć, iż zależość ta jest prawdziwa także dla bardziej złożonych typów danych, jak funkcje, które są kodowane w ten sam sposób. Oba środowiska uruchomieniowe różną się natomiast reprezentacją kontynuacji - język =FOOF= używa konwersji przekazywania kontynuacji i reprezentuje je jako zwykłe funkcje - oraz brakiem idei procesów w standardzie języka Scheme.
 
 ** Implementacja kontynuacji
 - describe trampolines (returning cont + hole aka trampoline,) [cite:Appel1992]
