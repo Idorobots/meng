@@ -856,12 +856,15 @@ Przykład pokazuje, iż jedyną wymaganą modyfikacją jest emitowanie wywołań
 Wykorzystanie techniki trampoliny prowadzi do powstania /punktów sekwencyjnych/ w programie, czyli zaistnienia miejsc, w których *gwarantowane* jest wykonanie dotychczasowych obliczeń (w szczególności /efektów/ takich jak mutacja wartości). Miejsca te są analogiczne do punktów sekwencyjnych obecnych w interpreterach kodu bajtowego oraz interpreterach redukcyjnych [[cite:PeytonJones1992]], i mogą z powodzeniem służyć do realizowania podobnych funkcji - na przykład /debugowania/, lub /wywłaszczania/. Zostało to opisane w sekcji [[ref:sec:cfs-impl]].
 
 ** Implementacja obsługi błędów
-- describe how continuations are used for error handling - handle & raise
+Środowisko uruchomieniowe języka =FOOF= pozwala zrealizować obecny w języku zaawansowany mechanizm obsługi błędów i sytuacji wyjątkowych. Mechanizm ten został zaimplementowany w oparciu o kontynuacje i korzysta z dwóch funkcji wbudowanych dostarczanych przez środowisko uruchomieniowe.
+
+Funkcje te, =&uproc-error-handler= oraz =&set-uproc-error-handler!= są odpowiedzialne za zarządzanie aktualnie aktywną procedurą obsługi sytuacji wyjątkowej, a ich wywołania są emitowane w fazie konwersji /Continuation Passing Style/ opisanej szczegółowo w sekcji [[ref:sec:cps-impl]]. Listing [[ref:code:ex-cps-errors]] demonstruje wykorzystanie wymienionych wyżej funkcji w generowanym w fazie konwersji CPS kodzie pośrednim.
+
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Wykorzystanie kontynuacji do implementacji obsługi błędów.}}
 #+latex: \label{code:ex-cps-errors}
 #+BEGIN_SRC scheme
-;; (raise error)
+;; Konwersja (raise error):
 (let ((__handler (&uproc-error-handler)))
   (__handler __error
              (lambda (__value __ignored)
@@ -870,7 +873,7 @@ Wykorzystanie techniki trampoliny prowadzi do powstania /punktów sekwencyjnych/
                __value
                ...)))
 
-;; (handle expression new-handler)
+;; Konwersja (handle expression new-handler):
 (let ((__handler (&uproc-error-handler)))
   (&set-uproc-error-handler!
    (lambda (__error __restart)
@@ -886,8 +889,9 @@ Wykorzystanie techniki trampoliny prowadzi do powstania /punktów sekwencyjnych/
 #+end_src
 #+latex: \end{listing}
 
-- describe restarts
-- mention the need to properly unwind the continuation during error signalization & restarts
+Powyższy, kryptyczny przykład pokazuje relatywnie skomplikowany kod generowany dla fundamentalnie nieskomplikowanych operacji =raise= oraz =handle= realizujących obsługę błędów w języku =FOOF=. Należy zwrócić uwagę na zastosowanie kontynuacji - procedura obsługi sytuacji wyjątkowej jest zwykłą, reifikowaną do postaci funkcji kontynuacją, której zadaniem jest wywołanie faktycznej funkcji obsługującej zdarzenie. Sygnalizacja zaistnienia błędu polega wtedy na aplikacji tak zbudowanej kontynuacji z sygnalizowaną wartością oraz aktualną kontynuacją, która realizuje restart obliczeń.
+
+Skomplikowanie powyższego kodu wynika z konieczności odpowiedniego zarządzania procedurami obsługi zdarzeń wyjątkowych - musi istnieć gwarancja, że zrestartowane obliczenia zostaną uruchomione z tą samą procedurą obsługi zdarzeń, a po ich zakończeniu zostanie przywrócona poprzednia procedura, natomiast nowodeklarowana procedura obsługi błędu powinna być uruchomiona w kontekście poprzedniej zadeklarowanej procedury. Alternatywnym rozwiązaniem, które prowadzi do nieznacznego zredukowania skomplikowania powyższego kodu, jest rozszerzenie bazowego algorytmu konwersji przekazywania kontynuacji w taki sosób, by przekazywane były dwie kontynuacje - pierwsza odpowiedzialna za prawidłówe wartości oraz druga, za obsługę sytuacji wyjątkowych [[cite:Appel1992]]. Implementacja tego rozwiązania nie jest dostatecznie opłacalna, zatem nie została zrealizowana w implementacji języka =FOOF=.
 
 ** Implementacja procesów
 - add a diagram of the uProc context - only include status, cont & handler registers
