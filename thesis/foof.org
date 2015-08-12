@@ -444,7 +444,7 @@ Projekt przewiduje wykorzystanie opisanych powyżej podstawowych operacji oraz w
 * Kompilator języka =FOOF=
 Niniejszy rozdział przedstawia implementację kompilatora języka programowania =FOOF= szczegółowo opisując jego architekturę i poszczególne fazy kompilacji programów.
 
-Kompilator jest programem komputerowym, którego głównym zadaniem jest *transformacja kodu źródłowego* programów do formatu bardziej odpowiedniego do uruchomienia przez maszynę [[cite:Aho2006]]. Wynikiem działania kompilatora jest najczęśniej plik wykonywalny zawierający instrukcje możliwe do uruchomienia przez procesor lub /maszynę wirtualną/ w przypadku kompilatorów /kodu bajtowego/. Kompilacja jest zwykle podzielona na kilka osobnych faz, takich jak analiza leksykalna, analiza semantyczna, optymalizacja i generacja kodu [[cite:Aho2006]].
+Kompilator jest programem komputerowym, którego głównym zadaniem jest *transformacja kodu źródłowego* programów do formatu bardziej odpowiedniego do uruchomienia przez maszynę [[cite:Aho2006]]. Wynikiem działania kompilatora jest najczęściej plik wykonywalny zawierający instrukcje możliwe do uruchomienia przez procesor lub /maszynę wirtualną/, w przypadku kompilatorów /kodu bajtowego/. Kompilacja jest zwykle podzielona na kilka osobnych faz, takich jak analiza leksykalna, analiza semantyczna, optymalizacja i generacja kodu, które różnią się typem i celem przeprowadzanych transformacji [[cite:Aho2006]].
 
 Kompilator języka =FOOF= jest w założeniu kompilatorem /kodu maszynowego/, wynikiem działania którego jest strumień instrukcji możliwych do uruchomienia przez procesor komputera. Niestety, w wyniku ograniczeń czasowych i samej wielkości takiego projektu, ostatnie fazy kompilacji odpowiedzialne za generację kodu maszynowego zostały pominięte, a kompilacja programów kończy się na uruchamialnej reprezentacji pośredniej programów.
 
@@ -462,9 +462,9 @@ Architektura kompilatora języka =FOOF= jest typowa dla tego typu programów [[c
 
 Pierwszą fazą jest faza *analizy leksykalnej i syntaktycznej* polegająca na transformacji kodu źródłowego - tekstu enkodującego programy - do formatu wewnętrznego możliwego do przetworzenia przez następne fazy kompilacji. Analiza syntaktyczna wykorzystuje opisaną w rozdziale [[ref:sec:lang-description]] homoikoniczność języka =FOOF= i reprezentuje programy jako drzewa zbudowane z podstawowych typów danych dostarczanych przez język.
 
-Druga faza kompilacji to faza *makroekspansji* polegająca na uproszczeniu konstrukcji syntaktycznych występujących w programach za pomocą szeregu transformacji. Faza ta pozwala uprościć analizę semantyczną pojawiającą się w późniejszych fazach kompilacji dzięki redukcji rożnych konstrukcji języka, które muszą być brane pod uwagę.
+Druga faza kompilacji to faza *makroekspansji* polegająca na uproszczeniu konstrukcji syntaktycznych występujących w programach za pomocą szeregu transformacji. Faza ta pozwala uprościć analizę semantyczną pojawiającą się w późniejszych fazach kompilacji dzięki redukcji liczby różnych konstrukcji języka, które muszą być brane pod uwagę.
 
-Trzecią fazą jest faza *konwersji /Continuation Passing Style/* polegająca na syntaktycznej transformacji kodu źródłowego programów celem wplecenia do niego *kontynuacji* [[cite:Appel1992]]. Reprezentacja pośrednia programów po tej fazie kompilacji różni się zasadniczo od dotychczasowej reprezentacji, dzięki czemu umożliwia implementację szeregu opisanych wcześniej funkcjonalności języka.
+Trzecią fazą jest faza *konwersji /Continuation Passing Style/* polegająca na syntaktycznej transformacji kodu źródłowego programów celem wplecenia do niego *kontynuacji* [[cite:Appel1992]]. Reprezentacja pośrednia programów po tej fazie kompilacji różni się zasadniczo od dotychczasowej reprezentacji, dzięki czemu ułatwia implementację szeregu opisanych wcześniej funkcjonalności języka.
 
 Ostatnie dwie fazy kompilacji, czyli fazy *optymalizacji* i *generacji kodu maszynowego* w dużej mierze polegają na uproszczeniu przetworzonego kodu programów i przetłumaczeniu go na strumień prostych instrukcji możliwych do uruchomienia przez procesor komputera.
 
@@ -473,9 +473,9 @@ Kompilator działa w pojedynczym przebiegu, podczas którego każda z faz jest u
 ** Parsowanie
 Pierwszym logicznym elementem kompilatora jest *parser* przeprowadzający analizę leksykalną i syntaktyczną. Jego zadaniem jest transformacja tekstu reprezentującego programy języka =FOOF= do drzewiastej reprezentacji bazującej na podstawowych typach danych udostępnianych przez język.
 
-W związku z wyborem technologii wykorzystanych do implementacji kompilatora, budowa parsera przez niego używanego została oparta o dostępne w języku Scheme podstawowe funkcje operujące na plikach i kodzie źródłowym, takie jak =with-input-from-file= oraz =read= [[cite:Sperber2010]]. Implementacja dedykowanych parserów jest żmudna i nie prezentuje zbyt wysokiej wartości poznawczej, natomiast tworzenie generatora parserów, pomimo niewątpliwej ciekawości i przydatności z punktu widzenia użyteczności języka programowania, nie stanowi tematu niniejszej pracy. Powstała implementacja jest więc minimalną wersją niezbędną do umożliwienia dalszej kompilacji programów.
+W związku z wyborem technologii wykorzystanych do implementacji kompilatora, budowa parsera przez niego używanego została oparta o, będące częścią standardu języka Scheme, podstawowe funkcje operujące na plikach i kodzie źródłowym, takie jak =with-input-from-file= oraz =read= [[cite:Sperber2010]]. Implementacja dedykowanych parserów jest żmudna i nie prezentuje zbyt wysokiej wartości poznawczej, natomiast tworzenie generatora parserów, pomimo niewątpliwej ciekawości i przydatności z punktu widzenia użyteczności języka programowania, nie stanowi tematu niniejszej pracy. Powstała implementacja jest więc minimalną wersją niezbędną do umożliwienia dalszej kompilacji programów.
 
-Opisany parser wspiera podstawową składnię języka =FOOF= wynikającą z jego homoikoniczności oraz jedno rozszerzenie składniowe usprawniające generowanie programów wewnątrz kompilatora. Rozszerzenie to polega na transformacji kombinacji znaków specjalnych specjalnych \texttt{'}, =`=, \texttt{,} oraz \texttt{,@} do odpowiadających im konstrukcji w formacie S-wyrażeń. Listing [[ref:code:ex-syntax-expansion]] pokazuje kod źródłowy i kod powstały po ekspansji syntaktycznej przeprowadzonej przez parser.
+Opisany parser wspiera podstawową składnię języka =FOOF= wynikającą z jego homoikoniczności oraz jedno rozszerzenie składniowe usprawniające generowanie programów wewnątrz kompilatora. Rozszerzenie to polega na transformacji kombinacji znaków specjalnych \texttt{'}, =`=, \texttt{,} oraz \texttt{,@} do odpowiadających im konstrukcji w formacie S-wyrażeń. Listing [[ref:code:ex-syntax-expansion]] pokazuje kod źródłowy i kod powstały po ekspansji syntaktycznej przeprowadzonej przez parser.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Obsługa rozszerzeń składniowych S-wyrażeń w języku \texttt{FOOF}.}}
@@ -606,7 +606,7 @@ Definicje należące do zdefiniowanego modułu =X= transformowane są do postaci
 ** Transformacja /Continuation Passing Style/
 #+LaTeX: \label{sec:cps-impl}
 
-Kolejną fazą kompilacji jest faza konwersji przekazywania kontynuacji (ang. /Continuation Passing Style/, /CPS/) polegająca na automatycznej transformacji kodu źródłowego programu do formatu, w którym wszystkie funkcje przyjmują dodatkowy argument będący kontynuacją, którą przekazują dalej [[cite:Appel1992]].
+Kolejną fazą kompilacji jest faza konwersji przekazywania kontynuacji (ang. /Continuation Passing Style/, /CPS/) polegająca na automatycznej transformacji kodu źródłowego programu do formatu, w którym wszystkie funkcje przyjmują dodatkowy argument będący sukcesywnie przekazywaną dalej kontynuacją [[cite:Appel1992]].
 
 Celem tej fazy jest wplecenie notacji kontynuacji opisanych w sekcji [[ref:sec:continuations-description]] do pośredniej reprezentacji programów. Listing [[ref:code:ex-cps-principle]] prezentuje przykład konwersji CPS prostej funkcji.
 
@@ -638,7 +638,7 @@ Po transformacji, funkcja ta przyjmuje dodatkowy argument =cont=, który następ
 
 W przykładzie można zauważyć doprecyzowanie kolejności wykonywania działań po transformacji CPS - pierwszą wykonaną operacją jest dodawanie, a jego wynik przekazywany jest do, specjalnie w tym celu stworzonej, kontynuacji pośredniej i następnie od operacji mnożenia wraz z kontynuacją =cont= wywołania funkcji.
 
-Algorytm automatycznej konwersji /CPS/ polega na analizie struktury kodu źródłowego metodą /dziel i zwyciężaj/ i przeprowadzeniu serii prostych podstawień, z których najważniejsze to:
+Algorytm automatycznej konwersji CPS polega na analizie struktury kodu źródłowego metodą /dziel i zwyciężaj/ i przeprowadzeniu serii prostych podstawień, z których najważniejsze to:
 
 - Transformacja identyfikatorów przebiega przez dodanie prefixu =__= i unormowanie znaków specjalnych w celu wyraźnego odseparowania wartości przed i po konwersji.
 
@@ -684,7 +684,7 @@ Jedną z cech konwersji CPS jest dokładne sprecyzowanie kolejności zachodzenia
 #+LaTeX: \end{multicols}
 #+latex: \end{listing}
 
-Transformacja CPS w tym przypadku umożliwia implementację funkcji rekurencyjnych tworząc dla ich wartości lokacje (=__even?= oraz =__odd?=), do których następnie wpisuje za pomocą konstrukcji =set!= zbudowane wartości. W efekcie, obie funkcje mają wszystkie niezbędne informacje i mogą korzystać z pozostałych funkcji wprowadzonych przez konstrukcję =letrec=. Rozwiązanie to jest analogiczne do techniki wprowadzonej w [[cite:German1995]] oraz stanowi preferowalną (pod warunkiem dopuszczenia mutacji) alternatywę dla wykorzystania kombinatora =Y= [[cite:Felleisen1991]], którego implementacja dla funkcji wzajemnie-rekurencyjnych jest nietrywialna. Innym podejściem do rozwiązania problemu rekurencji jest automatyczna eliminacja wzajemnej rekursji [[cite:Kaser1993]].
+Transformacja CPS w tym przypadku umożliwia implementację funkcji rekurencyjnych tworząc dla ich wartości lokacje (=__even?= oraz =__odd?=), do których następnie wpisuje za pomocą konstrukcji =set!= zbudowane wartości. W efekcie, obie funkcje mają wszystkie niezbędne informacje i mogą korzystać z pozostałych funkcji wprowadzonych przez konstrukcję =letrec=. Rozwiązanie to jest analogiczne do techniki opisanej w [[cite:German1995]] oraz stanowi preferowalną (pod warunkiem dopuszczenia istnienia mutacji w języku) alternatywę dla wykorzystania kombinatora =Y= [[cite:Felleisen1991]], którego implementacja dla funkcji wzajemnie-rekurencyjnych jest nietrywialna. Innym podejściem do rozwiązania problemu rekurencji jest automatyczna eliminacja wzajemnej rekursji [[cite:Kaser1993]].
 
 Warto zauważyć, iż proste modyfikacje podstawowego algorytmu konwersji /Continuation Passing Style/, polegające na generowaniu wywołań wbudowanych funkcji w stategicznych miejscach, mogą pomóc w implementacji szerokiej gamy mechanizmów kontroli przepływu sterowania, jakich jaki obsługa błędów oraz multiprocessing. Fakt ten został wdrożony do implementacji kompilatora języka =FOOF= i szczegółowo opisany w rozdziale [[ref:sec:runtime-system]].
 
