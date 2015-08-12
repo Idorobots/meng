@@ -742,16 +742,24 @@ W związku ze zróżnicowaniem funkcjonalności dostępnych w różnych językac
 Język =FOOF= korzysta w obecnej postaci ze środowiska uruchomieniowego języka Scheme, rozszerzając jego funkcjonalność o mechanizmy niezbędne do implementacji przetwarzania współbieżnego, zaawansowanej obsługi błędów, a także zapewnienia wsparcia dla inżynierii wiedzy.
 
 ** Architektura środowiska uruchomieniowego
+Architektura środowiska uruchomieniowego wykorzystanego w implementacji języka =FOOF= jest relatywnie nieskomplikowa i składa się z niewielkiej liczby logicznych elementów. Po części jest to zasługa wiernego podążania za zasadami projektowania języków programowania przedstawionymi w [[cite:Hoare1973]] oraz wykorzystania środowiska uruchomieniowego języka Scheme. Diagram poszczególnych elementów logicznych i ich wzajemnej interakcji został zawarty na schemacie [[ref:fig:rt-architecture]].
+
 #+begin_center
 #+label: fig:rt-architecture
 #+caption: Schemat architektury środowiska uruchomieniowego języka =FOOF=.
-#+attr_latex: :width 0.8\textwidth :placement [H]
+#+attr_latex: :width 0.6\textwidth :placement [H]
 [[file:./img/rtarchitecture.pdf]]
 #+end_center
 
-- describe various parts
-- mention that this is single threaded and requires forking for real concurrency
-- hint at in-depth description of RBS implementation in a future section
+Konceptualnie, pamięć dostępna dla środowiska uruchomieniowego języka =FOOF= została podzielona na dwa segmenty. Pierwszy z nich, oznaczony na diagramie kolorem niebieskim, zawiera jedynie struktury danych wykorzystywane przez środowisko uruchomieniowe, takie jak kolejka i deskryptory procesów działających w systemie, czy dane systemu uruchomieniowego języka Scheme. Drugi segment pamięci, oznaczony na diagramie kolorem żółtym, stanowi pamięć operacyjna, czyli pamięć przeznaczona i dostępna dla uruchamianych programów.
+
+Segment pamięci operacyjnej został dodatkowo podzielony na trzy obszary, dwa z których zostały zarezerwowane na obsługę implementacji systemu regułowego do przechowywania baz faktów oraz reguł (rozdział [[ref:sec:knowledge-engineering]]), a trzeci, największy z nich, stanowi główny obszar, w którym przechowywane są obiekty reprezentujące wbudowane typy danych.
+
+Główny obszar pamięci operacyjnej programów jest wspólny dla wszystkich procesów działających w systemie (symbolizowanych na diagramie przez bloki =μProcN=), dzięki czemu możliwe jest uniknięcie nadmiernego kompiowania danych podczas przesyłania wiadomości pomiędzy procesami kosztem synchronizacji dostępu do pamięci. Podejście to, zwane *stertą współdzieloną*, jest alternatywą do podejścia zastosowanego w implementacji języka Erlang, gdzie każdy proces działa w osobnej puli pamięci, przez co wymagane jest, często kosztowne, kompiowanie struktury wiadomości [[cite:Armstrong1996]].
+
+Obecna implementacja, w związku z ograniczeniami czasowymi narzuconymi na projekt, nie wykorzystuje potencjału przedstawionej architektury w stu procentach, ponieważ działa /jednowątkowo/, czyli jest ograniczona tylko do jednego wątku systemu operacyjnego. Nie ma to jednak wpływu na współbieżność procesów języka =FOOF= działających w środowisku uruchomieniowym, co zostało poruszone w sekcji [[ref:sec:cfs-impl]].
+
+W przyszłości istnieje możliwość rozwinięcia implementacji w celu wsparcia wielowątkowości, na przykład poprzez wykorzystanie *barier pamięci*, *operacji atomowych* oraz *pamięci lokalnej dla wątku* (ang. /thread-local storage/), co pozwoli osiągnać przyspieszenie aplikacji języka =FOOF=.
 
 ** Implementacja podstawowych typów danych
 - describe scheme bootstrap [cite:Sperber2010]
@@ -783,6 +791,8 @@ Język =FOOF= korzysta w obecnej postaci ze środowiska uruchomieniowego języka
 - contrast with erlang [cite:Armstrong1996]
 
 ** Harmonogramowanie procesów
+#+LaTeX: \label{sec:cfs-impl}
+
 #+begin_center
 #+label: fig:uproc-cfs
 #+caption: Dodatkowe rejestry kontekstu mikroprocesu wymagade do implementacji algorytmu /Completely Fair Scheduler/.
@@ -826,6 +836,8 @@ Język =FOOF= korzysta w obecnej postaci ze środowiska uruchomieniowego języka
 - hint about moving this into stdlib
 
 * Reprezentacja i przetwarzanie wiedzy
+#+LaTeX: \label{sec:knowledge-engineering}
+
 - describe how this needs a separate section
 - elaborate on different ways of knowledge representation [cite:Wang2013] [cite:Barnaghi2012] [cite:Hachem2011] [cite:SomethingAboutProlog] [cite:SomethingAboutRBS]
 
