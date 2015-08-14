@@ -268,6 +268,8 @@ Istnieją także sposoby komponowania kontynuacji, bazujące na tak zwanych kont
 
 Dzięki możliwości przechwycenia kontynuacji, program jest w stanie przedwcześnie zakończyć działanie funkcji z obliczoną wartością. Kontynuacje dostępne są bezpośrednio, dzięki konstrtukcjom =letcc=, =shift= oraz =reset=, a także pośrednio, dzięki gamie innych mechanizmów kontroli przepływu sterowania, takich jak obsługa błędów, czy multiprocessing.
 
+Alternatywną metodą osiągnięcia podobnej funkcjonalności do tej oferowanej przez kontynuacje jest wykorzystanie /koprocedur/, czyli generalizacji funkcji pozwalającej na bezpieczne przerwanie działania w określonych miejscach i późniejszego do nich powrotu [[cite:Moura2009]]. Rozwiązanie to wymaga jednak sprecyzowania miejsc powrotu przez programistę, zwykle za pomocą konstrukcji =yield= lub =async/await=, co jest mniej ekspresywne niż wykorzystanie pełnych kontynuacji.
+
 ** Obsługa błędów
 Jednym z najważniejszych mechanizmów, jakie powinien udostępniać język programowania, jest mechanizm obsługi błędów i sytuacji wyjątkowych.
 
