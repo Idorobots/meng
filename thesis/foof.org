@@ -1006,10 +1006,11 @@ Warto zwrócić uwagę na brak kopiowania wiadomości w implementacji operacji =
 Brak kopiowania zawartości wiadomości pozwala uniknąć związanego z nim narzutu pamięciowego i degradacji szybkości przesyłania dużej liczby małych wiadomości kosztem konieczności stosowania synchronizacji dostępu do pamięci i pozwalających na dzielenie pamięci algorytmów kolekcji obiektów nieosiągalnych (ang. /garbage collection/). W przeciwieństwie do implementacji analogicznego mechanizmu w języku Erlang stosującego *blokady* (ang. /mutex lock/) [[cite:Armstrong1996]], w implementacji języka =FOOF= zaplanowano wykorzystanie operacji atomowych i barier pamięci.
 
 ** Dystrybucja obliczeń
-- difference between concurrency & distribution
-- describe modifications to the runtime in order to support distribution
-- hint about using a simple protocol
-- hint about moving this into stdlib
+Niestety, ze względu na ograniczenia czasowe narzucone na projekt, nie udało się w pełni zrealizować dystrybucji obliczeń na wiele połączonych ze sobą maszyn. Naturalnie, istnieje możliwość rozszerzenia implementacji środowiska uruchomieniowego języka =FOOF= o wsparcie dla rozproszenia obliczeń.
+
+Wsparcie to wymaga minimalnych modyfikacji środowiska uruchomieniowego polegających na dodaniu do identyfikatorów mikroprocesów fizycznych adresów maszyn, na których są uruchomione, i umożliwieniu komunikacji pomiędzy tymi maszynami. Komunikacja ta może być z powodzeniem zrealizowana w bibliotece standardowej języka =FOOF= przez implementację standardowego interfejsu *gniazd sieciowych BSD* (ang. /BSD sockets/).
+
+Oczywiście, w celu zapewnienia bezpieczeństwa komunikacji pomiędzy maszynami, wymagane będzie zaprojektowanie i wprowadzenie protokołu komunikacji uwzględniającego autoryzację poszczególnych węzłów oraz kontrolę dostępu do ich zasobów [[cite:Tanenbaum2006]]. Problem bezpieczeństwa systemów rozproszonych jest problemem skomplikowanym, a jego rozwiązanie wymaga ostrożnego i długiego planowania.
 
 * Reprezentacja i przetwarzanie wiedzy
 #+LaTeX: \label{sec:knowledge-engineering}
