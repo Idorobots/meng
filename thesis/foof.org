@@ -898,7 +898,7 @@ Skomplikowanie powyższego kodu wynika z konieczności odpowiedniego zarządzani
 ** Implementacja procesów
 Jednym z kluczowych elementów języka =FOOF= jest wsparcie dla przetwarzania współbieżnego zrealizowanego za pomocą notacji procesów. Procesy, zwane w nomenklaturze =FOOF= mikroprocesami (w celu rozróżnienia z relatywnie kosztownymi pod względem wykorzystania pamięci i szybkości przełączania procesami systemu operacyjnego) wymagają znacznego wsparcia ze strony środowiska uruchomieniowego języka.
 
-Wsparcie to, w dodatku do uruchamiania procesów, przejawia się organizacją i zarządzaniem ich kontekstami. Kontekstem mikroprocesu jest zbiór globalnych wartości dostępnych i modyfikowanych podczas jego działania przez środowisko uruchomieniowe oraz różne funkcje wbudowane dostępne dla programistów. Schemat [[ref:fig:uproc-processes]] obrazuje organizację obiektu reprezentującego kontekst mikroprocesu.
+Wsparcie to, w dodatku do uruchamiania procesów (sekcja [[ref:sec:cfs-impl]]), przejawia się organizacją i zarządzaniem ich kontekstami. Kontekstem mikroprocesu jest zbiór globalnych wartości dostępnych i modyfikowanych podczas jego działania przez środowisko uruchomieniowe oraz różne funkcje wbudowane dostępne dla programistów. Schemat [[ref:fig:uproc-processes]] obrazuje organizację obiektu reprezentującego kontekst mikroprocesu.
 
 #+begin_center
 #+label: fig:uproc-processes
@@ -921,18 +921,52 @@ Rejestry te są podstawowymi rejestrami niezbędnymi do organizacji działania m
 ** Harmonogramowanie procesów
 #+LaTeX: \label{sec:cfs-impl}
 
+Środowisko uruchomieniowe języka =FOOF= zarządza szeregiem struktur danych wykorzystywanych do przechowywania kontekstow mikroprocesów i harmonogramowania (ang. /scheduling/) ich uruchamiania. Do struktur tych należy *lista wszystkich kontekstów* mikroprocesów działających w systemie, wykorzystywana do między innymi do pozyskiwania statystyk z działania systemu oraz *główna kolejka uruchomieniowa*, wykorzystywana w algorytmie harmonogramowania.
+
+Algorytm ten to zmodyfikowana wersja algorytmu /Completely Fair Scheduler/ opisanego szczegółowo w [[cite:Pabla2009]]. Służy on do ustalania kolejności uruchamiania zadań na podstawie ich priorytetu i czasu dotychczasowego działania, i jest on wykorzystywany w wielu różnych programach, między innymi w jądrze systemu Linux od wersji 2.6.23. Główną cechą algorytmu /CFS/ jest poleganie na *wirtualnych czasach* działania zadań, do których obliczenia wykorzystywany jest ich priorytet i rzeczywisty czas działania, dzięki czemu możliwe jest stosowanie jednej, wspólnej kolejki zadań, zamiast wielu kolejek oddzielnych dla różnych priorytetów [[cite:Pabla2009]]. Listing [[ref:code:cfs-pseudocode]] prezentuje pseudokod działania algorytmu w notacji języka =FOOF=.
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Pseudokod zmodyfikowanej wersji algorytmu \textit{Completely Fair Scheduler}.}}
+#+latex: \label{code:cfs-pseudocode}
+#+BEGIN_SRC scheme
+(define (execute-loop)
+  (unless (task-queue-empty?)
+    (wait-until-ready)
+    (let ((task (dequeue-next-task!)))
+      (execute-step task)
+      (when (still-running? task)
+        (enqueue-task! task))
+      (execute-loop))))
+#+end_src
+#+latex: \end{listing}
+
+Algorytm przebiega w dwóch głównych fazach, które uruchamiane są w pęti tak długo, jak tylko istnieją działające mikroprocesy. Pierwsza faza polega na oczekiwaniu aż jedno z zadań będzie gotowe do uruchomienia (przejdzie ze stanu =waiting= do stanu =running=) a podczas niej środowisko uruchomieniowe może wykonywać inne pożyteczne zadania, takie jak przeprowadzanie automatycznej kolekcji nieużywanej pamięci (ang. /garbage collection/), lub przesyłanie danych do innych, połączonych maszyn. Druga faza korzysta z implementacji kolejki priorytetowej w celu określenia następnego działającego zadania, którego kontynuację następnie uruchamia przez określoną liczbę kroków. W zależności od stanu, w którym znajduje się zadanie po uruchomieniu jego kontynuacji, jest ono ponownie wstawiane do kolejki priorytetowej po uprzedniej inkrementacji jego rzeczywistego czasu działania.
+
+Priorytety w kolejce mikroprocesów, czyli wirtualne czasy działania zadań, wyznaczane są na podstawie następującej formuły:
+
+#+BEGIN_LaTeX
+\begin{equation*}
+VirtualTime = RealTime * (MaxPriority - TaskPriority)
+\end{equation*}
+#+END_LaTeX
+
+#+LaTeX: \noindent
+Zapewnia to opisaną powyżej możliwość stosowania jednej struktury danych do harmonogramowania mikroprocesów o różnych priorytetach i gwarantuje, iż mikroprocesy o wyższym priorytecie otrzymają proporcjonalnie większy udział czasu procesora sprzętowego.
+
+Nowo utworzone mikroprocesy, a także te reaktywowane po dłuższym czasie uśpienia, dodawane są do kolejki priorytetowej z rzeczywistym czasem działania odpowiadającym aktualnie najniższemu wirtualnemu czasowi. Technika ta nazywa się *sleeper fairness* i gwarantuje, iż mikroprocesy, które przez dłuższy czas były w stanie uśpienia otrzymają porównywalny do innych mikroprocesów udział czasu procesora po reaktywacji [[cite:Pabla2009]].
+
+Do implementacji powyższego algorytmu niezbędna jest modyfikacja kontekstu mikroprocesów, którą przedstawiono na schemacie [[ref:fig:uproc-cfs]].
+
 #+begin_center
 #+label: fig:uproc-cfs
 #+caption: Dodatkowe rejestry kontekstu mikroprocesu wymagade do implementacji algorytmu /Completely Fair Scheduler/.
-#+attr_latex: :width 0.8\textwidth :placement [H]
+#+attr_latex: :width 0.6\textwidth :placement [H]
 [[file:./img/uproccfs.pdf]]
 #+end_center
 
-- describe the Completely Fair Scheduler [cite:Pabla2009]
-- add pseudocode listing showing the algorithm
-- describe uProc context switching
-- contrast current impl with previous one (lack of wait list - notifications, heaps instead of RBT, number of reductions instead of time) [cite:Sedgewick2008]
-- contrast with erlang [cite:Armstrong1996]
+Obiekt kontekstu wzbogacono o dwa rejestry przechowujące odpowiednio priorytet oraz rzeczywisty czas wykonania mikroprocesu. Rejestry te wykorzystywane są przez kolejkę priorytetową, a modyfikowane przez główną pętlę środowiska uruchomieniowego.
+
+Zaimplementowany na potrzeby projektu algorytm został zmodyfikowany w kilku kluczowych miejscach. Pierwszą modyfikacją jest zastosowanie kolejki priorytetowej bazującej na stertach, która charakteryzuje się mniejszą złożonością obliczeniową operacji usuwania minimum niż złożoność, standardowo w tym algorytmie wykorzystywanych, kolejek priorytetowych bazujących na drzewach czerwono-czarnych. Drugą istotną modyfikacją jest brak listy zadań oczekujących, której rolę pełni główna kolejka mikroprocesów - implementacja operacji =sleep= polega na jednorazowej inkrementacji rzeczywistego czasu działania mikroprocesu o zadaną wartość.
 
 ** Implementacja Modelu Aktorowego
 #+LaTeX: \label{sec:actor-model-impl}
