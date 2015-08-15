@@ -903,7 +903,7 @@ Wsparcie to, w dodatku do uruchamiania procesów (sekcja [[ref:sec:cfs-impl]]), 
 #+begin_center
 #+label: fig:uproc-processes
 #+caption: Schemat kontekstu procesu obrazujący rejestry niezbędne do jego działania.
-#+attr_latex: :width 0.6\textwidth :placement [H]
+#+attr_latex: :width 0.5\textwidth :placement [H]
 [[file:./img/uprocprocesses.pdf]]
 #+end_center
 
@@ -959,8 +959,8 @@ Do implementacji powyższego algorytmu niezbędna jest modyfikacja kontekstu mik
 
 #+begin_center
 #+label: fig:uproc-cfs
-#+caption: Dodatkowe rejestry kontekstu mikroprocesu wymagade do implementacji algorytmu /Completely Fair Scheduler/.
-#+attr_latex: :width 0.6\textwidth :placement [H]
+#+caption: Dodatkowe rejestry kontekstu mikroprocesu wymagane do implementacji algorytmu /Completely Fair Scheduler/.
+#+attr_latex: :width 0.5\textwidth :placement [H]
 [[file:./img/uproccfs.pdf]]
 #+end_center
 
@@ -977,8 +977,8 @@ Operacje te w dużej mierze polegają na zarządzaniu kontekstami mikroprocesów
 
 #+begin_center
 #+label: fig:uproc-actor-model
-#+caption: Dodatkowe rejestry kontekstu mikroprocesu wymagade do implementacji Modelu Aktorowego.
-#+attr_latex: :width 0.6\textwidth :placement [H]
+#+caption: Rejestry kontekstu mikroprocesu wymagane do implementacji Modelu Aktorowego.
+#+attr_latex: :width 0.5\textwidth :placement [H]
 [[file:./img/uprocactormodel.pdf]]
 #+end_center
 
@@ -996,7 +996,7 @@ Warto zwrócić uwagę na brak kopiowania wiadomości w implementacji operacji =
 
 #+begin_center
 #+label: fig:msg-send
-#+caption: Diagram obrazujący efekty przekazywania wiadomości pomiędzy mikroprocesami.
+#+caption: Efekt przekazywania wiadomości pomiędzy mikroprocesami.
 #+attr_latex: :width 0.8\textwidth :placement [H]
 [[file:./img/msgsend.pdf]]
 #+end_center
