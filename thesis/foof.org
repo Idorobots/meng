@@ -1013,11 +1013,35 @@ Oczywiście, w celu zapewnienia bezpieczeństwa komunikacji pomiędzy maszynami,
 * Inżynieria wiedzy w języku
 #+LaTeX: \label{sec:knowledge-engineering}
 
-- describe how this needs a separate section
-- elaborate on different ways of knowledge representation [cite:Wang2013] [cite:Barnaghi2012] [cite:Hachem2011] [cite:SomethingAboutProlog] [cite:SomethingAboutRBS]
-- describe previous failed attempts at using an ontology
-- elaborate on how this solves heterogeneity
-- mention having other fun properties (can express Complex Event Processing)
+Mechanizmy niezbędne do umożliwienia przetwarzania wiedzy w języku =FOOF= stanowią znaczną część jego środowiska uruchomieniowego, w związku z czym opis ich implementacji został wydzielony do niniejszego rozdziału. Niezależnie od tej separacji, opisane w dalszej części rozdziału algorytmy i struktury danych stanowią integralną część środowiska uruchomieniowego, które nie byłoby bez nich kompletnie funkcjonalne.
+
+Głównym zadaniem inżynierii wiedzy w implementacji języka =FOOF= jest osiągnięcie opisanej w sekcji [[ref:sec:thesis-motivation]] *świadomości platformy*, czyli umożliwieniu refleksji na temat platformy sprzętowej, na której działa system rozproszony, a także struktury samego systemu. Refleksja taka umożliwia podejmowanie decyzji podczas działania aplikacji i prowadzi do lepszego wykorzystania zasobów maszyny i reagowania na zmiany zachodzące w systemie. Listing [[ref:code:heterogeneity-solved-pseudocode]] prezentuje pseudokod w notacji języka =FOOF= obrazujący wykorzystanie wiedzy do rozwiązania problemu hoterogeniczności.
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Wykorzystanie inżynierii wiedzy do rozwiązania problemu heterogeniczności.}}
+#+latex: \label{code:heterogeneity-solved-pseudocode}
+#+BEGIN_SRC scheme
+(define (transmogrify loads-of-data)
+  (let ((nodes (find-all (and (node ?node)
+                              (has ?node superscalar-hardware)
+                              (has ?node do-transmogrify))))))
+  (if (not (empty? nodes))
+      (pmap (lambda (n data)
+              (rpc n do-transmogrify data))
+            nodes
+            (chunkify loads-of-data (length nodes)))
+      (pmap do-transmogrify
+            (chunkify loads-of-data 10))))
+
+(define (do-transmogrify data)
+  ;; Kosztowne obliczenia...
+  )
+#+end_src
+#+latex: \end{listing}
+
+Przykład definiuje funkcję =transmogrify=, której zadaniem jest wykonanie kosztownych obliczeń na dużym zbiorze danych. Funkcja ta odpytuje bazę wiedzy dostępną w języku o istnienie podłączonych maszyn wyposażonych w procesory superskalarne i potrafiących wykonać operację /transmogryfikacji/ za pomocą operacji =find-all=. Następnie, w zależności od wyniku zapytania, dzieli dane na porcje, które albo przekazuje do owych, superskalarnych maszyn za pomocą zdalnego wywołania funkcji (ang. /remote procedure call/), albo przetwarza lokalnie za pomocą ustalonej liczby współbieżnie działających procesów. Wykorzystanie bazy wiedzy pozwala w łatwy sposób reagować na podłączenie dodatkowych superskalanych maszyn - funkcja zwyczajnie zacznie z nich korzystać. Można sobie także wyobrazić sytuację, w której system dysponuje wiedzą o szybkości działania implementacji funkcji =transmogrify= na różnych połączonych maszynach i wybiera najszybszą z nich już w miejscu jej wywołania.
+
+Sekcja [[ref:sec:knowledge-engineering-description]] wprowadza podstawowe definicje i pojęcia dotyczące reprezentacji i przetwarzania wiedzy, które będą wykorzystywane w niniejszym rozdziale. Konkluzją tej sekcji jest konieczność wykorzystania *systemu regułowego* w celu osiągnięcia pożądanej funkcjonalności.
 
 ** Reprezentacja wiedzy w języku
 - describe fact & rule databases (briefly mention their implementation)
