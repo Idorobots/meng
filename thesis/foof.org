@@ -153,8 +153,23 @@ Często, sytuacja ta wynika z nieadekwatności narzędzi (w szczególności jęz
 
 Jako alternatywę dla osiągnięcia niezależności od platformy, niniejsza praca wprowadza termin *świadomości platformy* (ang. /platform awareness/), czyli dążenia do udostępnienia wiedzy o strukturze budowanego systemu rozproszonego oraz platformy sprzętowej, na której działa, i umożliwienia refleksji na jej podstawie. Zaprezentowany w dalszej części pracy język programowania, roboczo zwany =FOOF= [fn:: Nazwa pochodzi od difluorku ditlenu, niezwykle reaktywnego, dysruptywnego i niebezpiecznego związku chemicznego, który nie ma zastosowania.], ma być uosobieniem ideologii świadomości platformy.
 
+#+LaTeX: \vfill
+
+#+LaTeX: \pagebreak
 ** Zawartość pracy
-- list what is found where in the thesis
+Praca została podzielona na cztery rozdziały tematyczne, wstęp oraz podsumowanie. Dodatkowo, do pracy dołączono szereg dodatków.
+
+Rozdział [[ref:sec:intro]] zawiera motywację, opis zawartości i definicję problemów rozpatrywanych w dalszej części pracy.
+
+Rozdział [[ref:sec:lang-description]] zawiera szczegółowy opis projektu języka programowania =FOOF= począwszy od podstawowych typów danych w nim dostępnych, przez bardziej skomplikowane struktury danych, jak funkcje i kontynuacje, kończąc na zaawansowanych mechanizmach służących realizacji zadań postawionych przed językiem.
+
+Rozdział [[ref:sec:compiler-description]] prezentuje implementację kompilatora języka =FOOF= wymieniając kolejne fazy kompilacji oraz opisując i motywując wykorzystane w nich algorytmy i techniki programistyczne. Opisowi towarzyszy dyskusja alternatywnych podejść i możliwych usprawnień.
+
+Rozdziały [[ref:sec:runtime-system]] oraz [[ref:sec:knowledge-engineering]] szczegółowo opisują implementację środowiska uruchomieniowego języka =FOOF=, począwszy od podstawowych procedur niezbędnych do działania programów, przez wsparcie dla programowania współbieżnego i rozproszonego oraz reprezentację i przetwarzanie wiedzy.
+
+Rozdział [[ref:sec:outro]] zawiera podsumowanie pracy oraz krótką dyskusję na temat przyszłych kierunków rozwoju.
+
+Dodatki [[ref:sec:foof-grammar]], [[ref:sec:foof-examples]], [[ref:sec:built-ins]] oraz [[ref:sec:misc]] zawierają odpowiednio: formalną specyfikację gramatyki języka =FOOF=, przykładowe, gotowe do uruchomienia programy, listę wbudowanych funkcji i makr oraz spisy rysunków i listingów kodu źródłowego wykorzystanych w pracy.
 
 * Język =FOOF=
 #+LaTeX: \label{sec:lang-description}
@@ -446,6 +461,8 @@ Przykład ten definiuje jedną regułę bez zagłębiania się w szczegóły imp
 Projekt przewiduje wykorzystanie opisanych powyżej podstawowych operacji oraz wiedzy możliwej do zdobycia podczas kompilacji programów języka =FOOF= poprzez *inferencję* faktów dotyczących struktury ich kodu źródłowego, do rozwiązania opisanego w sekcji [[ref:sec:module-system]] problemu linkowania modułów. Rozwiązanie to polega na przetworzaniu inferowanej wiedzy za pomocą zbioru reguł, zwanych kolektywnie *protokołem modułu*, w celu rezolucji zależności je spełniających w sposób automatyczny. Moduły, zamiast dokładnego sprecyzowania swoich zależności, mogą podać protokóły, które są konieczne i wystarczające do poprawnego, wspólnego działania, a system regułowy automatycznie wybierze spełniające je, dostępne submoduły.
 
 * Kompilator języka =FOOF=
+#+LaTeX: \label{sec:compiler-description}
+
 Niniejszy rozdział przedstawia implementację kompilatora języka programowania =FOOF= szczegółowo opisując jego architekturę i poszczególne fazy kompilacji programów.
 
 Kompilator jest programem komputerowym, którego głównym zadaniem jest *transformacja kodu źródłowego* programów do formatu bardziej odpowiedniego do uruchomienia przez maszynę [[cite:Aho2006]]. Wynikiem działania kompilatora jest najczęściej plik wykonywalny zawierający instrukcje możliwe do uruchomienia przez procesor lub /maszynę wirtualną/, w przypadku kompilatorów /kodu bajtowego/. Kompilacja jest zwykle podzielona na kilka osobnych faz, takich jak analiza leksykalna, analiza semantyczna, optymalizacja i generacja kodu, które różnią się typem i celem przeprowadzanych transformacji [[cite:Aho2006]].
