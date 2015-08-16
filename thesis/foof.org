@@ -1044,7 +1044,7 @@ Przykład definiuje funkcję =transmogrify=, której zadaniem jest wykonanie kos
 Sekcja [[ref:sec:knowledge-engineering-description]] wprowadza podstawowe definicje i pojęcia dotyczące reprezentacji i przetwarzania wiedzy, które będą wykorzystywane w niniejszym rozdziale. Konkluzją tej sekcji jest konieczność wykorzystania *systemu regułowego* w celu osiągnięcia pożądanej funkcjonalności.
 
 ** Reprezentacja wiedzy w języku
-- describe fact & rule databases (briefly mention their implementation)
+Wiedza w języku =FOOF= reprezentowana jest przez *fakty* i *reguły*, które przechowywane są w osobnych bazach danych. Bazy te zaimplementowane zostały jako zwykłe, liniowe przestrzenie N-krotek (ang. /tuple spaces/) - trójek =(identyfikator, wzorzec, akcja)= w przypadku reguł i jedno-krotek zawierających pewną wartość w przypadku faktów. Obie bazy wspierają szereg operacji, które schematycznie zaprezentowano na rysunku [[ref:fig:fact-rule-store]].
 
 #+begin_center
 #+label: fig:fact-rule-store
@@ -1053,14 +1053,43 @@ Sekcja [[ref:sec:knowledge-engineering-description]] wprowadza podstawowe defini
 [[file:./img/factrulestore.pdf]]
 #+end_center
 
-- describe facts
-- add an example of some facts
-- describe fact-related primops - signalling, assertion & retraction
-- describe rules
-- add an example of a rule listing different parts of a rule
-- describe rule-related primops - adding & disabling, triggering
+Fakty kodowane są przez wbudowane w język =FOOF= typy danych i mogą być dowolnie skomplikowane. Jedynym ograniczeniem narzucanym przez implementację jest acykliczność faktów w celu ułatwienia ich porównywania i dopasowywania do wzorców. Reprezentacja ta jest znacznie bardziej liberalna, niż reprezentacja wiedzy w systemach ontologicznych, gdzie fakty ograniczone są do trójek =(obiekt, właściwość, wartość)= [[cite:Wang2013, Hachem2011]]. Listing [[ref:code:facts-example]] prezentuje przykłady faktów w notacji języka =FOOF=.
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Przykładowe fakty w notacji języka \texttt{FOOF}.}}
+#+latex: \label{code:facts-example}
+#+BEGIN_SRC clojure
+42.7
+'fakt
+'(ustrukturyzowany fakt)
+'[fakty nie są ograniczone do trójek]
+'{:typ struktura :ograniczona? nie}
+#+end_src
+#+latex: \end{listing}
+
+Dodawanie faktów do bazy faktów przebiega z wykorzystaniem funkcji =assert!= i jest nazywane asercją, lub stwierdzeniem faktu. Odwrotną operacją jest retrakcja, lub cofnięcie faktu, osiągane za pomocą funkcji =retract!=. Retrakcja polega na *strukturalnej identyczności*, nie na identyczności referencji, w związku z czym jest operacją dość kosztowną obliczeniowo. Dodatkowo, implementacja przewiduje istnienie operacji =signal!=, która konceptualnie polega na asercji i następnie retrakcji faktu. Operacja ta została zoptymalizowana w taki sposób, by wyzwolić efekty asercji faktu bez modyfikacji żadnych struktur danych.
+
+Reguły deklarowane są za pomocą wbudowanej funkcji =whenever= i składają się z dwóch elementów: *wzorca* wiążącego struktury faktów oraz *akcji*, które mają zostać wykonane w przypadku dopasowania wzorca do pewnego podzbioru stwierdzonych faktów. Listing [[ref:code:rules-example]] pokazuje przykłady reguł w notacji języka =FOOF=.
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Przykładowe fakty w notacji języka \texttt{FOOF}.}}
+#+latex: \label{code:rules-example}
+#+BEGIN_SRC scheme
+(whenever wzorzec akcja ...)
+
+(whenever '(and (country ?country)
+                (coughing a-man ?country))
+  (shut-down-madagascar))
+#+end_src
+#+latex: \end{listing}
+
+W związku z dowolnością reprezentacji faktów, wzorce reguł również mogą być dowolnie skomplikowane. Dodatkowo, język =FOOF= udostępnia specjalny język domenowy służący do definiowania wzorców reguł, w którym symbole prefixowane przez znak zapytania oznaczają zmienne logiczne (=?country= w przykładzie). Poszczególne konstrukcje języka definicji wzorców zostały opisane w sekcji [[ref:sec:rete-impl]] przy okazji opisu implementacji systemu regułowego.
+
+Operacje prymitywne basy reguł to: dodawanie reguły za pomocą funkcji =whenever= oraz usuwanie reguły za pomocą funkcji =remove-rule!=. Implementacja korzysta z logicznego usuwania reguł - akcje związane z regułą nie są uruchamiane, ale reguła nadal jest obecna w strukturach danych implementacji systemu regułowego. Dodatkowo, zaimplementowana została funkcja =select=, która pozwala uruchomić regułę bez dodawania jej do bazy reguł.
 
 ** Algorytm Rete
+#+LaTeX: \label{sec:rete-impl}
+
 - describe Rete in detail [cite:Forgy1982]
 - mention unification
 - add a pseudocode of the unification algorithm?
