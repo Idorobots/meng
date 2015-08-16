@@ -412,10 +412,10 @@ W przykładzie definiowana jest struktura =A= dostarczającą funkcję =foo= ora
 
 System ten pozwala w łatwy sposób zarządzać zależnościami modułów - wystarczy zmienić parametr przekazany przy tworzeniu instancji modułu =B= na inną strukturę, bez modyfikacji jego definicji, by osiągnać zamierzone cele. Funkcjonalność ta jest bardzo przydatna przy tworzeniu bibliotek programistycznych, które mogą być parametryzowane modułami służącymi do powszechnych zadań, takimi jak moduł do logowania, lub moduł zawierający parametry konfiguracji aplikacji. W efekcie, biblioteki te nie narzucają z góry implementacji modułów parametryzujących, dzięki czemu mogą być łatwiej zintegrowane z różnymi programami.
 
-Zasadniczą wadą systemu modułowego w zaprezentowanej powyżej formie, jest konieczność istnienia osobnej fazy *linkowania*, czyli tworzenia instancji modułów. Problem ten został szczegółowo przeanalizowany w [[cite:Gasbichler2006]], skutkując stworzeniem notacji /interfejsów modułów/ ułatwiającej automatyczną rezolucję zależności. Rozwiązanie to jest dalekie od doskonałego, toteż język =FOOF= stosuje inne podejście opisane w sekcji [[ref:sec:knowledge-engineering]].
+Zasadniczą wadą systemu modułowego w zaprezentowanej powyżej formie, jest konieczność istnienia osobnej fazy *linkowania*, czyli tworzenia instancji modułów. Problem ten został szczegółowo przeanalizowany w [[cite:Gasbichler2006]], skutkując stworzeniem notacji /interfejsów modułów/ ułatwiającej automatyczną rezolucję zależności. Rozwiązanie to jest dalekie od doskonałego, toteż język =FOOF= stosuje inne podejście opisane w sekcji [[ref:sec:knowledge-engineering-description]].
 
 ** Inżynieria wiedzy w języku
-#+LaTeX: \label{set:knowledge-engineering}
+#+LaTeX: \label{sec:knowledge-engineering-description}
 
 Ostatnią i zarazem najbardziej zaawansowaną funkcjonalnością języka =FOOF= jest jego wsparcie dla inżynierii wiedzy (ang. /knowledge engineering/), objawiające się umożliwieniem refleksji na podstawie pewnych /informacji/, które zostały odkryte podczas działania programów. Wspomniane, powiązane ze sobą logicznie informacje, czyli *wiedza*, mogą dotyczyć wielu różnych aspektów działania aplikacji i są w dużej mierze uzależnione od domeny rozwiązywanych problemów.
 
