@@ -739,11 +739,11 @@ Konwersja domknięć leksykalnych polega na przeniesieniu definicji funkcji anon
 * Środowisko uruchomieniowe języka
 #+LaTeX: \label{sec:runtime-system}
 
-Niniejszy rozdział przedstawia architekturę środowiska uruchomieniowego (ang. /runtime system/) języka =FOOF=, czyli środowiska zawierającego procedury niezbędne do uruchamiania programów napisanych w tym języku. Do procedur takich należą te odpowiedzialne za budowę podstawowych typów danych dostarczanych przez język programowania, procedury zarządzania pamiecią programów, a także te niezbędne do działania zaawansowanych funkcjonalności języka.
+Niniejszy rozdział przedstawia architekturę środowiska uruchomieniowego (ang. /runtime system/) języka =FOOF=, czyli środowiska zawierającego procedury niezbędne do uruchamiania programów napisanych w tym języku. Do procedur takich należą te odpowiedzialne za budowę podstawowych typów danych dostarczanych przez język programowania, procedury zarządzania pamięcią programów, a także te niezbędne do działania zaawansowanych funkcjonalności języka.
 
 W związku ze zróżnicowaniem funkcjonalności dostępnych w różnych językach programowania, nie istnieje jedna kanoniczna metoda implementacji ich środowisk uruchomieniowych. Sytuacja jest wręcz przeciwna, dwie różne implementacje tego samego języka programowania mogą posiadać zupełnie odmienne środowiska uruchomieniowe, natomiast dwa zupełnie różne języki mogą korzystać z tego samego środowiska uruchomieniowego, co często ma miejsce w przypadku /maszyn wirtualnych/. Przykładem takiej sytuacji jest wykorzystanie maszyny wirtualnej BEAM [[cite:Armstrong1996]], oryginalnie zaprojektowanej dla języka Erlang, przez kilka innych języków programowania, takich jak Elixir i Joxa.
 
-Język =FOOF= korzysta w obecnej postaci ze środowiska uruchomieniowego języka Scheme, rozszerzając jego funkcjonalność o mechanizmy niezbędne do implementacji przetwarzania współbieżnego, zaawansowanej obsługi błędów, a także zapewnienia wsparcia dla inżynierii wiedzy.
+Język =FOOF= w obecnej postaci korzysta ze środowiska uruchomieniowego języka Scheme, rozszerzając jego funkcjonalność o mechanizmy niezbędne do implementacji przetwarzania współbieżnego, zaawansowanej obsługi błędów, a także zapewnienia wsparcia dla inżynierii wiedzy.
 
 ** Architektura środowiska uruchomieniowego
 Architektura środowiska uruchomieniowego wykorzystanego w implementacji języka =FOOF= jest relatywnie nieskomplikowa i składa się z niewielkiej liczby logicznych elementów. Po części jest to zasługa wiernego podążania za zasadami projektowania języków programowania przedstawionymi w [[cite:Hoare1973]] oraz wykorzystania środowiska uruchomieniowego języka Scheme. Diagram poszczególnych elementów logicznych i ich wzajemnej interakcji został zawarty na schemacie [[ref:fig:rt-architecture]].
@@ -809,7 +809,7 @@ symbol
 #+LaTeX: \end{multicols}
 #+latex: \end{listing}
 
-Wszystkie podstawowe typy danych języka =FOOF= mają swoje dokładne, semantyczne odpowiedniki w języku Scheme, a odróżnia je jedynie reprezentacja literałowa. Warto zauważyć, iż zależość ta jest prawdziwa także dla bardziej złożonych typów danych, jak funkcje, które są kodowane w ten sam sposób. Oba środowiska uruchomieniowe różną się natomiast reprezentacją kontynuacji - język =FOOF= używa konwersji przekazywania kontynuacji i reprezentuje je jako zwykłe funkcje - oraz brakiem idei procesów w standardzie języka Scheme.
+Wszystkie podstawowe typy danych języka =FOOF= mają swoje dokładne, semantyczne odpowiedniki w języku Scheme, a odróżnia je jedynie reprezentacja literałowa. Warto zauważyć, iż zależość ta jest prawdziwa także dla bardziej złożonych typów danych, jak funkcje, które są kodowane w ten sam sposób. Oba środowiska uruchomieniowe różnią się natomiast reprezentacją kontynuacji - język =FOOF= używa konwersji przekazywania kontynuacji i reprezentuje je jako zwykłe funkcje - oraz brakiem idei procesów w standardzie języka Scheme.
 
 ** Implementacja kontynuacji
 Implementacja kontynuacji w języku =FOOF= została zrealizowana już podczas kompilacji za sprawą automatycznej konwersji /Continuation Passing Style/, która została szczegółowo opisana w sekcji [[ref:sec:cps-impl]].
@@ -855,7 +855,7 @@ Technika ta pozwala przerwać działanie kontynuacji pomiędzy poszczególnymi j
 
 Przykład pokazuje, iż jedyną wymaganą modyfikacją jest emitowanie wywołań wbudowanej funkcji =&yield-cont= w miejscach bezpośredniego wywołania następnej kontynuacji. Funkcja =&yield-cont= zwyczajnie zwraca następny krok kontynuacji wraz z wartością, która ma do niego trafić - tak zwaną *dziurą kontynuacji*. W celu kompletnego uruchomienia kontynuacji należy sukcesywnie aplikować zwracaną funkcję do zwracanej wartości.
 
-Wykorzystanie techniki trampoliny prowadzi do powstania /punktów sekwencyjnych/ w programie, czyli zaistnienia miejsc, w których *gwarantowane* jest wykonanie dotychczasowych obliczeń (w szczególności /efektów/ takich jak mutacja wartości). Miejsca te są analogiczne do punktów sekwencyjnych obecnych w interpreterach kodu bajtowego oraz interpreterach redukcyjnych [[cite:PeytonJones1992]], i mogą z powodzeniem służyć do realizowania podobnych funkcji - na przykład /debugowania/, lub /wywłaszczania/. Zostało to opisane w sekcji [[ref:sec:cfs-impl]].
+Wykorzystanie techniki trampoliny prowadzi do powstania /punktów sekwencyjnych/ w programie, czyli miejsc, w których *gwarantowane* jest wykonanie dotychczasowych obliczeń (w szczególności /efektów/ takich jak mutacja wartości). Miejsca te są analogiczne do punktów sekwencyjnych obecnych w interpreterach kodu bajtowego oraz interpreterach redukcyjnych [[cite:PeytonJones1992]], i mogą z powodzeniem służyć do realizowania podobnych funkcji - na przykład /debugowania/, lub /wywłaszczania/. Zostało to opisane w sekcji [[ref:sec:cfs-impl]].
 
 ** Implementacja obsługi błędów
 Środowisko uruchomieniowe języka =FOOF= pozwala zrealizować obecny w języku zaawansowany mechanizm obsługi błędów i sytuacji wyjątkowych. Mechanizm ten został zaimplementowany w oparciu o kontynuacje i korzysta z dwóch funkcji wbudowanych dostarczanych przez środowisko uruchomieniowe.
@@ -921,16 +921,16 @@ Rejestry te są podstawowymi rejestrami niezbędnymi do organizacji działania m
 ** Harmonogramowanie procesów
 #+LaTeX: \label{sec:cfs-impl}
 
-Środowisko uruchomieniowe języka =FOOF= zarządza szeregiem struktur danych wykorzystywanych do przechowywania kontekstow mikroprocesów i harmonogramowania (ang. /scheduling/) ich uruchamiania. Do struktur tych należy *lista wszystkich kontekstów* mikroprocesów działających w systemie, wykorzystywana do między innymi do pozyskiwania statystyk z działania systemu oraz *główna kolejka uruchomieniowa*, wykorzystywana w algorytmie harmonogramowania.
+Środowisko uruchomieniowe języka =FOOF= zarządza szeregiem struktur danych wykorzystywanych do przechowywania kontekstow mikroprocesów i harmonogramowania (ang. /scheduling/) ich uruchamiania. Do struktur tych należy *lista wszystkich kontekstów* mikroprocesów działających w systemie, wykorzystywana między innymi do pozyskiwania statystyk z działania systemu, oraz *główna kolejka uruchomieniowa*, wykorzystywana w algorytmie harmonogramowania.
 
-Algorytm ten to zmodyfikowana wersja algorytmu /Completely Fair Scheduler/ opisanego szczegółowo w [[cite:Pabla2009]]. Służy on do ustalania kolejności uruchamiania zadań na podstawie ich priorytetu i czasu dotychczasowego działania, i jest on wykorzystywany w wielu różnych programach, między innymi w jądrze systemu Linux od wersji 2.6.23. Główną cechą algorytmu /CFS/ jest poleganie na *wirtualnych czasach* działania zadań, do których obliczenia wykorzystywany jest ich priorytet i rzeczywisty czas działania, dzięki czemu możliwe jest stosowanie jednej, wspólnej kolejki zadań, zamiast wielu kolejek oddzielnych dla różnych priorytetów [[cite:Pabla2009]]. Listing [[ref:code:cfs-pseudocode]] prezentuje pseudokod działania algorytmu w notacji języka =FOOF=.
+Algorytm ten to zmodyfikowana wersja algorytmu /Completely Fair Scheduler/ opisanego szczegółowo w [[cite:Pabla2009]]. Służy on do ustalania kolejności uruchamiania zadań i jest on wykorzystywany w wielu różnych programach, między innymi w jądrze systemu Linux od wersji 2.6.23. Główną cechą algorytmu /CFS/ jest poleganie na *wirtualnych czasach* działania zadań, do których obliczenia wykorzystywany jest ich priorytet i rzeczywisty czas działania, dzięki czemu możliwe jest stosowanie jednej, wspólnej kolejki zadań, zamiast wielu oddzielnych kolejek dla zadań o różnych priorytetach [[cite:Pabla2009]]. Listing [[ref:code:cfs-pseudocode]] prezentuje pseudokod działania algorytmu w notacji języka =FOOF=.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Pseudokod zmodyfikowanej wersji algorytmu \textit{Completely Fair Scheduler}.}}
 #+latex: \label{code:cfs-pseudocode}
 #+BEGIN_SRC scheme
 (define (execute-loop)
-  (unless (task-queue-empty?)
+  (when (not (task-queue-empty?))
     (wait-until-ready)
     (let ((task (dequeue-next-task!)))
       (execute-step task)
@@ -940,7 +940,7 @@ Algorytm ten to zmodyfikowana wersja algorytmu /Completely Fair Scheduler/ opisa
 #+end_src
 #+latex: \end{listing}
 
-Algorytm przebiega w dwóch głównych fazach, które uruchamiane są w pęti tak długo, jak tylko istnieją działające mikroprocesy. Pierwsza faza polega na oczekiwaniu aż jedno z zadań będzie gotowe do uruchomienia (przejdzie ze stanu =waiting= do stanu =running=) a podczas niej środowisko uruchomieniowe może wykonywać inne pożyteczne zadania, takie jak przeprowadzanie automatycznej kolekcji nieużywanej pamięci (ang. /garbage collection/), lub przesyłanie danych do innych, połączonych maszyn. Druga faza korzysta z implementacji kolejki priorytetowej w celu określenia następnego działającego zadania, którego kontynuację następnie uruchamia przez określoną liczbę kroków. W zależności od stanu, w którym znajduje się zadanie po uruchomieniu jego kontynuacji, jest ono ponownie wstawiane do kolejki priorytetowej po uprzedniej inkrementacji jego rzeczywistego czasu działania.
+Algorytm przebiega w dwóch głównych fazach, które uruchamiane są w pętli tak długo, jak tylko istnieją działające mikroprocesy. Pierwsza faza polega na oczekiwaniu aż jedno z zadań będzie gotowe do uruchomienia (przejdzie ze stanu =waiting= do stanu =running=) a podczas niej środowisko uruchomieniowe może wykonywać inne pożyteczne zadania, takie jak przeprowadzanie automatycznej kolekcji nieużywanej pamięci (ang. /garbage collection/), lub przesyłanie danych do innych, połączonych maszyn. Druga faza korzysta z implementacji kolejki priorytetowej w celu określenia następnego działającego zadania, którego kontynuację następnie uruchamia przez określoną liczbę kroków. W zależności od stanu, w jakim znajduje się zadanie po uruchomieniu jego kontynuacji, jest ono ponownie wstawiane do kolejki priorytetowej po uprzedniej inkrementacji jego rzeczywistego czasu działania.
 
 Priorytety w kolejce mikroprocesów, czyli wirtualne czasy działania zadań, wyznaczane są na podstawie następującej formuły:
 
