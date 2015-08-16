@@ -1010,61 +1010,78 @@ Wsparcie to wymaga minimalnych modyfikacji środowiska uruchomieniowego polegaj�
 
 Oczywiście, w celu zapewnienia bezpieczeństwa komunikacji pomiędzy maszynami, wymagane będzie zaprojektowanie i wprowadzenie protokołu komunikacji uwzględniającego autoryzację poszczególnych węzłów oraz kontrolę dostępu do ich zasobów [[cite:Tanenbaum2006]]. Problem bezpieczeństwa systemów rozproszonych jest problemem skomplikowanym, a jego rozwiązanie wymaga ostrożnego i długiego planowania.
 
-* Reprezentacja i przetwarzanie wiedzy
+* Inżynieria wiedzy w języku
 #+LaTeX: \label{sec:knowledge-engineering}
 
 - describe how this needs a separate section
 - elaborate on different ways of knowledge representation [cite:Wang2013] [cite:Barnaghi2012] [cite:Hachem2011] [cite:SomethingAboutProlog] [cite:SomethingAboutRBS]
+- describe previous failed attempts at using an ontology
+- elaborate on how this solves heterogeneity
+- mention having other fun properties (can express Complex Event Processing)
 
 ** Reprezentacja wiedzy w języku
+- describe fact & rule databases (briefly mention their implementation)
+
 #+begin_center
 #+label: fig:fact-rule-store
 #+caption: Schemat działania wbudowanych baz faktów i reguł.
-#+attr_latex: :width 0.8\textwidth :placement [H]
+#+attr_latex: :width 0.9\textwidth :placement [H]
 [[file:./img/factrulestore.pdf]]
 #+end_center
 
-- describe facts - signalling, assertion & retraction
-- describe rules briefly - adding & disabling, triggering
+- describe facts
+- add an example of some facts
+- describe fact-related primops - signalling, assertion & retraction
+- describe rules
+- add an example of a rule listing different parts of a rule
+- describe rule-related primops - adding & disabling, triggering
 
 ** Algorytm Rete
-- describe in detail the algorithm [cite:Forgy1982]
+- describe Rete in detail [cite:Forgy1982]
+- mention unification
+- add a pseudocode of the unification algorithm?
+- describe briefly its history [cite:Forgy1979]
+- describe various Rete nodes [cite:Forgy1982]
+- describe network merging
 
 #+begin_center
 #+label: fig:rete-network-merge
 #+caption: Schemat łączenia podsieci w algorytmie /Rete/.
-#+attr_latex: :width 0.8\textwidth :placement [H]
+#+attr_latex: :width 1.0\textwidth :placement [H]
 [[file:./img/retemerge.pdf]]
 #+end_center
 
-- describe briefly its history [cite:Forgy1979]
-- Rete vs naïve approach (vs CLIPS or similar ?)
-- add a benchmark diagram showing how Rete is better
+- compare Rete with naïve approach
+- add a benchmark diagram showing how Rete is better than naïve
 - contrast it with other algorithms [cite:Miranker1987]
 
-** Implementacja Rete - wnioskowanie w przód
-- describe what forward-chaining is
-- describe naïve Rete - no network merging
-- hint that this might be a good thing (future section)
-- describe all the nodes [cite:Forgy1982]
+** Implementacja wnioskowania w przód
+- define forward-chaining
+- describe how it works
+- add a code example of a simple rule triggering
+- note that this is the normal Rete operation mode
+- note that lack of network merging might pose an overhead
+- hint at a future section with more details on shortcommings and possible improvements
 
 ** Implementacja wnioskowania wstecz
-- describe what backward-chaining is
-- describe fact store in detail - linear, in-memory database
-- querying fact store = create a rule and apply all known facts to it
+- define backward-chaining
+- mention the need for a separate fact store
+- mention the issues of fact synchronization between the DB and the fact base
+- describe how it works: querying fact store = create a rule and apply all known facts to it
+- add a simple code example showing select statement
 
-** Integracja z Systemem Uruchomieniowym
+** Integracja ze Środowiskiem Uruchomieniowym
 - describe how it sucks right now (notify-whenever instead of generic whenever, logic rule removal)
-- describe possible integration with the module system (fact inference)
 - describe possible representation of rules by autonomus processes [cite:Gupta1986]
 
 #+begin_center
 #+label: fig:distributed-rete
-#+caption: Schemat działania rozproszonej wersji algorytmu /Rete/.
-#+attr_latex: :width 0.8\textwidth :placement [H]
+#+caption: Schemat działania współbieżnej wersji algorytmu /Rete/.
+#+attr_latex: :width 0.6\textwidth :placement [H]
 [[file:./img/distributedrete.pdf]]
 #+end_center
 
+- describe possible integration with the module system (fact inference)
 - hint at movig the implementation to the stdlib
 
 * Podsumowanie
