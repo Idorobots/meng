@@ -1199,8 +1199,24 @@ Warto zauważyć, iż opisana powyżej implementacja jedynie /emuluje/ wnioskowa
 ** Integracja ze Środowiskiem Uruchomieniowym
 #+LaTeX: \label{sec:rete-integration}
 
-- describe how it sucks right now (notify-whenever instead of generic whenever, logic rule removal)
-- describe possible representation of rules by autonomus processes [cite:Gupta1986]
+Obecna implementacja systemu regułowego nie jest całkowicie zintegrowana z pozostałą częścią środowiska uruchomieniowego języka =FOOF=. Została ona zrealizowana jako szereg wbudowanych funkcji, w związku z czym posiada wiele technicznych ograniczeń.
+
+Pierwszym i zarazem największym ograniczeniem, jest utrudnienie realizacji operacji =whenever=, której zadaniem jest dodawanie nowych reguł. Operacja ta jako argumenty przyjmuje wzorzec stanowiący lewą stronę reguły, oraz funkcję, która reprezentuje prawą stronę reguły. Organiczenie polega na tym, iż funkcja reprezentująca prawą stronę reguły wymaga przekazania /aktualnej kontynuacji/ podczas wywołania. Kontynuacja ta, z racji asynchroniczności systemu regułowego nie istnieje po stworzeniu reguły, w związku z czym nie może zostać przekazana do wywoływanej funkcji. Listing [[ref:code:rete-fuckup-solved]] prezentuje alternatyną implementacją operacji =whenever=, która została zrealizowana w implementacji języka =FOOF=.
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Alternatywna implementacja operacji \texttt{whenever}.}}
+#+latex: \label{code:backwards-chaining-example}
+#+BEGIN_SRC clojure
+(notify-whenever identyfikator wzorzec)
+(notify-whenever (self) '(temperature ?t))
+#+end_src
+#+latex: \end{listing}
+
+Wprowadzona konstrukcja =notify-whenever= zamiast funkcji reprezentującej akcję przyjmuje identyfikator procesu, który zostanie asynchronicznie poinformowany o spełnieniu reguły zadanej podanym wzorcem.
+
+Drugą limitacją zaimplementowanego systemu regułowego jest /logiczne/ usuwanie reguł z odpowiednie bazy danych, polegające na wyłączeniu efektów związanych z regułą akcji. Usunięta w ten sposób reguła nadal jest przetwarzana podczas wnioskowania, a jedynie efekty jej działania są pomijane.
+
+Kolejnym ograniczeniem, jest fakt istnienia globalnych baz danych zawierających fakty i reguły. Dane te stanowią *stan* aplikacji, którego istnienie nie jest pożądane w funkcyjnych językach programowania, do których należy język =FOOF= [[cite:Backus1978]]. Rozwiązanie tego problemu (zaprezentowane na schemacie [[ref:fig:distributed-rete]]) wymaga znaczących zmian architekturalnych w środowisku uruchomieniowym, w zamian pozwalając na implementację szeregu ciekawych optymalizacji.
 
 #+begin_center
 #+label: fig:distributed-rete
@@ -1209,8 +1225,9 @@ Warto zauważyć, iż opisana powyżej implementacja jedynie /emuluje/ wnioskowa
 [[file:./img/distributedrete.pdf]]
 #+end_center
 
-- describe possible integration with the module system (fact inference)
-- hint at movig the implementation to the stdlib
+Rozwiązanie to polega na zrównolegleniu przetwarzania wiedzy w języku =FOOF= - każda reguła reprezentowana jest przez osobny mikroproces, którego jedynym zadaniem jest oczekiwanie na nowe fakty oraz notyfikacja procesów-właścicieli w przypadku spełnienia reguły. Regułami zarządza jeden proces pośredniczący w komunikacji, który jednocześnie zarządza bazą faktów eliminując problem jej synchronizacji ze stanem sieci Rete.
+
+Architektura ta pozwala na konkurencyjne istnienie wielu procesów pośredniczących, a co za tym idzie, wielu baz faktów i wielu odseparowanych sieci Rete, pozwalając na implementację systemów regułowych dedykowanych dla części aplikacji. Dodatkowo, do zalet tego rozwiązania należą: zwiększenie bezpieczeństwa i odporności systemu regułowego przez separację poszczególnych jego elementów, możliwość łatwego zrealizowania fizycznego usuwania reguł, a także możliwość przeniesienia całości implementacji do biblioteki standardowej języka =FOOF=. Opisana architektura stanowi dobrą alternatywę dla zrównoleglonej wersji algorytmu Rete przedstawionej w [[cite:Gupta1986]].
 
 * Podsumowanie
 #+latex: \label{sec:outro}
