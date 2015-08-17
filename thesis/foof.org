@@ -1102,7 +1102,7 @@ Reguły deklarowane są za pomocą wbudowanej funkcji =whenever= i składają si
 
 W związku z dowolnością reprezentacji faktów, wzorce reguł również mogą być dowolnie skomplikowane. Dodatkowo, język =FOOF= udostępnia specjalny język domenowy służący do definiowania wzorców reguł, w którym symbole prefixowane przez znak zapytania oznaczają zmienne logiczne (=?country= w przykładzie). Poszczególne konstrukcje języka definicji wzorców zostały opisane w sekcji [[ref:sec:rete-impl]] przy okazji opisu implementacji systemu regułowego.
 
-Operacje prymitywne basy reguł to: dodawanie reguły za pomocą funkcji =whenever= oraz usuwanie reguły za pomocą funkcji =remove-rule!=. Implementacja korzysta z logicznego usuwania reguł - akcje związane z regułą nie są uruchamiane, ale reguła nadal jest obecna w strukturach danych implementacji systemu regułowego. Dodatkowo, zaimplementowana została funkcja =select=, która pozwala uruchomić regułę bez dodawania jej do bazy reguł.
+Operacje prymitywne bazy reguł to: dodawanie reguły za pomocą funkcji =whenever= oraz usuwanie reguły za pomocą funkcji =remove-rule!=. Implementacja korzysta z logicznego usuwania reguł - akcje związane z regułą nie są uruchamiane, ale reguła nadal jest obecna w strukturach danych implementacji systemu regułowego. Dodatkowo, zaimplementowana została funkcja =select=, która pozwala uruchomić regułę bez dodawania jej do bazy reguł.
 
 ** Algorytm Rete
 #+LaTeX: \label{sec:rete-impl}
