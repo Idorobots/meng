@@ -1232,25 +1232,41 @@ Architektura ta pozwala na konkurencyjne istnienie wielu procesów pośredniczą
 * Podsumowanie
 #+latex: \label{sec:outro}
 
-- reiterate the goal of the thesis
-- state how well has it been achieved
+Celem pracy było zaprojektowanie i zaimplementowanie języka programowania wspierającego przetwarzanie współbieżne i rozproszone na platformach heterogenicznych. W tym celu stworzono pragmatyczny, funkcyjny język programowania ogólnego przeznaczenia, roboczno nazwany =FOOF=, kompilator jego kodu źródłowego oraz środowisko uruchomieniowe rozwiązujące problem heterogeniczności z wykorzystaniem inżynierii wiedzy.
 
-** Kompilator języka =FOOF=
-- needs better optimizations
-- needs better error handling
+Postawiony cel został osiągnięty, a powstały język programowania jest funkcjonalny i stanowi ciekawe, eksperymentalne narzędzie służące do eksploracji ideologii *świadomości platformy* (ang. /platform awareness/). Ideologia ta polega na uniezależnieniu od platformy poprzez wykorzystanie wiedzy i stanowi alternatywę dla niezależności od platformy (ang. /platform independence/) głoszonej przez większość popularnych języków programowania, która w rzeczywistości polega na zignorowaniu i homogenizacji platformy sprzętowej.
 
-** Środowisko uruchomieniowe
-- needs more stuff
-- needs macroexpansion
-- needs to drop RBS and move it into stdlib
+Naturalnie, ze względu na rozmiar i ograniczenia czasowe nałożone na projekt, nie udało się uniknąć pewnych niedogodności, a sama tematyka nie została wyczerpana w stu procentach, zostawiając szerokie pole do przyszłego rozwoju, co opisano w następnych sekcjach.
+
+** Problemy kompilatora języka =FOOF=
+Implementacja kompilatora języka =FOOF= w chwili obecnej nie posiada fazy optymalizacji, w związku z czym emitowany kod jest mało wydajny. Dodatkowo, faza generacji kodu nie emituje kodu maszynowego, co potęguje efekt.
+
+Kolejnym problemem jest obsługa błędnego kodu źródłowego, która jest bardzo ograniczona. Kompilator spodziewa się dobrze uformowanego, prawidłowego kodu wejściowego i nie stara się wykrywać jego błędów, co w przypadku dostarczenia nieprawidłowego kodu źródłowego może skończyć się błędem i przedwczesnym zakończeniem działania kompilatora.
+
+** Problemy Środowiska Uruchomieniowego
+Środowisko uruchomieniowe języka =FOOF= nie jest kompletne, nie obsługuje części wbudowanych typów danych, takich jak mapy i wektory. Polega ono w dużej mierze na środowisku uruchomieniowym języka Scheme, co utrudni w przyszłości realizację kompilacji do kodu maszynowego.
+
+Wsparcie dla przetwarzania rozproszonego jest obecnie szczątkowe i polega na wbudowanych w język Scheme procedurach komunikacji sieciowej. Środowisko uruchomieniowe języka =FOOF= nie udostępnia mechanizmów kontroli dostępu do zasobów oraz komunikacji pomiędzy maszynami.
+
+Kolejnym problemem środowiska uruchomieniowego jest połowiczne wsparcie dla niektórych zaawansowanych funkcjonalności języka, takich jak makra i wbudowany system regułowy. W przypadku systemu makr, użytkownik nie ma możliwości zdefiniowania nowych makr i musi polegać jedynie na tych wbudowanych w środowisko uruchomieniowe.
+
+Problemy wbudowanego systemu regułowego wynikają natomiast z niewłaściwego doboru architektury i zostały szczegółowo opisane w sekcji [[ref:sec:rete-integration]]. Proponowane rozwiązanie wymaga znaczących zmian architekturalnych środowiska uruchomieniowego języka =FOOF=.
 
 ** Przyszłe kierunki rozwoju
-- more datatypes
-- native compilation via LLVM
-- bootstrapping compiler
-- librarized RBS
-- librarized distribution with data encryption & ACLs
-- data-level paralellism
+Projekt będący częścią niniejszej pracy jest daleki od bycia kompletnym. W związku z koniecznością rozwiązania opisanych powyżej niedogodności zidentyfikowano następujące kierunki przyszłego rozwoju:
+
+- Implementacja większej liczby typów danych, w szczególności map oraz wektorów i związanych z nimi elementarnych operacji, celem wsparcia wielu zależnych od nich technik programistycznych.
+
+- Wraz z implementacją wektorów istnieje możliwość zrównoleglenia podstawowych operacji na wektorach na poziomie dostępu do danych (ang. /data-level parallelism/), co pozwoli osiągnąć znaczne przyspieszenie programów przetwarzających duże zbiory danych.
+
+- Umożliwienie kompilacji do kodu maszynowego, na przykład za pomocą infrastruktury GCC (ang. /GNU Compiler Collection/) lub LLVM (ang. /Low-Level Virtual Machine/). Kierunek ten zapewni największe korzyści dla ekosystemu języka programowania =FOOF=.
+
+- Rozwinięcie środowiska uruchomieniowego języka, w celu polepszenia wsparcia kluczowych funkcjonalności języka, takich jak wsparcie dla przetwarzania rozproszonego, lub obsługa makr użytkownika. Rozwój ten jest niezbędny do osiągnięcia pełnej funkcjonalności języka.
+
+- Przeniesienie implementacji wbudowanego systemu regułowego do biblioteki standardowej języka =FOOF= oraz usprawnienie jego działania. Zabieg ten pozwoli znacząco zredukować skomplikowanie projektu i ułatwi realizację pozostałych kierunków rozwoju.
+
+#+LaTeX: \noindent
+Wszystkie wymienione kierunki rozwoju będą w przyszłości aktywnie eksplorowane.
 
 # The bibliography
 #+begin_latex
