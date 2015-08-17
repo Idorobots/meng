@@ -1163,19 +1163,38 @@ Przykład pokazuje łączenie podsieci dwóch oddzielnych reguł, które charakt
 Naturalnie, istnieje wiele innych usprawnień algorytmu Rete, także autorstwa Charls'a Forgy'iego, które poprawiają jego wydajność i stabilność działania. Najciekawsze z nich dotyczą możliwości parallelizacji przetwarzania wiedzy [[cite:Gupta1986]] oraz wykorzystania specjalnych przypadków oryginalnego algorytmu Rete [[cite:Miranker1987]]. Usprawnienia związane ze współbieżnym przetwarzaniem wiedzy zostały szczegółowo przeanalizowane w sekcji [[ref:sec:rete-integration]].
 
 ** Implementacja wnioskowania w przód
-- define forward-chaining
-- describe how it works
-- add a code example of a simple rule triggering
-- note that this is the normal Rete operation mode
-- note that lack of network merging might pose an overhead
-- hint at a future section with more details on shortcommings and possible improvements
+Głównym zadaniem algorytmu Rete w implementacji języka =FOOF= jest umożliwienie *wnioskowania*, czyli odkrywania nowej, uprzednio nieznanej wiedzy na podstawie wcześniej stwierdzonych faktów. Istnieją dwa główne sposoby prowadzenia wnioskowania: *w przód* poruszony w niniejszej sekcji oraz *wstecz*, który został opisany w sekcji [[ref:sec:backwards-chaining-impl]].
+
+Wnioskowanie w przód polega na wyjściu od posiadanej wiedzy i aplikowaniu zasad inferencji tak długo, aż osiągnięte zostaną pewne cele. Konceptualnie jest to jednoznaczne z równoległą eksploracją wszystkich możliwych ścieżek inferencji wraz z napływem nowych danych i stopniowym osiąganiem postawionych celów. Ten typ wnioskowania jest szczególnie skuteczny w dynamicznych zastosowaniach, gdzie baza wiedzy ulega ciągłym zmianom a zestaw celów jest potencjalnie bardzo duży, takich jak Systemy Ekspertowe i Systemy Regułowe.
+
+Wnioskowanie w przód jest standardowym trybem pracy algorytmu Rete, w związku z czym jego implementacja jest trywialna i polega jedynie na umożliwieniu tworzenia reguł i asercji nowych faktów. W kontekście implementacji języka =FOOF= celami są akcje zdefiniowane w regułach, natomiast wnioskowanie polega na ciągłej aktualizacji sieci Rete wartościami napływających faktów.
 
 ** Implementacja wnioskowania wstecz
-- define backward-chaining
-- mention the need for a separate fact store
-- mention the issues of fact synchronization between the DB and the fact base
-- describe how it works: querying fact store = create a rule and apply all known facts to it
-- add a simple code example showing select statement
+#+LaTeX: \label{sec:backwards-chaining-impl}
+
+Przeciwieństwem wnioskowania w przód jest wnioskowanie wstecz. Polega ono na wyjściu od pożądanego celu i próbie uproszczenia go, poprzez stosowanie zasad inferencji, do podstawowych aksjomatów, by udowodnić jego osiągalność. Konceptualnie odpowiada to zadaniu konkretnego zapytania bazie wiedzy w celu otrzymania jednoznacznej odpowiedzi, gdzie zapytanie jest celem wnioskowania, a zadaniem bazy wiedzy jest zweryfikowanie jego osiągalności.
+
+Realizacja wnioskowania wstecz w środowisku uruchomieniowym języka =FOOF= polega na implementacji algorytmu Rete oraz istnieniu wbudowanej bazy faktów. W celu przeprowadzenia wnioskowania wstecz, środowisko uruchomieniowe tworzy nową sieć Rete, której nie dodaje do globalnej bazy reguł, po czym iteracyjnie aplikuje do niej wszystkie znane fakty znajdujące się w bazie faktów, akumulując rezultaty inferencji. Wynikiem działania wnioskowania wstecz jest lista wszystkich mapowań zmiennych logicznych do wartości, które spełniają zapytanie. Listing [[ref:code:backwards-chaining-example]] prezentuje zastosowanie konstrukcji =select= służącej do tworzenia zapytań do bazy faktów dostępnej w języku.
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Przykłady wykorzystania wnioskowania wstecz w języku \texttt{FOOF}.}}
+#+latex: \label{code:backwards-chaining-example}
+#+BEGIN_SRC clojure
+;; Lista wszystkich faktów obecnych w bazie faktów:
+(select '?any)
+
+;; Lista wszystkich dostępnych modułów:
+(select '(module ?m))
+
+;; Lista wszystkich modułów dostarczających funkcję transmogrify:
+(select '(and (module ?m)
+              (provides ?m transmogrify)))
+#+end_src
+#+latex: \end{listing}
+
+Pierwszy z przykładów powoduje zwrócenie listy wszystkich faktów obecnych w bazie faktów. Drugi przykład ogranicza tę listę do nazw modułów języka =FOOF=, które są dostępne w aplikacji, natomiast ostatni dodatkowo ogranicza listę dostępnych modułów do tych, które definiują funkcję =transmogrify=. Przykłady te pokazują, iż wnioskowanie wstecz szczególnie dobrze nadaje się do zastosowań, gdzie baza wiedzy jest statyczna.
+
+Warto zauważyć, iż opisana powyżej implementacja jedynie /emuluje/ wnioskowanie wstecz w rzeczywistości przeprowadzając wnioskowanie w przód dla jednej tylko reguły. Liniowa w stosunku do ilości faktów złożoność obliczeniowa tego rozwiązania jest adekwatna, ale w przyszłości istnieje możliwość implementacji osobnego mechanizmu opartego o *przeszukiwanie w głąb*. Wadą obecnej implementacji jest konieczność istnienia osobnej bazy faktów, która musi być pozostawać w ciągłej synchronizacji ze stanem globalnej sieci Rete znajdującej się w bazie reguł.
 
 ** Integracja ze Środowiskiem Uruchomieniowym
 #+LaTeX: \label{sec:rete-integration}
