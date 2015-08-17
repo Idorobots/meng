@@ -1107,12 +1107,49 @@ Operacje prymitywne basy reguł to: dodawanie reguły za pomocą funkcji =whenev
 ** Algorytm Rete
 #+LaTeX: \label{sec:rete-impl}
 
-- describe Rete in detail [cite:Forgy1982]
-- mention unification
-- add a pseudocode of the unification algorithm?
-- describe briefly its history [cite:Forgy1979]
-- describe various Rete nodes [cite:Forgy1982]
-- describe network merging
+Najłatwiejszą implementacją powyższego interfejsu jest podejście naiwne polegające na iteracyjnym aplikowaniu każdego faktu do każdego wzorca reguły. Rozwiązanie to, mimo że jest proste w implementacji, jest również bardzo niewydajne - jego złożoność obliczeniowa jest rzędu *O(RF^P)*, dla =R= reguł, =F= faktów i =P= średniej ilości /elementarnych podwzorców/ przypadających na lewą stronę reguły.
+
+Standardowym rozwiązaniem wykorzystywanym w implementacjach systemów regułowych, które jednocześnie posiada dużo lepszą złożoność obliczeniową, jest, zaprojektowany w 1974 roku i rozwinięty w roku 1979 przez Charls'a Forgy'iego, algorytm *Rete* [[cite:Forgy1979]]. Jego złożoność obliczeniowa jest rzędu *O(RFP)*, co prowadzi do znacznego zwiększenia szybkości działania systemu regułowego względem naiwnej implementacji, kosztem zauważalnego zwiększenia wykorzystania pamięci [[cite:Forgy1982]]. Algorytm ten jest relatywnie nieskomplikowany i jednocześnie zadowalająco wydajny, w związku z czym został wykorzystany w implementacji języka =FOOF=.
+
+
+Algorytm Rete (w tłumaczeniu z języka włoskiego /sieć/) polega na automatycznej budowie sieci węzłów różnych rodzajów na podstawie wzorca reguły. Węzły te odpowiadają za podstawowe operacje, takie jak dopasowywanie strukturalne faktów (ang. /pattern matching/), unifikację faktów (ang. /unification/) oraz uruchamianie akcji, i dzielą się na dwie klasy:
+
+- węzły *alfa* przyjmujące jedną wartość, których zadaniem jest dyskryminacja wartości na podstawie ich struktury oraz typu,
+
+- węzły *beta* przyjmujące dwie wartości, których zadaniem jest unifikacja tych wartości w celu weryfikacji spójności informacji, które ze sobą niosą.
+
+Podczas działania algorytmu, węzły mogą zadecydować, na podstawie wewnętrznych zasad działania, czy przekazaną do nich wartość (fakt) mogą przekazać do następnych węzłów. W tym celu, obie opisane klasy węzłów algorytmu Rete korzystają z pamięci do przechowywania dotychczasowo napotkanych faktów. W przypadku węzłów alfa jest to prosta lista faktów, która pozwala je zapamiętać w celu późniejszego odrzucenia duplikatów - realizuje asercję faktu. Węzły beta używają dwóch oddzielnych pamięci faktów lewo- oraz prawo-stronnych odpowiednio dla /lewego/ i /prawego/ przyjmowanego argumentu. Podział pamięci węzłów beta pozwala unifikować nowe wartości ze wszystkimi dotychczasowo zapisanymi wartościami pochodzącymi z drugiego argumentu, co stanowi podstawę działania algorytmu Rete i jego wysokiej wydajności [[cite:Forgy1982]].
+
+Wspomniana powyżej *unifikacja* polega na przypisaniu, obecnych we wzorcach reguł, zmiennych logicznych do odpowiadających im elementów struktury faktu. Unifikacja zapewnia także wymuszenie spójności tak przypisanych wartości pochodzących z dwóch różnych części sieci Rete - algorytm dba o to, by wartości tych samych zmiennych logicznych były równe. Listing [[ref:code:unification-example]] pokazuje kilka przykładów działania unifikacji wykorzystanej w implementacji środowiska uruchomieniowego języka =FOOF=.
+
+#+latex: \begin{listing}[H]
+#+latex: \caption{\mylisting{Przykłady działania algorytmu unifikacji w notacji języka \texttt{FOOF}.}}
+#+latex: \label{code:unification-example}
+#+BEGIN_SRC clojure
+(unify '(some ?pattern) '(some fact))       ;; {?pattern fact}
+(unify '(another ?pattern) '(some fact))    ;; Unifikacja nieudana.
+(unify '{?pattern some} '{?pattern noster}) ;; Unifikacja nieudana.
+(unify '{?a a ?b 23} '{?b 23 ?c 5})         ;; {?a a ?b 23 ?c 5}
+#+end_src
+#+latex: \end{listing}
+
+Implementacja algorytmu Rete w języku =FOOF= dostarcza następujące, podstawowe typy węzłów:
+
+- Węzły *node-1*, odpowiadające węzłom klasy alfa, to proste węzły przeprowadzające dopasowanie strukturalne faktów i elementarnych wzorców reguł, na przykład =(some ?pattern)=. Wynikiem ich działania jest mapowanie nazw zmiennych logicznych na odpowiadające im wartości.
+
+- Węzły *node-2*, odpowiadające węzłom klasy beta, to węzły unifikujące wartości zmiennych logicznych pochodzących z dwóch źródeł. Wynikiem ich działania jest lista map reprezentujących zunifikowane fakty pasujące do obu gałęzi sieci prowadzących do obecnego węzła. Węzły te tworzone są za pomocą konstrukcji =(and podwzorzec-1 podwzorzec-2 ...)=.
+
+- Węzły *node-a*, czyli węzły uruchamiające akcje zadeklarowane po prawej stronie reguły.
+
+Dodatkowo, implementacja została rozszerzona o następujące typy węzłów, realizujące wiele przydatnych funkcji:
+
+- Węzły *node-p*, czyli węzły predykatów umożliwiające nietrywialną filtrację faktów, na przykład =(filter podwzorzec predykat-1 predykat-2 ...)=.
+
+- Węzły *node-r* przechowujące dodatkowy stan, pozwalające na akumulację (lub w ogólnym przypadku /redukcję/) zmieniających się wartości faktów na podstawie odrębnych zasad. Węzły te deklarowane są za pomocą konstrukcji =(reduce akumulator podwzorzec)=.
+
+- Węzły *node-t*, czyli węzły wyzwalane, pozwalające na obserwowanie trendu zmiany wartości faktów dzięki buforowi wartości faktów i osobnemu predykatowi. Węzły te są tworzone przez konstrukcję =(trigger bufor podwzorzec predykat)=.
+
+Implementacja powyższych węzłów przewiduje możliwość dodania optymalizacji struktury sieci, która w chwili obecnej nie jest stosowana. Optymalizacja ta polega na łączeniu identycznych fragmentów sieci Rete, co prowadzi do dodatkowej redukcji ilości wykonywanych operacji oraz wykorzystywanej przez sieć pamięci, a także zwiększenia wydajności całego algorytmu. Schemat [[ref:fig:rete-network-merge]] prezentuje działanie tej optymalizacji.
 
 #+begin_center
 #+label: fig:rete-network-merge
@@ -1121,9 +1158,9 @@ Operacje prymitywne basy reguł to: dodawanie reguły za pomocą funkcji =whenev
 [[file:./img/retemerge.pdf]]
 #+end_center
 
-- compare Rete with naïve approach
-- add a benchmark diagram showing how Rete is better than naïve
-- contrast it with other algorithms [cite:Miranker1987]
+Przykład pokazuje łączenie podsieci dwóch oddzielnych reguł, które charakteryzują się podobną strukturą. Wynikiem działania optymalizacji jest semantycznie identycznie funkcjonująca sieć, która jednocześnie działa znacznie szybciej dzięki redukcji duplikacji przetwarzania informacji.
+
+Naturalnie, istnieje wiele innych usprawnień algorytmu Rete, także autorstwa Charls'a Forgy'iego, które poprawiają jego wydajność i stabilność działania. Najciekawsze z nich dotyczą możliwości parallelizacji przetwarzania wiedzy [[cite:Gupta1986]] oraz wykorzystania specjalnych przypadków oryginalnego algorytmu Rete [[cite:Miranker1987]]. Usprawnienia związane ze współbieżnym przetwarzaniem wiedzy zostały szczegółowo przeanalizowane w sekcji [[ref:sec:rete-integration]].
 
 ** Implementacja wnioskowania w przód
 - define forward-chaining
@@ -1141,6 +1178,8 @@ Operacje prymitywne basy reguł to: dodawanie reguły za pomocą funkcji =whenev
 - add a simple code example showing select statement
 
 ** Integracja ze Środowiskiem Uruchomieniowym
+#+LaTeX: \label{sec:rete-integration}
+
 - describe how it sucks right now (notify-whenever instead of generic whenever, logic rule removal)
 - describe possible representation of rules by autonomus processes [cite:Gupta1986]
 
