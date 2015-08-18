@@ -1277,7 +1277,43 @@ Wszystkie wymienione kierunki rozwoju będą w przyszłości aktywnie eksplorowa
 #+latex: \appendix
 * Gramatyka języka =FOOF=
 #+LaTeX: \label{sec:foof-grammar}
-- concrete language grammar in PEG or BNF
+
+Język =FOOF= jest dialektem języka Lisp, w związku z czym charakteryzuje się bardzo prostą i ujednoliconą składnią bazującą na *S-wyrażeniach*. Listing [[ref:code:foof-grammar]] prezentuje formalną specyfikację składni jęzka w notacji *BNF* (ang. /Bacus-Naur Form/).
+
+#+latex: \begin{listing}[ht]
+#+latex: \caption{\mylisting{Gramatyka języka \textt{FOOF}.}}
+#+latex: \label{code:foof-grammar}
+#+begin_src xml
+  <program>        ::= <structure> | <module> | <definitions>
+  <structure>      ::= '(' 'structure' <symbol> <definitions> ')'
+  <module>         ::= '(' 'module' <symbol-list> <definitions> ')'
+  <definitions>    ::= <definition> <definitions> | ''
+  <definition>     ::= '(' 'define' <symbol-list> <expression> ')'
+                     | '(' 'define' <symbol> <expression> ')'
+  <symbol-list>    ::= '(' <symbol> <symbols> ')'
+  <symbols>        ::= <symbol> <symbols> | ''
+  <expressions>    ::= <expression> <exrpessions> | ''
+  <expression>     ::= <value> | <application> | <syntax-form>
+  <value>          ::= <atom> | <list> | <vector> | <map>
+  <atom>           ::= <string> | <symbol> | <keyword> | <number>
+  <application>    ::= '(' <expression> <expressions> ')'
+  <syntax-form>    ::= '(' <operator> <expressions> ')' | ''' <expression>
+                     | '`' <expression> | ',' <expression>
+  <operator>       ::= 'quasiquote' | 'unquote' | 'unquote-splicing'
+                     | 'lambda' | 'structure' | 'module' | 'define' | 'let'
+                     | 'let*' | 'letrec' | 'letcc' | 'shift' | 'reset'
+                     | 'or | 'and' | 'cond' | 'when' | 'unless' | 'if'
+                     | 'do' | 'handle' | 'raise' | 'quote'
+  <list>           ::= '(' <expressions> ')'
+  <vector>         ::= '[' <expressions> ']'
+  <map>            ::= '{' <key-values> '}'
+  <key-values>     ::= <expression> <expression> <key-values> | ''
+  <keyword>        ::= ':' <symbol>
+  <symbol>         ::= "Dowolny literał znakowy bez znaków białych."
+  <string>         ::= '"' "Dowolny literał znakowy." '"'
+  <number>         ::= "Dowolny literał liczbowy."
+#+end_src
+#+latex: \end{listing}
 
 * Przykładowe programy
 #+LaTeX: \label{sec:foof-examples}
