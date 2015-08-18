@@ -120,7 +120,7 @@ Supervisor: & {\itshape \@supervisor}\\
 \centerline{\small\sffamily Kraków, \@date}
 
 \clearpage \titlepage
-
+\setcounter{page}{2}
 {~~}
 \vspace{20mm}
 
@@ -130,7 +130,7 @@ Supervisor: & {\itshape \@supervisor}\\
 \end{adjustwidth}
 
 \clearpage \titlepage
-
+\setcounter{page}{3}
 \vspace*{15cm} \vfill
 \begin{flushright}
 \begin{minipage}[!h]{10cm}
@@ -139,7 +139,7 @@ Supervisor: & {\itshape \@supervisor}\\
 \end{flushright}
 
 \clearpage \titlepage
-
+\setcounter{page}{4}
 \vspace{20mm}
 \vfill
 \begin{minipage}[!h]{10cm}
