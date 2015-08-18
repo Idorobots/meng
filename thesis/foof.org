@@ -55,7 +55,8 @@
 
 #+LATEX_HEADER: \faculty{Wydział Elektrotechniki, Automatyki,\protect\\[-1mm] Informatyki i Inżynierii Biomedycznej}
 
-#+LATEX_HEADER: \acknowledgements{Serdecznie dziękuję opiekunowi pracy za wsparcie merytoryczne oraz dobre rady edytorskie pomocne w tworzeniu pracy.}
+#+LATEX_HEADER: \acknowledgements{\begin{flushright}Things I won't work with: \texttt{FOOF}. \\ -- Derek Lowe\end{flushright}}
+# #+LATEX_HEADER: \acknowledgements{Serdecznie dziękuję opiekunowi pracy za wsparcie merytoryczne oraz dobre rady edytorskie pomocne w tworzeniu pracy.}
 # #+LATEX_HEADER: \acknowledgements{Serdecznie dziękuję Lucynie oraz siostrze Alicji za cierpliwość i wsparcie podczas tworzenia pracy dyplomowej.}
 
 # Font stuff:
