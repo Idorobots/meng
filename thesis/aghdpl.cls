@@ -124,7 +124,7 @@ Supervisor: & {\itshape \@supervisor}\\
 {~~}
 \vspace{20mm}
 
-\begin{adjustwidth}{-1cm}{1cm}
+\begin{adjustwidth}{0cm}{0cm}
   \linespread{1.00}
   \hspace{5mm}\large\itshape Oświadczam, świadomy odpowiedzialności karnej za poświadczenie nieprawdy, że niniejszą pracę dyplomową wykonałem osobiście i samodzielnie, i~nie korzystałem ze źródeł innych niż wymienione w pracy.
 \end{adjustwidth}
