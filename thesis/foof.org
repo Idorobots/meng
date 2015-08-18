@@ -136,7 +136,7 @@ Na schemacie [[fig:hetero-iot]] przedstawiony został przykład heterogenicznoś
 
 Każdy element takiego systemu, oznaczony na schemacie różnym kształtem oraz kolorem, reprezentuje maszynę udostępniającą różne zasoby i posiadającą różną fizyczną konstrukcję. Poszczególne elementy często działają w niekompatybilny sposób, w związku z czym wymagane jest wykorzystanie dedykowanych pośredników, których jedynym zadaniem jest /homogenizacja/ systemu.
 
-Problem heterogeniczności dotyka również systemów rozproszonych, które działają na platformach homogenicznych, gdzie fizyczne maszyny są do siebie bardzo zbliżone, a często są komputerami ogólnego przeznaczenia. Przykład takiego systemu, zbudowanego w oparciu o zdobywającą popularność architekturę mikroserwisową [[cite:Richards2015]], został zawarty na schemacie [[fig:hetero-service]].
+Problem heterogeniczności dotyka również systemów rozproszonych, które działają na platformach homogenicznych, gdzie fizyczne maszyny są do siebie bardzo zbliżone, a często są komputerami ogólnego przeznaczenia. Przykład takiego systemu, zbudowanego w oparciu o zdobywającą popularność architekturę mikro-serwisową [[cite:Richards2015]], został zawarty na schemacie [[fig:hetero-service]].
 
 Użytkownik systemu łączy się z głównym serwisem, który następnie komunikuje się z innymi serwisami, realizującymi wymagane przezeń zadania. W celu poprawienia /odporności na błędy/ takiego systemu, w strategicznych miejscach umieszczono serwery zarządzające ruchem (ang. /load-balancer/), których zadaniem, analogicznie do przykładu ze schematu [[fig:hetero-iot]], jest /homogenizacja/ systemu.
 
@@ -147,9 +147,9 @@ Użytkownik systemu łączy się z głównym serwisem, który następnie komunik
 [[file:./img/heteroserviceexample.pdf]]
 #+end_center
 
-W pierszym przypadku heterogeniczność wynika ze zróżnicowania maszyn należących do platformy sprzętowej, natomiast w drugim wynika ona z istnienia mikroserwisów, które realizują pojedyncze, konretnie sprecyzowane funkcjonalności. W obu przypadkach, heterogeniczność systemu prowadzi do powstania innych problemów, takich jak skalowalność i odporność na błędy, oraz konieczności wykorzystania dodatkowych elementów mających im zaradzić.
+W pierwszym przypadku heterogeniczność wynika ze zróżnicowania maszyn należących do platformy sprzętowej, natomiast w drugim wynika ona z istnienia mikro-serwisów, które realizują pojedyncze, konkretnie sprecyzowane funkcjonalności. W obu przypadkach, heterogeniczność systemu prowadzi do powstania innych problemów, takich jak skalowalność i odporność na błędy, oraz konieczności wykorzystania dodatkowych elementów mających im zaradzić.
 
-Często, sytuacja ta wynika z nieadekwatności narzędzi (w szczególności języków programowania) wykorzystanych do tworzenia systemu. Popularne języki programowania dążą do osiągnięcia *niezalożności od platformy* (ang. /platform independence/) stosując maszyny wirtualne i inne techniki mające na celu homogenizację platformy sprzętowej, kiedy w rzeczywistości osiągają *ignorancję platformy* nie umożliwiając refleksji na jej temat.
+Często, sytuacja ta wynika z nieadekwatności narzędzi (w szczególności języków programowania) wykorzystanych do tworzenia systemu. Popularne języki programowania dążą do osiągnięcia *niezależności od platformy* (ang. /platform independence/) stosując maszyny wirtualne i inne techniki mające na celu homogenizację platformy sprzętowej, kiedy w rzeczywistości osiągają *ignorancję platformy* nie umożliwiając refleksji na jej temat.
 
 Jako alternatywę dla osiągnięcia niezależności od platformy, niniejsza praca wprowadza termin *świadomości platformy* (ang. /platform awareness/), czyli dążenia do udostępnienia wiedzy o strukturze budowanego systemu rozproszonego oraz platformy sprzętowej, na której działa, i umożliwienia refleksji na jej podstawie. Zaprezentowany w dalszej części pracy język programowania, roboczo zwany =FOOF= [fn:: Nazwa pochodzi od difluorku ditlenu, niezwykle reaktywnego, dysruptywnego i niebezpiecznego związku chemicznego, który nie ma żadnego zastosowania.], ma być uosobieniem ideologii świadomości platformy.
 
@@ -203,7 +203,7 @@ symbol
 #+end_src
 #+latex: \end{listing}
 
-Typy te to w kolejności: liczby, symbole, słowa kluczowe i ciągi znaków tekstowych, stanowiące wspólnie klasę wartości atomowych oraz listy pojedynczo-wiązane, wektory i mapy asocjacyjne. Każdy nieatomowy typ danych składa się z określonej liczby podwartości, które mogą być atomowe, lub nieatomowe. Semantyka każdego wymienionego typu danych jest zgodna z analogicznymi konstrukcjami opisanymi w [[cite:Sperber2010]].
+Typy te to w kolejności: liczby, symbole, słowa kluczowe i ciągi znaków tekstowych, stanowiące wspólnie klasę wartości atomowych oraz listy pojedynczo-wiązane, wektory i mapy asocjacyjne. Każdy nieatomowy typ danych składa się z określonej liczby zagnieżdżonych wartości, które mogą być atomowe, lub nieatomowe. Semantyka każdego wymienionego typu danych jest zgodna z analogicznymi konstrukcjami opisanymi w [[cite:Sperber2010]].
 
 Jako, że język =FOOF= jest dialektem języka Lisp, programy kodowane są homoikonicznie przez opisane powyżej typy danych - stosowana jest notacja *S-wyrażeń*, która została wprowadzona w [[cite:McCarthy1960]]. Notacja ta rozmywa granicę pomiędzy programami a danymi, pozwalając programom na manipulację, budowę i transformację innych programów.
 
@@ -214,7 +214,7 @@ Pierwszym złożonym typem danych, który nie ma reprezentacji literałowej w j�
 
 Funkcje zostały zaprojektowane w oparciu o *Rachunek Lambda*, wprowadzony w 1933 roku przez Alonzo Church'a jako alternatywny model logiki i, następnie, prowadzenia obliczeń [[cite:Church1932, Church1933]]. Rachunek ten wprowadza pojęcie *wyrażenia lambda*, które jest ekwiwalentem jednoargumentowych funkcji obecnych języków programowania, oraz szereg zasad substytucji, zwanych redukcjami, pozwalających na uproszczenie zagnieżdżonych wyrażeń lambda. Najważniejszą z wprowadzanych redukcji jest *\beta-redukcja*, która konceptualnie reprezentuje aplikację funkcji z odpowiednimi argumentami i jednocześnie pozwala na prowadzenie obliczeń.
 
-Zasady Rachunku Lambda są fundamentalnie bardzo nieskomplikowane, a mimo to pozwalają na ekspresję skomplikowanych idei, takich jak logika Bool'a, arytmetyka, struktury danych oraz rekurencja. Na listingu [[ref:code:ex-lambda-calculus]] zawarto przykład realizacji logiki boola wraz z kilkoma operatorami logicznymi w czystym Rachunku Lambda.
+Zasady Rachunku Lambda są fundamentalnie bardzo nieskomplikowane, a mimo to pozwalają na ekspresję skomplikowanych idei, takich jak logika Bool'a, arytmetyka, struktury danych oraz rekurencja. Na listingu [[ref:code:ex-lambda-calculus]] zawarto przykład realizacji logiki Bool'a wraz z kilkoma operatorami logicznymi w czystym Rachunku Lambda.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Przykład implementacji wartości i operatorów logicznych w Rachunku Lambda.}}
@@ -250,7 +250,7 @@ Warto zauważyć, że wyrażenia lambda można interpretować jako tak zwane *do
 
 Funkcja =foo= zaprezentowana na listingu, korzysta z wartości *wolnej zmiennej* =x=, czyli takiej, której nie wprowadza w liście swoich argumentów. W dalszej części programu, funkcja =foo=, pomimo lokalnej zmiany wartości zmiennej =x=, poprawnie zwraca oryginalną jej wartość, ponieważ w momencie jej tworzenia wartość zmiennej =x= została zapisana razem z ciałem funkcji.
 
-Często pojawiającym się problemem związanym z funkcjami wzorowanymi na Rachunku Lambda, jest tak zwany problem *funarg*, polegający na niepoprawnym działaniu programów, które zwracają funkcje jako wynik obliczeń, lub przekazują je jako argumenty innych funcji. Problem ten sprowadza się do niewłaściwego budowania domknięć leksykalnych, co może doprowadzić do przedwczesnego usunięcia wartości zmiennych wolnych. Został on poruszony w [[cite:Abelson1996]].
+Często pojawiającym się problemem związanym z funkcjami wzorowanymi na Rachunku Lambda, jest tak zwany problem *funarg*, polegający na niepoprawnym działaniu programów, które zwracają funkcje jako wynik obliczeń, lub przekazują je jako argumenty innych funkcji. Problem ten sprowadza się do niewłaściwego budowania domknięć leksykalnych, co może doprowadzić do przedwczesnego usunięcia wartości zmiennych wolnych. Został on poruszony w [[cite:Abelson1996]].
 
 Kolejnym problemem towarzyszącym funkcjom zrealizowanym jako domknięcia leksykalne jest nietrywialna implementacja rekurencji, wynikająca z ustalonej kolejności wykonywania działań - tworzenie domknięcia leksykalnego funkcji rekurencyjnej jest uzależnione od jej uprzedniego istnienia, co prowadzi do sprzeczności.
 
@@ -263,7 +263,7 @@ Kolejnym mechanizmem będącym integralną częścią języka =FOOF= są kontynu
 
 Kontynuacje można interpretować jako ciąg obliczeń pozostałych do wykonania z punktu widzenia danego miejsca programu, który został *reifikowany* jako funkcja i udostępniony z poziomu wykonywanego programu. W efekcie, programy mogą zadecydować by zrestartować obliczenia od pewnego momentu, albo wręcz przeciwnie, przerwać je odrzucając wartości pośrednie.
 
-Jako, że jest to mechanizm skomplikowany, który był odkrywany wielokrotnie [[cite:Reynolds1993]], często nieświadomie, istnieje wiele jego wersji i sposobów implementacji, a w związu z czym nie jest on powszechnie dostępny jako standardowa funkcjonalność popularnych języków programowania. Ze względu na swoje właściwości opisane powyżej, kontynuacje są częściej stosowane w implementacjach kompilatorów języków programowania, jako format pośredni reprezentacji programów [[cite:Appel1992]].
+Jako, że jest to mechanizm skomplikowany, który był odkrywany wielokrotnie [[cite:Reynolds1993]], często nieświadomie, istnieje wiele jego wersji i sposobów implementacji, a w związku z czym nie jest on powszechnie dostępny jako standardowa funkcjonalność popularnych języków programowania. Ze względu na swoje właściwości opisane powyżej, kontynuacje są częściej stosowane w implementacjach kompilatorów języków programowania, jako format pośredni reprezentacji programów [[cite:Appel1992]].
 
 Języki programowania, które korzystają z kontynuacji czasem udostępniają je jako obiekty pierwszej klasy, które mogą być traktowane w taki sam sposób jak inne typy danych. Służy do tego wiele zróżnicowanych operacji prymitywnych, które różnią się semantyką. W przypadku języka Scheme operacja prymitywna służąca do przechwytywania kontynuacji to =call-with-current-continuation= (=call/cc=) [[cite:Sperber2010]], natomiast w języku Standard ML służy ku temu konstrukcja =letcc= [[cite:Harper1998]].
 
@@ -281,14 +281,14 @@ Istnieją także sposoby komponowania kontynuacji, bazujące na tak zwanych kont
 #+end_src
 #+latex: \end{listing}
 
-Dzięki możliwości przechwycenia kontynuacji, program jest w stanie przedwcześnie zakończyć działanie funkcji z obliczoną wartością. Kontynuacje dostępne są bezpośrednio, dzięki konstrtukcjom =letcc=, =shift= oraz =reset=, a także pośrednio, dzięki gamie innych mechanizmów kontroli przepływu sterowania, takich jak obsługa błędów, czy multiprocessing.
+Dzięki możliwości przechwycenia kontynuacji, program jest w stanie przedwcześnie zakończyć działanie funkcji z obliczoną wartością. Kontynuacje dostępne są bezpośrednio, dzięki konstrukcjom =letcc=, =shift= oraz =reset=, a także pośrednio, dzięki gamie innych mechanizmów kontroli przepływu sterowania, takich jak obsługa błędów, czy multiprocessing.
 
 Alternatywną metodą osiągnięcia podobnej funkcjonalności do tej oferowanej przez kontynuacje jest wykorzystanie /koprocedur/, czyli generalizacji funkcji pozwalającej na bezpieczne przerwanie działania w określonych miejscach i późniejszego do nich powrotu [[cite:Moura2009]]. Rozwiązanie to wymaga jednak sprecyzowania miejsc powrotu przez programistę, zwykle za pomocą konstrukcji =yield= lub =async/await=, co jest mniej ekspresywne niż wykorzystanie pełnych kontynuacji.
 
 ** Obsługa błędów
 Jednym z najważniejszych mechanizmów, jakie powinien udostępniać język programowania, jest mechanizm obsługi błędów i sytuacji wyjątkowych.
 
-Język =FOOF= zapewnia mechanizm obsługi błędów, który bazuje na kontynuacjach, w związku z czym charakteryzuje się bardzo dużą ekspresywnością. Mechanizm ten umożliwia, analogicznie do większości popularnych języków programowania, zadeklarowanie procedury obsługi zdarzeń wyjątkowych za pomocą konstukcji =handle= oraz sygnalizację zajścia takiego zdarzenia poprzez =raise=.
+Język =FOOF= zapewnia mechanizm obsługi błędów, który bazuje na kontynuacjach, w związku z czym charakteryzuje się bardzo dużą ekspresywnością. Mechanizm ten umożliwia, analogicznie do większości popularnych języków programowania, zadeklarowanie procedury obsługi zdarzeń wyjątkowych za pomocą konstrukcji =handle= oraz sygnalizację zajścia takiego zdarzenia poprzez =raise=.
 
 W przeciwieństwie do większości języków programowania, mechanizm dostępny w języku =FOOF= pozwala na kontynuowanie obliczeń w miejscu wystąpienia błędu z nową wartością, obliczoną w zadeklarowanej procedurze obsługi błędu. Przykład ilustrujący taki schemat został zaprezentowany na listingu [[ref:code:ex-restarts]].
 
@@ -310,9 +310,9 @@ Przykładowy program deklaruje procedurę obsługi sytuacji wyjątkowej, a nast�
 ** Przetwarzanie współbieżne i rozproszone
 #+LaTeX: \label{sec:actor-model-description}
 
-Jednym z głównych założeń języka jest wsparcie dla przetwarzania współbieżnego i rozproszonego, dlatego istotnym jest, by abstrakcja to umożliwiająca była prosta, ekspresywna i wygodna w użyciu, ponieważ będzie stanowiła kluczowy element każdego programu, który powstanie w języku =FOOF=. Abstrakcją, która spełnia wszystkie te wymogi jest *Model Aktorowy* zaproponowany przez Carl'a Hewitt'a w 1973 roku [[cite:Hewitt1973]] i rozszerzony o formalny opis semantyki przez Williama Clingera w roku 1981 [[cite:Clinger1981]].
+Jednym z głównych założeń języka jest wsparcie dla przetwarzania współbieżnego i rozproszonego, dlatego istotnym jest, by abstrakcja to umożliwiająca była prosta, ekspresywna i wygodna w użyciu, ponieważ będzie stanowiła kluczowy element każdego programu, który powstanie w języku =FOOF=. Abstrakcją, która spełnia wszystkie te wymogi jest *Model Aktorowy* zaproponowany przez Carl'a Hewitt'a w 1973 roku [[cite:Hewitt1973]] i rozszerzony o formalny opis semantyki przez William'a Clinger'a w roku 1981 [[cite:Clinger1981]].
 
-Model Aktorowy bazuje na kilku prostych koncepcjach, takich jak podział programu na wiele działających wspłóbieżnie procesów (aktorów), porozumiewających się poprzez przesyłanie wiadomości, na których podstawie mogą podejmować lokalne decyzje, tworzyć kolejne procesy, lub wysyłać kolejne wiadomości. Listing [[ref:code:ex-actor-model-usage]] prezentuje wszystkie operacje prymitywne udostępniane przez Model Aktorowy.
+Model Aktorowy bazuje na kilku prostych koncepcjach, takich jak podział programu na wiele działających współbieżnie procesów (aktorów), porozumiewających się poprzez przesyłanie wiadomości, na których podstawie mogą podejmować lokalne decyzje, tworzyć kolejne procesy, lub wysyłać kolejne wiadomości. Listing [[ref:code:ex-actor-model-usage]] prezentuje wszystkie operacje prymitywne udostępniane przez Model Aktorowy.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Przykład wykorzystania prymitywnych operacji Modelu Aktorowego w języku.}}
@@ -327,7 +327,7 @@ Model Aktorowy bazuje na kilku prostych koncepcjach, takich jak podział program
 #+end_src
 #+latex: \end{listing}
 
-Program ten tworzy nowy proces korzystając z funkcji =spawn=, któremu natychmiastowo wysyła wiadomość za pośrednictwem funkcji =send=, zawierając w niej swój identyfikator =self=, po czym przechodzi do oczekiwania na odpowiedź wywołując funkcję =recv=. Tymczasem, nowopowstały proces zostaje uśpiony na 1000 milisekund (=sleep=) po czym odbiera przesłaną do niego wiadomość i odpowiada na nią wysyłając symbol =message=.
+Program ten tworzy nowy proces korzystając z funkcji =spawn=, któremu natychmiastowo wysyła wiadomość za pośrednictwem funkcji =send=, zawierając w niej swój identyfikator =self=, po czym przechodzi do oczekiwania na odpowiedź wywołując funkcję =recv=. Tymczasem, nowo powstały proces zostaje uśpiony na 1000 milisekund (=sleep=) po czym odbiera przesłaną do niego wiadomość i odpowiada na nią wysyłając symbol =message=.
 
 Interfejs ten jest bardzo zbliżony do interfejsu Modelu Aktorowego dostępnego w języku Erlang [[cite:Armstrong1996]] i zaiste był na nim wzorowany. W odróżnieniu od języka Erlang, odbieranie wiadomości nie wykorzystuje dopasowywania wzorców bezpośrednio w prymitywnej operacji =recv=, lecz umożliwia jego osobną implementację. Podobnie, jak w przypadku języka Erlang, projekt przewiduje rozszerzenie listy prymitywnych operacji o identyfikację maszyn, na których działają procesy.
 
@@ -336,7 +336,7 @@ Implementacja Modelu Aktorowego w języku =FOOF= podobnie jak mechanizm obsługi
 ** Makra
 #+LaTeX: \label{sec:macros-description}
 
-Prawdobodobnie najciekawszą funkcjonalnością języków z rodziny Lisp jest ich podejście do metaprogramowania i generowania kodu. Większość języków z tej rodziny wykorzystuje wersję systemu *makr*, który pozwala rozszerzać składnię języka i tworzyć dialekty domenowe (ang. /domain specific language/) w prosty i przystępny sposób. Język =FOOF= nie jest wyjątkiem i również został wyposażony w system makr.
+Prawdopodobnie najciekawszą funkcjonalnością języków z rodziny Lisp jest ich podejście do meta-programowania i generowania kodu. Większość języków z tej rodziny wykorzystuje wersję systemu *makr*, który pozwala rozszerzać składnię języka i tworzyć dialekty domenowe (ang. /domain specific language/) w prosty i przystępny sposób. Język =FOOF= nie jest wyjątkiem i również został wyposażony w system makr.
 
 Listing [[ref:code:ex-macroexpansion]] prezentuje efekt działania *makroekspansji*, czyli substytucji wywołań makr na definicje ich ciał, na przykładzie kilku wbudowanych makr rozszerzających składnię języka =FOOF=.
 
@@ -374,7 +374,7 @@ Listing [[ref:code:ex-macroexpansion]] prezentuje efekt działania *makroekspans
 
 Efektem makroekspansji jest powstanie semantycznie ekwiwalentnego kodu, który wykorzystuje tylko dobrze zdefiniowane konstrukcje składniowe języka. Warto zwrócić uwagę na ostatni z przykładów, który prezentuje znaną z innych dialektów języka Lisp konstrukcję =quasiquote=. Konstrukcja ta umożliwia budowanie programów w łatwy, wizualny sposób bez konieczności samodzielnego budowania drzew programu z wykorzystaniem funkcji =cons=, =list= i pokrewnych. Szczegółowy opis działania =quasiquote= został zawarty w [[cite:Bawden1999]].
 
-Systemy makr czesto borykają się z problemami *higieniczności* generowanego kodu. Problem ten ilustruje przykład z listingu [[ref:code:macro-hygiene]].
+Systemy makr często borykają się z problemami *higieniczności* generowanego kodu. Problem ten ilustruje przykład z listingu [[ref:code:macro-hygiene]].
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Przykład ilustrujący problem higieniczności systemu makr w języku Scheme.}}
@@ -395,7 +395,7 @@ Zdefiniowane zostaje makro =unless=, którego zadaniem jest uruchamianie pewnych
 
 Problem higieniczności jest problemem skomplikowanym i zazwyczaj jego rozwiązanie oznacza poświęcenie części funkcjonalności systemu makr, na przykład poprzez ograniczenie go do translacji szablonów [[cite:Sperber2010]], lub znacznego jego skomplikowania, przez konieczność wprowadzenia hierarchicznej refleksji makroekspansji [[cite:Queinnec1996]]. Niestety, system makr języka =FOOF= pozostawia ten problem otwartym.
 
-Alternatywnym podejściem do problemu metaprogramowania, o którym warto wspomnieć są *f-wyrażenia* (ang. /f-expressions/, /fexprs/), polegające na podziale funkcji na dwa fundamentalne kompotenty - aplikatywny, indukujący ewaluację argumentów oraz operatywny, analogiczny do substytucji nazw argumentów na ich wartości w wyrażeniach lambda Rachunku Lambda [[cite:Shutt2010]]. Podejście to drastycznie komplikuje kompilację kodu źródłowego, w związku z czym nie zostało wykorzystane w języku =FOOF=.
+Alternatywnym podejściem do problemu meta-programowania, o którym warto wspomnieć są *f-wyrażenia* (ang. /f-expressions/, /fexprs/), polegające na podziale funkcji na dwa fundamentalne komponenty - aplikatywny, indukujący ewaluację argumentów oraz operatywny, analogiczny do substytucji nazw argumentów na ich wartości w wyrażeniach lambda Rachunku Lambda [[cite:Shutt2010]]. Podejście to drastycznie komplikuje kompilację kodu źródłowego, w związku z czym nie zostało wykorzystane w języku =FOOF=.
 
 ** System modułowy
 #+LaTeX: \label{sec:module-system}
@@ -423,9 +423,9 @@ System modułowy wykorzystywany w języku =FOOF= jest zbliżony w swojej funkcjo
 #+end_src
 #+latex: \end{listing}
 
-W przykładzie definiowana jest struktura =A= dostarczającą funkcję =foo= oraz moduł (odpowiednik funktora) =B= parametryzowany przez submoduł =a=. Następnie, tworzona jest instancja modułu =B=, wykorzystując zdefiniowaną uprzednio strukturę =A=, i używana w dalszej części programu. Korzystanie z sytemu modułowego jest ułatwione, dzięki specjalnej składni dostępu do zawartości modułu =module.member=.
+W przykładzie definiowana jest struktura =A= dostarczającą funkcję =foo= oraz moduł (odpowiednik funktora) =B= parametryzowany przez sub-moduł =a=. Następnie, tworzona jest instancja modułu =B=, wykorzystując zdefiniowaną uprzednio strukturę =A=, i używana w dalszej części programu. Korzystanie z sytemu modułowego jest ułatwione, dzięki specjalnej składni dostępu do zawartości modułu =module.member=.
 
-System ten pozwala w łatwy sposób zarządzać zależnościami modułów - wystarczy zmienić parametr przekazany przy tworzeniu instancji modułu =B= na inną strukturę, bez modyfikacji jego definicji, by osiągnać zamierzone cele. Funkcjonalność ta jest bardzo przydatna przy tworzeniu bibliotek programistycznych, które mogą być parametryzowane modułami służącymi do powszechnych zadań, takimi jak moduł do logowania, lub moduł zawierający parametry konfiguracji aplikacji. W efekcie, biblioteki te nie narzucają z góry implementacji modułów parametryzujących, dzięki czemu mogą być łatwiej zintegrowane z różnymi programami.
+System ten pozwala w łatwy sposób zarządzać zależnościami modułów - wystarczy zmienić parametr przekazany przy tworzeniu instancji modułu =B= na inną strukturę, bez modyfikacji jego definicji, by osiągnąć zamierzone cele. Funkcjonalność ta jest bardzo przydatna przy tworzeniu bibliotek programistycznych, które mogą być parametryzowane modułami służącymi do powszechnych zadań, takimi jak moduł do logowania, lub moduł zawierający parametry konfiguracji aplikacji. W efekcie, biblioteki te nie narzucają z góry implementacji modułów parametryzujących, dzięki czemu mogą być łatwiej zintegrowane z różnymi programami.
 
 Zasadniczą wadą systemu modułowego w zaprezentowanej powyżej formie, jest konieczność istnienia osobnej fazy *linkowania*, czyli tworzenia instancji modułów. Problem ten został szczegółowo przeanalizowany w [[cite:Gasbichler2006]], skutkując stworzeniem notacji /interfejsów modułów/ ułatwiającej automatyczną rezolucję zależności. Rozwiązanie to jest dalekie od doskonałego, toteż język =FOOF= stosuje inne podejście opisane w sekcji [[ref:sec:knowledge-engineering-description]].
 
@@ -436,11 +436,11 @@ Ostatnią i zarazem najbardziej zaawansowaną funkcjonalnością języka =FOOF= 
 
 Istnieje wiele metod reprezentacji i przetwarzania wiedzy, które różnią się sposobem dostępu do zdobytych informacji, a co za tym idzie, stosownością do rozwiązywania danych klas problemów [[cite:Wang2013]]. Dlatego też, wybór konkretnej reprezentacji i mechanizmu przetwarzania wiedzy w języku =FOOF= uzależniony jest od pragmatycznego jego zastosowania.
 
-Wiodącym zadaniem inżynierii wiedzy w języku =FOOF= jest realizacja jednego z główych założeń języka, czyli osiągnięcia *świadomości platformy* poprzez zdobycie i udostępnienie wiedzy o platformie sprzętowej i samej aplikacji na niej działającej. Wiedza ta ma stanowić bazę do podejmowania decyzji o rozwoju obliczeń prowadzonych w aplikacji, a także o samej strukturze systemu.
+Wiodącym zadaniem inżynierii wiedzy w języku =FOOF= jest realizacja jednego z głównych założeń języka, czyli osiągnięcia *świadomości platformy* poprzez zdobycie i udostępnienie wiedzy o platformie sprzętowej i samej aplikacji na niej działającej. Wiedza ta ma stanowić bazę do podejmowania decyzji o rozwoju obliczeń prowadzonych w aplikacji, a także o samej strukturze systemu.
 
 W założeniu ma to umożliwić automatyczną konfigurację i ewolucję rozproszonych aplikacji zbudowanych z wykorzystaniem języka =FOOF=. Na przykład, system inteligentnego domu, po wykryciu podłączenia w odpowiednim pomieszczeniu czujnika temperatury o wyższej dokładności pomiarów niż dotychczasowo dostępna, powinien bez modyfikacji programu, ani ingerencji jego użytkownika, zacząć z niego korzystać. Natomiast, w przypadku katastrofalnego błędu rzeczonego czujnika, system powinien wrócić do korzystania z poprzedniego czujnika.
 
-Literatura związana z tą dziedziną nauki, która zarazem dotyczy systemów rozproszonych o wysokiej heterogeniczności, takich jak Internet Rzeczy, bardzo często wykorzystuje podejście ontologiczne [[cite:Hachem2011, Wang2013, Samimi2014]]. Polega ono na budowie ontologii domenowej na potrzeby systemu, gdzie wiedza jest reprezentowana jako instancje i klasy obiektów powiązanych ze sobią pewnymi zależnościami. Ontologia ta może być następnie odpytywana, a działający w niej algorytm rozumowania (ang. /reasoner/) pozwala odkrywać nowe zależności pomiędzy obiektami.
+Literatura związana z tą dziedziną nauki, która zarazem dotyczy systemów rozproszonych o wysokiej heterogeniczności, takich jak Internet Rzeczy, bardzo często wykorzystuje podejście ontologiczne [[cite:Hachem2011, Wang2013, Samimi2014]]. Polega ono na budowie ontologii domenowej na potrzeby systemu, gdzie wiedza jest reprezentowana jako instancje i klasy obiektów powiązanych ze sobą pewnymi zależnościami. Ontologia ta może być następnie odpytywana, a działający w niej algorytm rozumowania (ang. /reasoner/) pozwala odkrywać nowe zależności pomiędzy obiektami.
 
 Rozwiązane to wchodzi w konflikt z założeniami języka =FOOF= przez swoje skomplikowanie, relatywną restrykcyjność i statyczność bazy wiedzy oraz kosztowność obliczeniową, toteż, pomimo niewątpliwych zalet, nie mogło zostać wdrożone. Alternatywnym rozwiązaniem zastosowanym w języku jest podejście regułowe, polegające na reprezentacji wiedzy w formie *faktów* o nienarzuconej strukturze i przetwarzaniu tej wiedzy za pomocą *reguł* weryfikujących ową strukturę. Listing [[ref:code:ex-rbs-usage]] pokazuje podstawowe operacje związane z inżynierią wiedzy dostępne w języku =FOOF=.
 
@@ -458,7 +458,7 @@ Rozwiązane to wchodzi w konflikt z założeniami języka =FOOF= przez swoje sko
 
 Przykład ten definiuje jedną regułę bez zagłębiania się w szczegóły implementacji systemu regułowego języka =FOOF=. Reguła ta, bazując na spełnialności pewnego zbioru warunków =set-of-conditions= modyfikuje wbudowaną bazę faktów przez *asercję* i *retrakcję* rożnych faktów. Dodatkowo, przykład *sygnalizuje* zaistnienie pewnego zdarzenia =an-event=, co konceptualnie jest tożsame z asercją i późniejszą retrakcją faktu opisującego zajście tego zdarzenia w systemie.
 
-Projekt przewiduje wykorzystanie opisanych powyżej podstawowych operacji oraz wiedzy możliwej do zdobycia podczas kompilacji programów języka =FOOF= poprzez *inferencję* faktów dotyczących struktury ich kodu źródłowego, do rozwiązania opisanego w sekcji [[ref:sec:module-system]] problemu linkowania modułów. Rozwiązanie to polega na przetworzaniu inferowanej wiedzy za pomocą zbioru reguł, zwanych kolektywnie *protokołem modułu*, w celu rezolucji zależności je spełniających w sposób automatyczny. Moduły, zamiast dokładnego sprecyzowania swoich zależności, mogą podać protokóły, które są konieczne i wystarczające do poprawnego, wspólnego działania, a system regułowy automatycznie wybierze spełniające je, dostępne submoduły.
+Projekt przewiduje wykorzystanie opisanych powyżej podstawowych operacji oraz wiedzy możliwej do zdobycia podczas kompilacji programów języka =FOOF= poprzez *inferencję* faktów dotyczących struktury ich kodu źródłowego, do rozwiązania opisanego w sekcji [[ref:sec:module-system]] problemu linkowania modułów. Rozwiązanie to polega na przetworzeniu inferowanej wiedzy za pomocą zbioru reguł, zwanych kolektywnie *protokołem modułu*, w celu rezolucji zależności je spełniających w sposób automatyczny. Moduły, zamiast dokładnego sprecyzowania swoich zależności, mogą podać protokóły, które są konieczne i wystarczające do poprawnego, wspólnego działania, a system regułowy automatycznie wybierze spełniające je, dostępne sub-moduły.
 
 * Kompilator języka =FOOF=
 #+LaTeX: \label{sec:compiler-description}
@@ -517,14 +517,14 @@ Opisany parser wspiera podstawową składnię języka =FOOF= wynikającą z jego
 #+LaTeX: \end{multicols}
 #+latex: \end{listing}
 
-Należy zauważyć, że ekspansja syntaktyczna powyższego rozszerzenia składniowego nie jest jednoznacza z ekspansją wynikającą z jego znaczenia, która jest przeprowadzana w fazie makroekspansji opisanej w sekcji [[ref:sec:macroexpansion-impl]].
+Należy zauważyć, że ekspansja syntaktyczna powyższego rozszerzenia składniowego nie jest jednoznaczna z ekspansją wynikającą z jego znaczenia, która jest przeprowadzana w fazie makroekspansji opisanej w sekcji [[ref:sec:macroexpansion-impl]].
 
 Naturalnie, istnieje możliwość łatwej wymiany implementacji parsera w przyszłości na mechanizm bardziej rozbudowany, wspierający dowolną ilość rozszerzeń składniowych. Można do tego celu wykorzystać generator parserów zbudowany w oparciu o gramatyki PEG (ang. /Parsing Expression Grammars/) [[cite:Ford2004]] oraz monadyczne kombinatory parserów [[cite:Hutton1996]], które szczególnie dobrze nadają się do budowy parserów dla języków o nieskomplikowanej podstawowej gramatyce, takich jak =FOOF=.
 
 ** Makroekspansja
 #+LaTeX: \label{sec:macroexpansion-impl}
 
-Pierwszą fazą transformującą w znaczący sposob kod źródłowy języka =FOOF=, jest faza makroekspansji. Jej głównym zadaniem jest umożliwienie istnienia opisanego w rozdziale [[ref:sec:lang-description]] systemu makr, a polega ona na aplikacji definicji makr do fragmentów kodu źródłowego znajdujących się w miejscu ich wywołań. Listing [[ref:code:macro-expansion-pseudocode]] prezentuje pseudokod algorytmu realizującego fazę makroekspansji w notacji języka =FOOF=.
+Pierwszą fazą transformującą w znaczący sposób kod źródłowy języka =FOOF=, jest faza makroekspansji. Jej głównym zadaniem jest umożliwienie istnienia opisanego w rozdziale [[ref:sec:lang-description]] systemu makr, a polega ona na aplikacji definicji makr do fragmentów kodu źródłowego znajdujących się w miejscu ich wywołań. Listing [[ref:code:macro-expansion-pseudocode]] prezentuje pseudokod algorytmu realizującego fazę makroekspansji w notacji języka =FOOF=.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Pseudokod algorytmu makroekspansji w notacji języka \texttt{FOOF}.}}
@@ -549,11 +549,11 @@ Algorytm ten jest rekurencyjny i przebiega w następujący sposób:
 
 - Jeśli wyrażenie jest listą, której pierwszy element jest nazwą zdefiniowanego uprzednio makra, to następuje makroekspansja wyrażenia otrzymanego przez aplikację definicji makra do owego wyrażenia.
 
-- Jeśli wyrażenie jest listą, ale jej pierwzy element nie identyfikuje zdefiniowanego uprzednio makra, to następuje makroekspansja każdego podwyrażenia wchodzącego w skład tego wyrażenia.
+- Jeśli wyrażenie jest listą, ale jej pierwszy element nie identyfikuje zdefiniowanego uprzednio makra, to następuje makroekspansja każdego pod-wyrażenia wchodzącego w skład tego wyrażenia.
 
 - Jeśli wyrażenie nie jest listą to zostaje zwrócone bez zmian.
 
-Powyższy algortym uwzględnia możliwość, w której analizowanym wyrażeniem jest specjalna formuła =(quote ...)= przerywająca makroekspansję. Podobnie jak w przypadku wyrażeń nie będących listami, formuła =(quote ...)= zostaje zwrócona bez zmian. Algorytm uwzględnia również sytuację, w której wynikiem ekspansji jednego makra jest wywołanie innego makra, dzięki rekurencyjnemu wywołaniu makroekspansji po aplikacji definicji makra. Sytuację tę obrazuje listing [[ref:code:ex-macro-expansion-steps]].
+Powyższy algorytm uwzględnia możliwość, w której analizowanym wyrażeniem jest specjalna formuła =(quote ...)= przerywająca makroekspansję. Podobnie jak w przypadku wyrażeń nie będących listami, formuła =(quote ...)= zostaje zwrócona bez zmian. Algorytm uwzględnia również sytuację, w której wynikiem ekspansji jednego makra jest wywołanie innego makra, dzięki rekurencyjnemu wywołaniu makroekspansji po aplikacji definicji makra. Sytuację tę obrazuje listing [[ref:code:ex-macro-expansion-steps]].
 
 W przykładzie została wykorzystana konstrukcja =let*=, która semantycznie oznacza zagnieżdżoną deklarację zmiennych lokalnych =a= oraz =b=. Makro odpowiedzialne za ekspansję konstrukcji =let*= skutkuje wygenerowaniem dwóch wywołań makra =let=, które następnie jest zamieniane na wywołania funkcji anonimowych (tworzonych za pomocą konstrukcji =lambda=) z odpowiednimi parametrami.
 
@@ -588,12 +588,12 @@ W przykładzie została wykorzystana konstrukcja =let*=, która semantycznie ozn
 
 Obecna implementacja nie wspiera definiowania nowych makr przez użytkowników języka =FOOF=. Powodem tej niedogodności jest nietrywialna interakcja systemu makr i systemu modułów zastosowanego w języku, która została szczegółowo przeanalizowana w [[cite:Gasbichler2006]]. System makr do poprawnego funkcjonowania wymaga znajomości definicji makr, które znajdują się w różnych modułach, przed uruchomieniem programu, natomiast system modułowy wymaga uruchomienia programu w celu przeprowadzenia linkowania modułów. Rozwiązanie tego problemu jest nietrywialne, w związku z czym nie zostało uwzględnione w projekcie języka. Lista predefiniowanych makr dostępnych w języku =FOOF= została zawarta w dodatku [[ref:sec:built-ins]].
 
-Innym problemem manifestującym się w wielu systemach makr jest opisany w sekcji [[ref:sec:macros-description]] problem higieniczności, polegający na nieoczekiwanej injekcji nieprawidłowych wartości do kodu generowanego przez makra. W zwązku z opisaną powyżej niedogodnością, problem ten nie jest obecny w implementacji języka =FOOF= i jego rozwiązanie stanowi problem otwarty. Znanych jest kilka sposobów rozwiązania problemu higieniczności systemu makr, na przykład wykorzystanie specjalnego systemu typów [[cite:Bawden2000]], lub wieży refleksji makroekspansji [[cite:Queinnec1996]].
+Innym problemem manifestującym się w wielu systemach makr jest opisany w sekcji [[ref:sec:macros-description]] problem higieniczności, polegający na nieoczekiwanej iniekcji nieprawidłowych wartości do kodu generowanego przez makra. W związku z opisaną powyżej niedogodnością, problem ten nie jest obecny w implementacji języka =FOOF= i jego rozwiązanie stanowi problem otwarty. Znanych jest kilka sposobów rozwiązania problemu higieniczności systemu makr, na przykład wykorzystanie specjalnego systemu typów [[cite:Bawden2000]], lub wieży refleksji makroekspansji [[cite:Queinnec1996]].
 
 ** Obsługa systemu modułowego
 Implementacja systemu modułowego języka =FOOF= wymaga niewielkiego wsparcia, w chwili obecnej, ze strony kompilatora.
 
-Możliwość definiowania modułów została zreazilowana z wykorzystaniem systemu makr jako wywołania makr =structure= oraz =module= odpowiadające odpowiednio strukturom i funktorom opisanym w sekcji [[ref:sec:module-system]]. Makra te generują wywołania specjalnej funkcji =&make-structure= budującej struktury z prostych wartości. Listing [[ref:code:ex-module-expansion]] prezentuje wynik makroekspansji makra =module=, której pośrednim krokiem jest ekspansja makra =structure=.
+Możliwość definiowania modułów została zrealizowana z wykorzystaniem systemu makr jako wywołania makr =structure= oraz =module= odpowiadające odpowiednio strukturom i funktorom opisanym w sekcji [[ref:sec:module-system]]. Makra te generują wywołania specjalnej funkcji =&make-structure= budującej struktury z prostych wartości. Listing [[ref:code:ex-module-expansion]] prezentuje wynik makroekspansji makra =module=, której pośrednim krokiem jest ekspansja makra =structure=.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Przykład ekspansji makra \texttt{module}.}}
@@ -622,7 +622,7 @@ Możliwość definiowania modułów została zreazilowana z wykorzystaniem syste
 #+LaTeX: \end{multicols}
 #+latex: \end{listing}
 
-Definicje należące do zdefiniowanego modułu =X= transformowane są do postaci wzajemnie rekurencyjnej za sprawą konstrukcji =letrec=, a następnie ich wartości łączone są w jeden obiekt struktury. Do definicji należących do tak otrzymanej wartości można odnosić się z wykorzystaniem specjalnej składni =module.member=, która została zrealizowana jako ekspansja symboli w fastępnej fazie kompilacji opisanej w sekcji [[ref:sec:cps-impl]]. Wywołanie funkcji =bar= instancji =x= modułu =X= wygląda więc następująco: =(x.bar 23)=.
+Definicje należące do zdefiniowanego modułu =X= transformowane są do postaci wzajemnie rekurencyjnej za sprawą konstrukcji =letrec=, a następnie ich wartości łączone są w jeden obiekt struktury. Do definicji należących do tak otrzymanej wartości można odnosić się z wykorzystaniem specjalnej składni =module.member=, która została zrealizowana jako ekspansja symboli w następnej fazie kompilacji opisanej w sekcji [[ref:sec:cps-impl]]. Wywołanie funkcji =bar= instancji =x= modułu =X= wygląda więc następująco: =(x.bar 23)=.
 
 ** Transformacja /Continuation Passing Style/
 #+LaTeX: \label{sec:cps-impl}
@@ -636,7 +636,7 @@ Celem tej fazy jest wplecenie notacji kontynuacji opisanych w sekcji [[ref:sec:c
 #+latex: \label{code:ex-cps-principle}
 #+LaTeX: \begin{multicols}{2}
 #+begin_src scheme
-;; Styl bespośredni:
+;; Styl bezpośredni:
 (lambda (x y)
   (* 2 (+ x y)))
 #+end_src
@@ -661,15 +661,15 @@ W przykładzie można zauważyć doprecyzowanie kolejności wykonywania działa�
 
 Algorytm automatycznej konwersji CPS polega na analizie struktury kodu źródłowego metodą /dziel i zwyciężaj/ i przeprowadzeniu serii prostych podstawień, z których najważniejsze to:
 
-- Transformacja identyfikatorów przebiega przez dodanie prefixu =__= i unormowanie znaków specjalnych w celu wyraźnego odseparowania wartości przed i po konwersji.
+- Transformacja identyfikatorów przebiega przez dodanie prefiksu =__= i unormowanie znaków specjalnych w celu wyraźnego odseparowania wartości przed i po konwersji.
 
 - Transformacja wartości prostych polega na wywołaniu /aktualnej kontynuacji/ z ich wartością.
 
 - Transformacja funkcji polega na rozszerzeniu listy ich argumentów o dodatkowy argument reprezentujący /kontynuację wywołania funkcji/ i rekurencyjnym przeprowadzeniu transformacji ciała funkcji przy jednoczesnej podmianie aktualnej kontynuacji na wprowadzoną uprzednio kontynuację wywołania funkcji.
 
-Dokłady opis algorytmu konwersji /Continuation Passing Style/ zawarto w [[cite:Appel1992]]. Ponieważ konwersja CPS ma miejsce podczas kompilacji i przed uruchomieniem programu, toteż wartość /aktualnej kontynuacji/ nie jest ustalona. W związku z tym, powyższy *algorytm generuje kod*, który będzie się składał na faktyczną wartość aktualnej podczas uruchomienia programu kontynuacji.
+Dokładny opis algorytmu konwersji /Continuation Passing Style/ zawarto w [[cite:Appel1992]]. Ponieważ konwersja CPS ma miejsce podczas kompilacji i przed uruchomieniem programu, toteż wartość /aktualnej kontynuacji/ nie jest ustalona. W związku z tym, powyższy *algorytm generuje kod*, który będzie się składał na faktyczną wartość aktualnej podczas uruchomienia programu kontynuacji.
 
-Jedną z cech konwersji CPS jest dokładne sprecyzowanie kolejności zachodzenia operacji w transfomowanych programach, co uwydatnia problem implementacji rekurencji. Zgodnie z opisem problemu z sekcji [[ref:sec:continuations-description]], funkcje rekurencyjne (a także funkcje wzajemnie-rekurencyjne) wymagają istnienia własnej (pośrednio w przypadku funkcji wzajemnie-rekurencyjnych) wartości zanim będą mogły zostać zbudowane, co prowadzi do powstania sprzeczności. Nie jest to jednak do końca prawdziwe stwierdzenie, otóż funkcje rekurencyjne wymagają pewnej *lokacji*, w której znajdzie się ich wartość, podczas budowy tejże wartości, dzięki czemu ich implementacja jest możliwa. Listing [[ref:code:cps-letrec]] prezentuje wynik transformacji CPS konstrukcji =letrec= służącej do definiowania wzajemnie-rekurencyjnych funkcji.
+Jedną z cech konwersji CPS jest dokładne sprecyzowanie kolejności zachodzenia operacji w transformowanych programach, co uwydatnia problem implementacji rekurencji. Zgodnie z opisem problemu z sekcji [[ref:sec:continuations-description]], funkcje rekurencyjne (a także funkcje wzajemnie-rekurencyjne) wymagają istnienia własnej (pośrednio w przypadku funkcji wzajemnie-rekurencyjnych) wartości zanim będą mogły zostać zbudowane, co prowadzi do powstania sprzeczności. Nie jest to jednak do końca prawdziwe stwierdzenie, otóż funkcje rekurencyjne wymagają pewnej *lokacji*, w której znajdzie się ich wartość, podczas budowy tejże wartości, dzięki czemu ich implementacja jest możliwa. Listing [[ref:code:cps-letrec]] prezentuje wynik transformacji CPS konstrukcji =letrec= służącej do definiowania wzajemnie-rekurencyjnych funkcji.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Przykład transformacji konstrukcji \textt{letrec}.}}
@@ -705,16 +705,16 @@ Jedną z cech konwersji CPS jest dokładne sprecyzowanie kolejności zachodzenia
 #+LaTeX: \end{multicols}
 #+latex: \end{listing}
 
-Transformacja CPS w tym przypadku umożliwia implementację funkcji rekurencyjnych tworząc dla ich wartości lokacje (=__even?= oraz =__odd?=), do których następnie wpisuje za pomocą konstrukcji =set!= zbudowane wartości. W efekcie, obie funkcje mają wszystkie niezbędne informacje i mogą korzystać z pozostałych funkcji wprowadzonych przez konstrukcję =letrec=. Rozwiązanie to jest analogiczne do techniki opisanej w [[cite:German1995]] oraz stanowi preferowalną (pod warunkiem dopuszczenia istnienia mutacji w języku) alternatywę dla wykorzystania kombinatora =Y= [[cite:Felleisen1991]], którego implementacja dla funkcji wzajemnie-rekurencyjnych jest nietrywialna. Innym podejściem do rozwiązania problemu rekurencji jest automatyczna eliminacja wzajemnej rekursji [[cite:Kaser1993]].
+Transformacja CPS w tym przypadku umożliwia implementację funkcji rekurencyjnych tworząc dla ich wartości lokacje (=__even?= oraz =__odd?=), do których następnie wpisuje za pomocą konstrukcji =set!= zbudowane wartości. W efekcie, obie funkcje mają wszystkie niezbędne informacje i mogą korzystać z pozostałych funkcji wprowadzonych przez konstrukcję =letrec=. Rozwiązanie to jest analogiczne do techniki opisanej w [[cite:German1995]] oraz stanowi preferowaną (pod warunkiem dopuszczenia istnienia mutacji w języku) alternatywę dla wykorzystania kombinatora =Y= [[cite:Felleisen1991]], którego implementacja dla funkcji wzajemnie-rekurencyjnych jest nietrywialna. Innym podejściem do rozwiązania problemu rekurencji jest automatyczna eliminacja wzajemnej rekursji [[cite:Kaser1993]].
 
-Warto zauważyć, iż proste modyfikacje podstawowego algorytmu konwersji /Continuation Passing Style/, polegające na generowaniu wywołań wbudowanych funkcji w stategicznych miejscach, mogą pomóc w implementacji szerokiej gamy mechanizmów kontroli przepływu sterowania, jakich jaki obsługa błędów oraz multiprocessing. Fakt ten został wdrożony do implementacji kompilatora języka =FOOF= i szczegółowo opisany w rozdziale [[ref:sec:runtime-system]].
+Warto zauważyć, iż proste modyfikacje podstawowego algorytmu konwersji /Continuation Passing Style/, polegające na generowaniu wywołań wbudowanych funkcji w strategicznych miejscach, mogą pomóc w implementacji szerokiej gamy mechanizmów kontroli przepływu sterowania, jakich jaki obsługa błędów oraz multiprocessing. Fakt ten został wdrożony do implementacji kompilatora języka =FOOF= i szczegółowo opisany w rozdziale [[ref:sec:runtime-system]].
 
 ** Optymalizacja i generacja kodu
 Ostatnie dwie fazy kompilacji to optymalizacja i generacja kodu wynikowego. Zadaniem tych faz jest uproszczenie, przyspieszenie i przygotowanie przetransformowanego w poprzednich fazach kodu do postaci możliwej do uruchomienia przez komputer.
 
 Fazy te zostały niestety pominięte w związku z ich skomplikowaniem i ograniczeniami czasowymi nałożonymi na projekt. W chwili obecnej, kompilator języka =FOOF= kończy działanie produkując kod pośredni, będący uruchamialnym podzbiorem języków Scheme i =FOOF=, dzięki czemu może zostać uruchomiony przez interpretery i kompilatory tych języków.
 
-W przyszłości istnieje możliwość relatywnie łatwego dodania pozostałych faz kompilacji. W szczególności, zaimplementowana już faza konwersji /Continuation Passing Style/ opisana w sekcji [[ref:sec:cps-impl]] ułatwia implementację szerokiej gamy ciekawych optymalizacji, takich jak częściowa ewaluacja statycznych wartości (ang. /partial evaluation/), prowadząca do zwijania wartości stałych (ang. /constant folding/), oraz eliminacji jednakowych podwyrażeń (ang. /common subexpression elimination/) [[cite:Bacon2002]].
+W przyszłości istnieje możliwość relatywnie łatwego dodania pozostałych faz kompilacji. W szczególności, zaimplementowana już faza konwersji /Continuation Passing Style/ opisana w sekcji [[ref:sec:cps-impl]] ułatwia implementację szerokiej gamy ciekawych optymalizacji, takich jak częściowa ewaluacja statycznych wartości (ang. /partial evaluation/), prowadząca do zwijania wartości stałych (ang. /constant folding/), oraz eliminacji jednakowych pod-wyrażeń (ang. /common subexpression elimination/) [[cite:Bacon2002]].
 
 Implementacja fazy generacji kodu maszynowego wymagać będzie dodatkowo *konwersji domknięć leksykalnych* (ang. /closure conversion/) i opcjonalnie *lambda-unoszenia* (ang. /lambda lifting/) [[cite:PeytonJones1992]], których zadaniem jest przeniesienie definicji funkcji anonimowych wygenerowanego kodu do globalnej przestrzeni nazw. Listing [[ref:code:lambda-lift-vs-closure-conv]] ilustruje działanie obu tych transformacji.
 
@@ -739,7 +739,7 @@ Implementacja fazy generacji kodu maszynowego wymagać będzie dodatkowo *konwer
 #+end_src
 #+LaTeX: \columnbreak
 #+begin_src scheme
-;; Konwersja domknięć-leksykalnych:
+;; Konwersja domknięć leksykalnych:
 (define __lambda0 (self n)
   (+ n (&value-of self 'x)))
 
@@ -751,7 +751,7 @@ Implementacja fazy generacji kodu maszynowego wymagać będzie dodatkowo *konwer
 #+LaTeX: \end{multicols}
 #+latex: \end{listing}
 
-Konwersja domknięć leksykalnych polega na przeniesieniu definicji funkcji anonimowych do globalnej przestrzeni nazw oraz odpowiedniej modyfikacji miejsc tworzenia domknięć leksykalnych. Technika lambda-unoszenia, która zwykle jest wykonywana tuż po konwersji domknięć leksykalnych, polega na redukcji ilości stworzonych obiektów funkcyjnych przez promocję zmiennych wolnych domknięć leksykalnych do listy argumentów funkcji i modyfikacji miejsc wywołań funkcji w celu przekazania dodatkowych wartości. Technika ta pozwala ominać proces budowania domknięcia leksykalnego i jednocześnie przyspieszyć miejsca jego wywołań.
+Konwersja domknięć leksykalnych polega na przeniesieniu definicji funkcji anonimowych do globalnej przestrzeni nazw oraz odpowiedniej modyfikacji miejsc tworzenia domknięć leksykalnych. Technika lambda-unoszenia, która zwykle jest wykonywana tuż po konwersji domknięć leksykalnych, polega na redukcji ilości stworzonych obiektów funkcyjnych przez promocję zmiennych wolnych domknięć leksykalnych do listy argumentów funkcji i modyfikacji miejsc wywołań funkcji w celu przekazania dodatkowych wartości. Technika ta pozwala ominąć proces budowania domknięcia leksykalnego i jednocześnie przyspieszyć miejsca jego wywołań.
 
 * Środowisko uruchomieniowe języka
 #+LaTeX: \label{sec:runtime-system}
@@ -763,7 +763,7 @@ W związku ze zróżnicowaniem funkcjonalności dostępnych w różnych językac
 Język =FOOF= w obecnej postaci korzysta ze środowiska uruchomieniowego języka Scheme, rozszerzając jego funkcjonalność o mechanizmy niezbędne do implementacji przetwarzania współbieżnego, zaawansowanej obsługi błędów, a także zapewnienia wsparcia dla inżynierii wiedzy.
 
 ** Architektura środowiska uruchomieniowego
-Architektura środowiska uruchomieniowego wykorzystanego w implementacji języka =FOOF= jest relatywnie nieskomplikowa i składa się z niewielkiej liczby logicznych elementów. Po części jest to zasługa wiernego podążania za zasadami projektowania języków programowania przedstawionymi w [[cite:Hoare1973]] oraz wykorzystania środowiska uruchomieniowego języka Scheme. Diagram poszczególnych elementów logicznych i ich wzajemnej interakcji został zawarty na schemacie [[ref:fig:rt-architecture]].
+Architektura środowiska uruchomieniowego wykorzystanego w implementacji języka =FOOF= jest relatywnie nieskomplikowana i składa się z niewielkiej liczby logicznych elementów. Po części jest to zasługa wiernego podążania za zasadami projektowania języków programowania przedstawionymi w [[cite:Hoare1973]] oraz wykorzystania środowiska uruchomieniowego języka Scheme. Diagram poszczególnych elementów logicznych i ich wzajemnej interakcji został zawarty na schemacie [[ref:fig:rt-architecture]].
 
 #+begin_center
 #+label: fig:rt-architecture
@@ -781,7 +781,7 @@ Główny obszar pamięci operacyjnej programów jest wspólny dla wszystkich pro
 Obecna implementacja, w związku z ograniczeniami czasowymi narzuconymi na projekt, nie wykorzystuje pełnego potencjału przedstawionej architektury, ponieważ działa /jednowątkowo/, czyli jest ograniczona tylko do jednego wątku systemu operacyjnego. Nie ma to jednak wpływu na współbieżność procesów języka =FOOF= działających w środowisku uruchomieniowym, co zostało poruszone w sekcji [[ref:sec:cfs-impl]]. W przyszłości istnieje możliwość rozwinięcia implementacji w celu wsparcia wielowątkowości, na przykład poprzez wykorzystanie *barier pamięci*, *operacji atomowych* oraz *pamięci lokalnej dla wątku* (ang. /thread-local storage/) [[cite:McKenney2015]], co pozwoli osiągnąć przyspieszenie aplikacji języka =FOOF=.
 
 ** Implementacja podstawowych typów danych
-Wybór sposóbu reprezentacji podstawowych typów danych w językach programowania jest bardzo ważny i często stanowi pole do czynienia kompromisów i optymalizacji [[cite:Aho2006]]. Języki funkcyjne, do których należy język =FOOF=, z racji swojego nacisku na przejrzystą semantykę charakteryzują się relatywną prostotą reprezentacji wbudowanych typów danych [[cite:PeytonJones1992]]. Schemat [[ref:fig:object-representation]] prezentuje przykład reprezentacji typów danych wprowadzony w [[cite:Gudeman1993]] na potrzeby języków /dynamicznie typowanych/, czyli nie weryfikujących typów zmiennych podczas kompilacji.
+Wybór sposobu reprezentacji podstawowych typów danych w językach programowania jest bardzo ważny i często stanowi pole do czynienia kompromisów i optymalizacji [[cite:Aho2006]]. Języki funkcyjne, do których należy język =FOOF=, z racji swojego nacisku na przejrzystą semantykę charakteryzują się relatywną prostotą reprezentacji wbudowanych typów danych [[cite:PeytonJones1992]]. Schemat [[ref:fig:object-representation]] prezentuje przykład reprezentacji typów danych wprowadzony w [[cite:Gudeman1993]] na potrzeby języków /dynamicznie typowanych/, czyli nie weryfikujących typów zmiennych podczas kompilacji.
 
 #+begin_center
 #+label: fig:object-representation
@@ -792,11 +792,11 @@ Wybór sposóbu reprezentacji podstawowych typów danych w językach programowan
 
 Reprezentacja ta przewiduje istnienie dwóch klas obiektów:
 
-- *prostych* - reprezentowanych przez jedno słowo procesora i posiadających krótki, trzybitowy tag określający ich dokładny typ,
+- *prostych* - reprezentowanych przez jedno słowo procesora i posiadających krótki, trzy-bitowy tag określający ich dokładny typ,
 
--  *złożonych* - reprezentowanych przez kilka kolejnych słów procesora, z których pierwsze zawiera nieco dłuższy, ośmiobitowy tag określający ich dokłady typ oraz pewien zestaw metadanych do wykorzystania przez środowisko uruchomieniowe, a następne są obiektami prostymi.
+-  *złożonych* - reprezentowanych przez kilka kolejnych słów procesora, z których pierwsze zawiera nieco dłuższy, ośmiobitowy tag określający ich dokładny typ oraz pewien zestaw metadanych do wykorzystania przez środowisko uruchomieniowe, a następne są obiektami prostymi.
 
-Reprezentacja taka pozwala w łatwy sposób enkodować wszystkie podstawowe typy danych języka =FOOF=. Na przykład, listy pojedynczo-wiązane mogą być zrealizowane jako ciąg par reprezentowanych przez obiekty złożone składające się z dwóch obiektów prostych - wskaźników wskazujących na inne obiekty złożone będące elementami pary. Integracja ze środowiskiem uruchomieniowym języka Scheme pozwoliła pominąć żmudną implementację reprezentacji i procedur konstrukcji wbudowanych typów danych języka. Ich semantyka jest więc zgodna z opisem zawartym w [[cite:Sperber2010]], a ekwiwalencję składniową zaprezentowano na listingu [[ref:code:datatype-equivalence]].
+Reprezentacja taka pozwala w łatwy sposób kodować wszystkie podstawowe typy danych języka =FOOF=. Na przykład, listy pojedynczo-wiązane mogą być zrealizowane jako ciąg par reprezentowanych przez obiekty złożone składające się z dwóch obiektów prostych - wskaźników wskazujących na inne obiekty złożone będące elementami pary. Integracja ze środowiskiem uruchomieniowym języka Scheme pozwoliła pominąć żmudną implementację reprezentacji i procedur konstrukcji wbudowanych typów danych języka. Ich semantyka jest więc zgodna z opisem zawartym w [[cite:Sperber2010]], a ekwiwalencję składniową zaprezentowano na listingu [[ref:code:datatype-equivalence]].
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Porównanie wbudowanych typów danych języka \texttt{FOOF} i dialektu języka Scheme o nazwie Racket.}}
@@ -826,12 +826,12 @@ symbol
 #+LaTeX: \end{multicols}
 #+latex: \end{listing}
 
-Wszystkie podstawowe typy danych języka =FOOF= mają swoje dokładne, semantyczne odpowiedniki w języku Scheme, a odróżnia je jedynie reprezentacja literałowa. Warto zauważyć, iż zależość ta jest prawdziwa także dla bardziej złożonych typów danych, jak funkcje, które są kodowane w ten sam sposób. Oba środowiska uruchomieniowe różnią się natomiast reprezentacją kontynuacji - język =FOOF= używa konwersji przekazywania kontynuacji i reprezentuje je jako zwykłe funkcje - oraz brakiem idei procesów w standardzie języka Scheme.
+Wszystkie podstawowe typy danych języka =FOOF= mają swoje dokładne, semantyczne odpowiedniki w języku Scheme, a odróżnia je jedynie reprezentacja literałowa. Warto zauważyć, iż zależność ta jest prawdziwa także dla bardziej złożonych typów danych, jak funkcje, które są kodowane w ten sam sposób. Oba środowiska uruchomieniowe różnią się natomiast reprezentacją kontynuacji - język =FOOF= używa konwersji przekazywania kontynuacji i reprezentuje je jako zwykłe funkcje - oraz brakiem idei procesów w standardzie języka Scheme.
 
 ** Implementacja kontynuacji
 Implementacja kontynuacji w języku =FOOF= została zrealizowana już podczas kompilacji za sprawą automatycznej konwersji /Continuation Passing Style/, która została szczegółowo opisana w sekcji [[ref:sec:cps-impl]].
 
-Implementacja ta pozwala reprezentować kontynuacje za pomocą zwykłych funkcji, ale w celu ułatwienia implementacji pozostałych mechanizmów kontroli przepływu sterowania, wymaga uwzględnienia pewnej modyfikacji. Modyfikacją tą jest wykorzystanie techniki *tampoliny*, polegającej na zwracaniu następnego kroku kontynuacji jako wyniku obecnego kroku zamiast bezpośredniego wywołania dalszej części kontynuacji [[cite:Appel1992]].
+Implementacja ta pozwala reprezentować kontynuacje za pomocą zwykłych funkcji, ale w celu ułatwienia implementacji pozostałych mechanizmów kontroli przepływu sterowania, wymaga uwzględnienia pewnej modyfikacji. Modyfikacją tą jest wykorzystanie techniki *trampoliny*, polegającej na zwracaniu następnego kroku kontynuacji jako wyniku obecnego kroku zamiast bezpośredniego wywołania dalszej części kontynuacji [[cite:Appel1992]].
 
 Technika ta pozwala przerwać działanie kontynuacji pomiędzy poszczególnymi jej krokami przez zwyczajne nie-wywoływanie następnego kroku, a do jej implementacji wymagana jest jedynie modyfikacja kodu pośredniego programów w miejscach, w których normalnie następowałaby aplikacja następnej części kontynuacji. Listing [[ref:code:ex-cps-execution]] pokazuje efekt zastosowanej modyfikacji algorytmu konwersji CPS oraz wyników uruchomienia poszczególnych kroków kontynuacji.
 
@@ -910,7 +910,7 @@ Funkcje te, =&uproc-error-handler= oraz =&set-uproc-error-handler!= są odpowied
 
 Powyższy, kryptyczny przykład pokazuje relatywnie skomplikowany kod generowany dla fundamentalnie nieskomplikowanych operacji =raise= oraz =handle= realizujących obsługę błędów w języku =FOOF=. Należy zwrócić uwagę na zastosowanie kontynuacji - procedura obsługi sytuacji wyjątkowej jest zwykłą, reifikowaną do postaci funkcji kontynuacją, której zadaniem jest wywołanie faktycznej funkcji obsługującej zdarzenie. Sygnalizacja zaistnienia błędu polega wtedy na aplikacji tak zbudowanej kontynuacji z sygnalizowaną wartością oraz aktualną kontynuacją, która realizuje restart obliczeń.
 
-Skomplikowanie powyższego kodu wynika z konieczności odpowiedniego zarządzania procedurami obsługi zdarzeń wyjątkowych - musi istnieć gwarancja, że zrestartowane obliczenia zostaną uruchomione z tą samą procedurą obsługi zdarzeń, a po ich zakończeniu zostanie przywrócona poprzednia procedura, natomiast nowodeklarowana procedura obsługi błędu powinna być uruchomiona w kontekście poprzednio zadeklarowanej procedury. Alternatywnym rozwiązaniem, które prowadzi do nieznacznego zredukowania skomplikowania powyższego kodu, jest rozszerzenie bazowego algorytmu konwersji przekazywania kontynuacji w taki sosób, by przekazywane były dwie kontynuacje - pierwsza, będąca włąściwą kontynuacją oraz druga, odpowiedzialna za obsługę sytuacji wyjątkowych [[cite:Appel1992]]. Implementacja tego rozwiązania nie jest dostatecznie opłacalna, powodując nieznaczny narzut szybkości i utrudniając implementację kilku kluczowych optymalizacji, w związku z czym nie została zrealizowana w implementacji języka =FOOF=.
+Skomplikowanie powyższego kodu wynika z konieczności odpowiedniego zarządzania procedurami obsługi zdarzeń wyjątkowych - musi istnieć gwarancja, że zrestartowane obliczenia zostaną uruchomione z tą samą procedurą obsługi zdarzeń, a po ich zakończeniu zostanie przywrócona poprzednia procedura, natomiast nowo deklarowana procedura obsługi błędu powinna być uruchomiona w kontekście poprzednio zadeklarowanej procedury. Alternatywnym rozwiązaniem, które prowadzi do nieznacznego zredukowania skomplikowania powyższego kodu, jest rozszerzenie bazowego algorytmu konwersji przekazywania kontynuacji w taki sposób, by przekazywane były dwie kontynuacje - pierwsza, będąca właściwą kontynuacją oraz druga, odpowiedzialna za obsługę sytuacji wyjątkowych [[cite:Appel1992]]. Implementacja tego rozwiązania nie jest dostatecznie opłacalna, powodując nieznaczny narzut szybkości i utrudniając implementację kilku kluczowych optymalizacji, w związku z czym nie została zrealizowana w implementacji języka =FOOF=.
 
 ** Implementacja procesów
 Jednym z kluczowych elementów języka =FOOF= jest wsparcie dla przetwarzania współbieżnego zrealizowanego za pomocą notacji procesów. Procesy, zwane w nomenklaturze =FOOF= mikroprocesami (w celu rozróżnienia z relatywnie kosztownymi pod względem wykorzystania pamięci i szybkości przełączania procesami systemu operacyjnego) wymagają znacznego wsparcia ze strony środowiska uruchomieniowego języka.
@@ -919,7 +919,7 @@ Wsparcie to, w dodatku do uruchamiania procesów (sekcja [[ref:sec:cfs-impl]]), 
 
 #+begin_center
 #+label: fig:uproc-processes
-#+caption: Schemat kontekstu procesu obrazujący rejestry niezbędne do jego działania.
+#+caption: Schemat kontekstu mikroprocesu obrazujący rejestry niezbędne do jego działania.
 #+attr_latex: :width 0.5\textwidth :placement [H]
 [[file:./img/uprocprocesses.pdf]]
 #+end_center
@@ -929,16 +929,16 @@ Podstawowa wersja kontekstu mikroprocesu wymaga istnienia czterech rejestrów:
 
 - rejestr *status* określa aktualny stan, w którym znajduje się działający proces, jest to jedna z wartości: =running=, =waiting=, =halted= lub =waiting-4-message= oznaczające odpowiednio: działanie, oczekiwanie na uruchomienie, zatrzymanie lub oczekiwanie na wiadomość (opisane w sekcji [[ref:sec:actor-model-impl]]).
 
-- rejest *cont* zawiera aktualnie uruchomianą kontynuacją w formacie trampoliny, czyli funkcję kodującą aktualną kontynuację oraz wartość, która zostanie do niej przekazana. Trampoliny tworzone są za pomocą wbudowanej funkcji =&yield-cont=.
+- rejestr *cont* zawiera aktualnie uruchomianą kontynuacją w formacie trampoliny, czyli funkcję kodującą aktualną kontynuację oraz wartość, która zostanie do niej przekazana. Trampoliny tworzone są za pomocą wbudowanej funkcji =&yield-cont=.
 
-- ostatni rejest, *handler*, reprezentuje aktualnie zadeklarowaną procedurę obsługi zdarzenia wyjątkowego, jest on modyfikowany za pośrednictwem wbudowanych funkcji =&uproc-error-handler= oraz =&set-uproc-error-handler!=.
+- ostatni rejestr, *handler*, reprezentuje aktualnie zadeklarowaną procedurę obsługi zdarzenia wyjątkowego, jest on modyfikowany za pośrednictwem wbudowanych funkcji =&uproc-error-handler= oraz =&set-uproc-error-handler!=.
 
 Rejestry te są podstawowymi rejestrami niezbędnymi do organizacji działania mikroprocesów i są wykorzystywane przez wszystkie zaawansowane funkcjonalności języka. Opis kontekstu mikroprocesów będzie sukcesywnie rozwijany w następnych sekcjach wraz z opisem implementacji poszczególnych funkcjonalności.
 
 ** Harmonogramowanie procesów
 #+LaTeX: \label{sec:cfs-impl}
 
-Środowisko uruchomieniowe języka =FOOF= zarządza szeregiem struktur danych wykorzystywanych do przechowywania kontekstow mikroprocesów i harmonogramowania (ang. /scheduling/) ich uruchamiania. Do struktur tych należy *lista wszystkich kontekstów* mikroprocesów działających w systemie, wykorzystywana między innymi do pozyskiwania statystyk z działania systemu, oraz *główna kolejka uruchomieniowa*, wykorzystywana w algorytmie harmonogramowania.
+Środowisko uruchomieniowe języka =FOOF= zarządza szeregiem struktur danych wykorzystywanych do przechowywania kontekstów mikroprocesów i harmonogramowania (ang. /scheduling/) ich uruchamiania. Do struktur tych należy *lista wszystkich kontekstów* mikroprocesów działających w systemie, wykorzystywana między innymi do pozyskiwania statystyk z działania systemu, oraz *główna kolejka uruchomieniowa*, wykorzystywana w algorytmie harmonogramowania.
 
 Algorytm ten to zmodyfikowana wersja algorytmu /Completely Fair Scheduler/ opisanego szczegółowo w [[cite:Pabla2009]]. Służy on do ustalania kolejności uruchamiania zadań i jest on wykorzystywany w wielu różnych programach, między innymi w jądrze systemu Linux od wersji 2.6.23. Główną cechą algorytmu /CFS/ jest poleganie na *wirtualnych czasach* działania zadań, do których obliczenia wykorzystywany jest ich priorytet i rzeczywisty czas działania, dzięki czemu możliwe jest stosowanie jednej, wspólnej kolejki zadań, zamiast wielu oddzielnych kolejek dla zadań o różnych priorytetach [[cite:Pabla2009]]. Listing [[ref:code:cfs-pseudocode]] prezentuje pseudokod działania algorytmu w notacji języka =FOOF=.
 
@@ -990,7 +990,7 @@ Zaimplementowany na potrzeby projektu algorytm został zmodyfikowany w kilku klu
 
 Kolejną integralną częścią wsparcia dla przetwarzania współbieżnego i rozproszonego w środowisku uruchomieniowym języka =FOOF= jest implementacja operacji prymitywnych Modelu Aktorowego opisanych uprzednio w sekcji [[ref:sec:actor-model-description]].
 
-Operacje te w dużej mierze polegają na zarządzaniu kontekstami mikroprocesów oraz modyfikacji ich zawartości, i wymagają dość rozległego wsparcia ze strony środowiska uruchomieniowego. Pierwszą istotną modyfikacją jest konieczność istnienia globalnie dostępnej listy wszystkich działających w systemie mikroprocesów oraz umożliwienie jednoznacznej identyfikacji każdego z nich za pomocą identyfikatorów procesów (ang. /process identifier/, /PID/). System musi także zapewnić łatwy dostęp do kontekstu aktualnie uruchomionego mikroprocesu, w celu umożliwienia implementacji operacji =self=. Drugą modyfikacją jest rozszerzenie kontekstu mikroprocesu o rejestry związane z asynchronicznym przekazywaniem wiadomości. Schemat [[ref:fig:uproc-actor-model]] przezentuje dodatkowe rejestry wymagane przez implementację Modelu Actorowego w języku =FOOF=.
+Operacje te w dużej mierze polegają na zarządzaniu kontekstami mikroprocesów oraz modyfikacji ich zawartości, i wymagają dość rozległego wsparcia ze strony środowiska uruchomieniowego. Pierwszą istotną modyfikacją jest konieczność istnienia globalnie dostępnej listy wszystkich działających w systemie mikroprocesów oraz umożliwienie jednoznacznej identyfikacji każdego z nich za pomocą identyfikatorów procesów (ang. /process identifier/, /PID/). System musi także zapewnić łatwy dostęp do kontekstu aktualnie uruchomionego mikroprocesu, w celu umożliwienia implementacji operacji =self=. Drugą modyfikacją jest rozszerzenie kontekstu mikroprocesu o rejestry związane z asynchronicznym przekazywaniem wiadomości. Schemat [[ref:fig:uproc-actor-model]] prezentuje dodatkowe rejestry wymagane przez implementację Modelu Aktorowego w języku =FOOF=.
 
 #+begin_center
 #+label: fig:uproc-actor-model
@@ -1032,7 +1032,7 @@ Oczywiście, w celu zapewnienia bezpieczeństwa komunikacji pomiędzy maszynami,
 
 Mechanizmy niezbędne do umożliwienia przetwarzania wiedzy w języku =FOOF= stanowią znaczną część jego środowiska uruchomieniowego, w związku z czym opis ich implementacji został wydzielony do niniejszego rozdziału. Niezależnie od tej separacji, opisane w dalszej części rozdziału algorytmy i struktury danych stanowią integralną część środowiska uruchomieniowego, które nie byłoby bez nich kompletnie funkcjonalne.
 
-Głównym zadaniem inżynierii wiedzy w implementacji języka =FOOF= jest osiągnięcie opisanej w sekcji [[ref:sec:thesis-motivation]] *świadomości platformy*, czyli umożliwieniu refleksji na temat platformy sprzętowej, na której działa system rozproszony, a także struktury samego systemu. Refleksja taka umożliwia podejmowanie decyzji podczas działania aplikacji i prowadzi do lepszego wykorzystania zasobów maszyny i reagowania na zmiany zachodzące w systemie. Listing [[ref:code:heterogeneity-solved-pseudocode]] prezentuje pseudokod w notacji języka =FOOF= obrazujący wykorzystanie wiedzy do rozwiązania problemu hoterogeniczności.
+Głównym zadaniem inżynierii wiedzy w implementacji języka =FOOF= jest osiągnięcie opisanej w sekcji [[ref:sec:thesis-motivation]] *świadomości platformy*, czyli umożliwieniu refleksji na temat platformy sprzętowej, na której działa system rozproszony, a także struktury samego systemu. Refleksja taka umożliwia podejmowanie decyzji podczas działania aplikacji i prowadzi do lepszego wykorzystania zasobów maszyny i reagowania na zmiany zachodzące w systemie. Listing [[ref:code:heterogeneity-solved-pseudocode]] prezentuje pseudokod w notacji języka =FOOF= obrazujący wykorzystanie wiedzy do rozwiązania problemu heterogeniczności.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Wykorzystanie inżynierii wiedzy do rozwiązania problemu heterogeniczności.}}
@@ -1056,7 +1056,7 @@ Głównym zadaniem inżynierii wiedzy w implementacji języka =FOOF= jest osiąg
 #+end_src
 #+latex: \end{listing}
 
-Przykład definiuje funkcję =transmogrify=, której zadaniem jest wykonanie kosztownych obliczeń na dużym zbiorze danych. Funkcja ta odpytuje bazę wiedzy dostępną w języku o istnienie podłączonych maszyn wyposażonych w procesory superskalarne i potrafiących wykonać operację /transmogryfikacji/ za pomocą operacji =find-all=. Następnie, w zależności od wyniku zapytania, dzieli dane na porcje, które albo przekazuje do owych, superskalarnych maszyn za pomocą zdalnego wywołania funkcji (ang. /remote procedure call/), albo przetwarza lokalnie za pomocą ustalonej liczby współbieżnie działających procesów. Wykorzystanie bazy wiedzy pozwala w łatwy sposób reagować na podłączenie dodatkowych superskalanych maszyn - funkcja zwyczajnie zacznie z nich korzystać. Można sobie także wyobrazić sytuację, w której system dysponuje wiedzą o szybkości działania implementacji funkcji =transmogrify= na różnych połączonych maszynach i wybiera najszybszą z nich już w miejscu jej wywołania.
+Przykład definiuje funkcję =transmogrify=, której zadaniem jest wykonanie kosztownych obliczeń na dużym zbiorze danych. Funkcja ta odpytuje bazę wiedzy dostępną w języku o istnienie podłączonych maszyn wyposażonych w procesory super-skalarne i potrafiących wykonać operację /transmogryfikacji/ za pomocą operacji =find-all=. Następnie, w zależności od wyniku zapytania, dzieli dane na porcje, które albo przekazuje do owych, super-skalarnych maszyn za pomocą zdalnego wywołania funkcji (ang. /remote procedure call/), albo przetwarza lokalnie za pomocą ustalonej liczby współbieżnie działających procesów. Wykorzystanie bazy wiedzy pozwala w łatwy sposób reagować na podłączenie dodatkowych super-skalanych maszyn - funkcja zwyczajnie zacznie z nich korzystać. Można sobie także wyobrazić sytuację, w której system dysponuje wiedzą o szybkości działania implementacji funkcji =transmogrify= na różnych połączonych maszynach i wybiera najszybszą z nich już w miejscu jej wywołania.
 
 Sekcja [[ref:sec:knowledge-engineering-description]] wprowadza podstawowe definicje i pojęcia dotyczące reprezentacji i przetwarzania wiedzy, które będą wykorzystywane w niniejszym rozdziale. Konkluzją tej sekcji jest konieczność wykorzystania *systemu regułowego* w celu osiągnięcia pożądanej funkcjonalności.
 
@@ -1100,17 +1100,16 @@ Reguły deklarowane są za pomocą wbudowanej funkcji =whenever= i składają si
 #+end_src
 #+latex: \end{listing}
 
-W związku z dowolnością reprezentacji faktów, wzorce reguł również mogą być dowolnie skomplikowane. Dodatkowo, język =FOOF= udostępnia specjalny język domenowy służący do definiowania wzorców reguł, w którym symbole prefixowane przez znak zapytania oznaczają zmienne logiczne (=?country= w przykładzie). Poszczególne konstrukcje języka definicji wzorców zostały opisane w sekcji [[ref:sec:rete-impl]] przy okazji opisu implementacji systemu regułowego.
+W związku z dowolnością reprezentacji faktów, wzorce reguł również mogą być dowolnie skomplikowane. Dodatkowo, język =FOOF= udostępnia specjalny język domenowy służący do definiowania wzorców reguł, w którym symbole prefiksowane przez znak zapytania oznaczają zmienne logiczne (=?country= w przykładzie). Poszczególne konstrukcje języka definicji wzorców zostały opisane w sekcji [[ref:sec:rete-impl]] przy okazji opisu implementacji systemu regułowego.
 
 Operacje prymitywne bazy reguł to: dodawanie reguły za pomocą funkcji =whenever= oraz usuwanie reguły za pomocą funkcji =remove-rule!=. Implementacja korzysta z logicznego usuwania reguł - akcje związane z regułą nie są uruchamiane, ale reguła nadal jest obecna w strukturach danych implementacji systemu regułowego. Dodatkowo, zaimplementowana została funkcja =select=, która pozwala uruchomić regułę bez dodawania jej do bazy reguł.
 
 ** Algorytm Rete
 #+LaTeX: \label{sec:rete-impl}
 
-Najłatwiejszą implementacją powyższego interfejsu jest podejście naiwne polegające na iteracyjnym aplikowaniu każdego faktu do każdego wzorca reguły. Rozwiązanie to, mimo że jest proste w implementacji, jest również bardzo niewydajne - jego złożoność obliczeniowa jest rzędu *O(RF^P)*, dla =R= reguł, =F= faktów i =P= średniej ilości /elementarnych podwzorców/ przypadających na lewą stronę reguły.
+Najłatwiejszą implementacją powyższego interfejsu jest podejście naiwne polegające na iteracyjnym aplikowaniu każdego faktu do każdego wzorca reguły. Rozwiązanie to, mimo że jest proste w implementacji, jest również bardzo niewydajne - jego złożoność obliczeniowa jest rzędu *O(RF^P)*, dla =R= reguł, =F= faktów i =P= średniej ilości /elementarnych pod-wzorców/ przypadających na lewą stronę reguły.
 
 Standardowym rozwiązaniem wykorzystywanym w implementacjach systemów regułowych, które jednocześnie posiada dużo lepszą złożoność obliczeniową, jest, zaprojektowany w 1974 roku i rozwinięty w roku 1979 przez Charls'a Forgy'iego, algorytm *Rete* [[cite:Forgy1979]]. Jego złożoność obliczeniowa jest rzędu *O(RFP)*, co prowadzi do znacznego zwiększenia szybkości działania systemu regułowego względem naiwnej implementacji, kosztem zauważalnego zwiększenia wykorzystania pamięci [[cite:Forgy1982]]. Algorytm ten jest relatywnie nieskomplikowany i jednocześnie zadowalająco wydajny, w związku z czym został wykorzystany w implementacji języka =FOOF=.
-
 
 Algorytm Rete (w tłumaczeniu z języka włoskiego /sieć/) polega na automatycznej budowie sieci węzłów różnych rodzajów na podstawie wzorca reguły. Węzły te odpowiadają za podstawowe operacje, takie jak dopasowywanie strukturalne faktów (ang. /pattern matching/), unifikację faktów (ang. /unification/) oraz uruchamianie akcji, i dzielą się na dwie klasy:
 
@@ -1118,7 +1117,7 @@ Algorytm Rete (w tłumaczeniu z języka włoskiego /sieć/) polega na automatycz
 
 - węzły *beta* przyjmujące dwie wartości, których zadaniem jest unifikacja tych wartości w celu weryfikacji spójności informacji, które ze sobą niosą.
 
-Podczas działania algorytmu, węzły mogą zadecydować, na podstawie wewnętrznych zasad działania, czy przekazaną do nich wartość (fakt) mogą przekazać do następnych węzłów. W tym celu, obie opisane klasy węzłów algorytmu Rete korzystają z pamięci do przechowywania dotychczasowo napotkanych faktów. W przypadku węzłów alfa jest to prosta lista faktów, która pozwala je zapamiętać w celu późniejszego odrzucenia duplikatów - realizuje asercję faktu. Węzły beta używają dwóch oddzielnych pamięci faktów lewo- oraz prawo-stronnych odpowiednio dla /lewego/ i /prawego/ przyjmowanego argumentu. Podział pamięci węzłów beta pozwala unifikować nowe wartości ze wszystkimi dotychczasowo zapisanymi wartościami pochodzącymi z drugiego argumentu, co stanowi podstawę działania algorytmu Rete i jego wysokiej wydajności [[cite:Forgy1982]].
+Podczas działania algorytmu, węzły mogą zadecydować, na podstawie wewnętrznych zasad działania, czy przekazaną do nich wartość (fakt) mogą przekazać do następnych węzłów. W tym celu, obie opisane klasy węzłów algorytmu Rete korzystają z pamięci do przechowywania dotychczasowo napotkanych faktów. W przypadku węzłów alfa jest to prosta lista faktów, która pozwala je zapamiętać w celu późniejszego odrzucenia duplikatów - realizuje asercję faktu. Węzły beta używają dwóch oddzielnych pamięci faktów lewo- oraz prawostronnych odpowiednio dla /lewego/ i /prawego/ przyjmowanego argumentu. Podział pamięci węzłów beta pozwala unifikować nowe wartości ze wszystkimi dotychczasowo zapisanymi wartościami pochodzącymi z drugiego argumentu, co stanowi podstawę działania algorytmu Rete i jego wysokiej wydajności [[cite:Forgy1982]].
 
 Wspomniana powyżej *unifikacja* polega na przypisaniu, obecnych we wzorcach reguł, zmiennych logicznych do odpowiadających im elementów struktury faktu. Unifikacja zapewnia także wymuszenie spójności tak przypisanych wartości pochodzących z dwóch różnych części sieci Rete - algorytm dba o to, by wartości tych samych zmiennych logicznych były równe. Listing [[ref:code:unification-example]] pokazuje kilka przykładów działania unifikacji wykorzystanej w implementacji środowiska uruchomieniowego języka =FOOF=.
 
@@ -1137,17 +1136,17 @@ Implementacja algorytmu Rete w języku =FOOF= dostarcza następujące, podstawow
 
 - Węzły *node-1*, odpowiadające węzłom klasy alfa, to proste węzły przeprowadzające dopasowanie strukturalne faktów i elementarnych wzorców reguł, na przykład =(some ?pattern)=. Wynikiem ich działania jest mapowanie nazw zmiennych logicznych na odpowiadające im wartości.
 
-- Węzły *node-2*, odpowiadające węzłom klasy beta, to węzły unifikujące wartości zmiennych logicznych pochodzących z dwóch źródeł. Wynikiem ich działania jest lista map reprezentujących zunifikowane fakty pasujące do obu gałęzi sieci prowadzących do obecnego węzła. Węzły te tworzone są za pomocą konstrukcji =(and podwzorzec-1 podwzorzec-2 ...)=.
+- Węzły *node-2*, odpowiadające węzłom klasy beta, to węzły unifikujące wartości zmiennych logicznych pochodzących z dwóch źródeł. Wynikiem ich działania jest lista map reprezentujących zunifikowane fakty pasujące do obu gałęzi sieci prowadzących do obecnego węzła. Węzły te tworzone są za pomocą konstrukcji =(and pod-wzorzec-1 pod-wzorzec-2 ...)=.
 
 - Węzły *node-a*, czyli węzły uruchamiające akcje zadeklarowane po prawej stronie reguły.
 
 Dodatkowo, implementacja została rozszerzona o następujące typy węzłów, realizujące wiele przydatnych funkcji:
 
-- Węzły *node-p*, czyli węzły predykatów umożliwiające nietrywialną filtrację faktów, na przykład =(filter podwzorzec predykat-1 predykat-2 ...)=.
+- Węzły *node-p*, czyli węzły predykatów umożliwiające nietrywialną filtrację faktów, na przykład =(filter pod-wzorzec predykat-1 predykat-2 ...)=.
 
-- Węzły *node-r* przechowujące dodatkowy stan, pozwalające na akumulację (lub w ogólnym przypadku /redukcję/) zmieniających się wartości faktów na podstawie odrębnych zasad. Węzły te deklarowane są za pomocą konstrukcji =(reduce akumulator podwzorzec)=.
+- Węzły *node-r* przechowujące dodatkowy stan, pozwalające na akumulację (lub w ogólnym przypadku /redukcję/) zmieniających się wartości faktów na podstawie odrębnych zasad. Węzły te deklarowane są za pomocą konstrukcji =(reduce akumulator pod-wzorzec)=.
 
-- Węzły *node-t*, czyli węzły wyzwalane, pozwalające na obserwowanie trendu zmiany wartości faktów dzięki buforowi wartości faktów i osobnemu predykatowi. Węzły te są tworzone przez konstrukcję =(trigger bufor podwzorzec predykat)=.
+- Węzły *node-t*, czyli węzły wyzwalane, pozwalające na obserwowanie trendu zmiany wartości faktów dzięki buforowi wartości faktów i osobnemu predykatowi. Węzły te są tworzone przez konstrukcję =(trigger bufor pod-wzorzec predykat)=.
 
 Implementacja powyższych węzłów przewiduje możliwość dodania optymalizacji struktury sieci, która w chwili obecnej nie jest stosowana. Optymalizacja ta polega na łączeniu identycznych fragmentów sieci Rete, co prowadzi do dodatkowej redukcji ilości wykonywanych operacji oraz wykorzystywanej przez sieć pamięci, a także zwiększenia wydajności całego algorytmu. Schemat [[ref:fig:rete-network-merge]] prezentuje działanie tej optymalizacji.
 
@@ -1160,7 +1159,7 @@ Implementacja powyższych węzłów przewiduje możliwość dodania optymalizacj
 
 Przykład pokazuje łączenie podsieci dwóch oddzielnych reguł, które charakteryzują się podobną strukturą. Wynikiem działania optymalizacji jest semantycznie identycznie funkcjonująca sieć, która jednocześnie działa znacznie szybciej dzięki redukcji duplikacji przetwarzania informacji.
 
-Naturalnie, istnieje wiele innych usprawnień algorytmu Rete, także autorstwa Charls'a Forgy'iego, które poprawiają jego wydajność i stabilność działania. Najciekawsze z nich dotyczą możliwości parallelizacji przetwarzania wiedzy [[cite:Gupta1986]] oraz wykorzystania specjalnych przypadków oryginalnego algorytmu Rete [[cite:Miranker1987]]. Usprawnienia związane ze współbieżnym przetwarzaniem wiedzy zostały szczegółowo przeanalizowane w sekcji [[ref:sec:rete-integration]].
+Naturalnie, istnieje wiele innych usprawnień algorytmu Rete, także autorstwa Charls'a Forgy'iego, które poprawiają jego wydajność i stabilność działania. Najciekawsze z nich dotyczą możliwości zrównoleglenia przetwarzania wiedzy [[cite:Gupta1986]] oraz wykorzystania specjalnych przypadków oryginalnego algorytmu Rete [[cite:Miranker1987]]. Usprawnienia związane ze współbieżnym przetwarzaniem wiedzy zostały szczegółowo przeanalizowane w sekcji [[ref:sec:rete-integration]].
 
 ** Implementacja wnioskowania w przód
 Głównym zadaniem algorytmu Rete w implementacji języka =FOOF= jest umożliwienie *wnioskowania*, czyli odkrywania nowej, uprzednio nieznanej wiedzy na podstawie wcześniej stwierdzonych faktów. Istnieją dwa główne sposoby prowadzenia wnioskowania: *w przód* poruszony w niniejszej sekcji oraz *wstecz*, który został opisany w sekcji [[ref:sec:backwards-chaining-impl]].
@@ -1201,7 +1200,7 @@ Warto zauważyć, iż opisana powyżej implementacja jedynie /emuluje/ wnioskowa
 
 Obecna implementacja systemu regułowego nie jest całkowicie zintegrowana z pozostałą częścią środowiska uruchomieniowego języka =FOOF=. Została ona zrealizowana jako szereg wbudowanych funkcji, w związku z czym posiada wiele technicznych ograniczeń.
 
-Pierwszym i zarazem największym ograniczeniem, jest utrudnienie realizacji operacji =whenever=, której zadaniem jest dodawanie nowych reguł. Operacja ta jako argumenty przyjmuje wzorzec stanowiący lewą stronę reguły, oraz funkcję, która reprezentuje prawą stronę reguły. Organiczenie polega na tym, iż funkcja reprezentująca prawą stronę reguły wymaga przekazania /aktualnej kontynuacji/ podczas wywołania. Kontynuacja ta, z racji asynchroniczności systemu regułowego nie istnieje po stworzeniu reguły, w związku z czym nie może zostać przekazana do wywoływanej funkcji. Listing [[ref:code:rete-fuckup-solved]] prezentuje alternatyną implementacją operacji =whenever=, która została zrealizowana w implementacji języka =FOOF=.
+Pierwszym i zarazem największym ograniczeniem, jest utrudnienie realizacji operacji =whenever=, której zadaniem jest dodawanie nowych reguł. Operacja ta jako argumenty przyjmuje wzorzec stanowiący lewą stronę reguły, oraz funkcję, która reprezentuje prawą stronę reguły. Ograniczenie polega na tym, iż funkcja reprezentująca prawą stronę reguły wymaga przekazania /aktualnej kontynuacji/ podczas wywołania. Kontynuacja ta, z racji asynchroniczności systemu regułowego nie istnieje po stworzeniu reguły, w związku z czym nie może zostać przekazana do wywoływanej funkcji. Listing [[ref:code:rete-fuckup-solved]] prezentuje alternatywną implementacją operacji =whenever=, która została zrealizowana w implementacji języka =FOOF=.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Alternatywna implementacja operacji \texttt{whenever}.}}
@@ -1232,7 +1231,7 @@ Architektura ta pozwala na konkurencyjne istnienie wielu procesów pośredniczą
 * Podsumowanie
 #+latex: \label{sec:outro}
 
-Celem pracy było zaprojektowanie i zaimplementowanie języka programowania wspierającego przetwarzanie współbieżne i rozproszone na platformach heterogenicznych. W tym celu stworzono pragmatyczny, funkcyjny język programowania ogólnego przeznaczenia, roboczno nazwany =FOOF=, kompilator jego kodu źródłowego oraz środowisko uruchomieniowe rozwiązujące problem heterogeniczności z wykorzystaniem inżynierii wiedzy.
+Celem pracy było zaprojektowanie i zaimplementowanie języka programowania wspierającego przetwarzanie współbieżne i rozproszone na platformach heterogenicznych. W tym celu stworzono pragmatyczny, funkcyjny język programowania ogólnego przeznaczenia, roboczo nazwany =FOOF=, kompilator jego kodu źródłowego oraz środowisko uruchomieniowe rozwiązujące problem heterogeniczności z wykorzystaniem inżynierii wiedzy.
 
 Postawiony cel został osiągnięty, a powstały język programowania jest funkcjonalny i stanowi ciekawe, eksperymentalne narzędzie służące do eksploracji ideologii *świadomości platformy* (ang. /platform awareness/). Ideologia ta polega na uniezależnieniu od platformy poprzez wykorzystanie wiedzy i stanowi alternatywę dla niezależności od platformy (ang. /platform independence/) głoszonej przez większość popularnych języków programowania, która w rzeczywistości polega na zignorowaniu i homogenizacji platformy sprzętowej.
 
@@ -1278,7 +1277,7 @@ Wszystkie wymienione kierunki rozwoju będą w przyszłości aktywnie eksplorowa
 * Gramatyka języka =FOOF=
 #+LaTeX: \label{sec:foof-grammar}
 
-Język =FOOF= jest dialektem języka Lisp, w związku z czym charakteryzuje się bardzo prostą i ujednoliconą składnią bazującą na *S-wyrażeniach*. Listing [[ref:code:foof-grammar]] prezentuje formalną specyfikację składni jęzka w notacji *BNF* (ang. /Bacus-Naur Form/).
+Język =FOOF= jest dialektem języka Lisp, w związku z czym charakteryzuje się bardzo prostą i ujednoliconą składnią bazującą na *S-wyrażeniach*. Listing [[ref:code:foof-grammar]] prezentuje formalną specyfikację składni języka w notacji *BNF* (ang. /Bacus-Naur Form/).
 
 #+latex: \begin{listing}[ht]
 #+latex: \caption{\mylisting{Gramatyka języka \textt{FOOF}.}}
@@ -1292,7 +1291,7 @@ Język =FOOF= jest dialektem języka Lisp, w związku z czym charakteryzuje się
                      | '(' 'define' <symbol> <expression> ')'
   <symbol-list>    ::= '(' <symbol> <symbols> ')'
   <symbols>        ::= <symbol> <symbols> | ''
-  <expressions>    ::= <expression> <exrpessions> | ''
+  <expressions>    ::= <expression> <expressions> | ''
   <expression>     ::= <value> | <application> | <syntax-form>
   <value>          ::= <atom> | <list> | <vector> | <map>
   <atom>           ::= <string> | <symbol> | <keyword> | <number>
@@ -1326,7 +1325,7 @@ Poniżej zaprezentowano przykładowe programy w języku =FOOF= i krótki opis ic
 #+END_EXAMPLE
 
 ** Hello world!
-Program definuje funkcję =hello= obrazującą podstawowe operacje języka i następnie wywołuje ją z jednym parametrem. Po uruchomieniu program powoduje wypisanie wiadomości =Hello world!= na ekranie komputera.
+Program definiuje funkcję =hello= obrazującą podstawowe operacje języka i następnie wywołuje ją z jednym parametrem. Po uruchomieniu program powoduje wypisanie wiadomości =Hello world!= na ekranie komputera.
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Popularny program \textit{Hello world!}.}}
@@ -1615,7 +1614,7 @@ Lista wbudowanych makr dostępnych dla programisty:
 
 - =(let ((var value) ...) body ...)= - pozwala na tworzenie lokalnych zmiennych, odpowiada wywołaniu funkcji anonimowej =((lambda (var ...) body ...) value ...)=.
 
-- =(let* ((var value) ...) body ...)= - pozwala na tworzenie wzajemnie zależnych zmiennych, odpowiada zagnieżdżeniu kostrukcji =let=: =(let ((var value)) (let (...) ... body ...))=.
+- =(let* ((var value) ...) body ...)= - pozwala na tworzenie wzajemnie zależnych zmiennych, odpowiada zagnieżdżeniu konstrukcji =let=: =(let ((var value)) (let (...) ... body ...))=.
 
 - =(structure definitions)= - pozwala na tworzenie struktur, stanowiących podstawowe bloki budulcowe programów w języku =FOOF=.
 
@@ -1623,7 +1622,7 @@ Lista wbudowanych makr dostępnych dla programisty:
 
 #+LaTeX: \noindent
 Lista prymitywnych funkcji wykorzystywanych przez środowisko uruchomieniowe języka:
-- =(&make-structure values ...)= - funkcja odpowiedzialna za tworzenio obiektów reprezentujących strukutry języka =FOOF=.
+- =(&make-structure values ...)= - funkcja odpowiedzialna za tworzenie obiektów reprezentujących struktury języka =FOOF=.
 
 - =(&yield-cont cont value)= - funkcja odpowiada za tworzenie tak zwanych trampoliny, czyli par reifikowanych do postaci funkcyjnej kontynuacji =cont= oraz wartości =value=, które zostaną do nich przekazane.
 
