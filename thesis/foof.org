@@ -1297,8 +1297,9 @@ Język =FOOF= jest dialektem języka Lisp, w związku z czym charakteryzuje się
   <value>          ::= <atom> | <list> | <vector> | <map>
   <atom>           ::= <string> | <symbol> | <keyword> | <number>
   <application>    ::= '(' <expression> <expressions> ')'
-  <syntax-form>    ::= '(' <operator> <expressions> ')' | ''' <expression>
-                     | '`' <expression> | ',' <expression>
+  <syntax-form>    ::= '(' <operator> <expressions> ')'
+                     | ''' <expression> | '`' <expression>
+                     | ',' <expression> | ',@' <expression>
   <operator>       ::= 'quasiquote' | 'unquote' | 'unquote-splicing'
                      | 'lambda' | 'structure' | 'module' | 'define' | 'let'
                      | 'let*' | 'letrec' | 'letcc' | 'shift' | 'reset'
