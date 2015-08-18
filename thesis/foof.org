@@ -1117,7 +1117,7 @@ Algorytm Rete (w tłumaczeniu z języka włoskiego /sieć/) polega na automatycz
 
 - węzły *beta* przyjmujące dwie wartości, których zadaniem jest unifikacja tych wartości w celu weryfikacji spójności informacji, które ze sobą niosą.
 
-Podczas działania algorytmu, węzły mogą zadecydować, na podstawie wewnętrznych zasad działania, czy przekazaną do nich wartość (fakt) mogą przekazać do następnych węzłów. W tym celu, obie opisane klasy węzłów algorytmu Rete korzystają z pamięci do przechowywania dotychczasowo napotkanych faktów. W przypadku węzłów alfa jest to prosta lista faktów, która pozwala je zapamiętać w celu późniejszego odrzucenia duplikatów - realizuje asercję faktu. Węzły beta używają dwóch oddzielnych pamięci faktów lewo- oraz prawostronnych odpowiednio dla /lewego/ i /prawego/ przyjmowanego argumentu. Podział pamięci węzłów beta pozwala unifikować nowe wartości ze wszystkimi dotychczasowo zapisanymi wartościami pochodzącymi z drugiego argumentu, co stanowi podstawę działania algorytmu Rete i jego wysokiej wydajności [[cite:Forgy1982]].
+Podczas działania algorytmu, węzły mogą zadecydować, na podstawie wewnętrznych zasad działania, czy przekazaną do nich wartość (fakt) mogą przekazać do następnych węzłów. W tym celu, obie opisane klasy węzłów algorytmu Rete korzystają z pamięci do przechowywania dotychczasowo napotkanych faktów. W przypadku węzłów alfa jest to prosta lista faktów, która pozwala je zapamiętać w celu późniejszego odrzucenia duplikatów - realizuje asercję faktu. Węzły beta używają dwóch oddzielnych pamięci faktów, lewo- oraz prawostronnych odpowiednio dla /lewego/ i /prawego/ przyjmowanego argumentu. Podział pamięci węzłów beta pozwala unifikować nowe wartości ze wszystkimi dotychczasowo zapisanymi wartościami pochodzącymi z drugiego argumentu, co stanowi podstawę działania algorytmu Rete i jego wysokiej wydajności [[cite:Forgy1982]].
 
 Wspomniana powyżej *unifikacja* polega na przypisaniu, obecnych we wzorcach reguł, zmiennych logicznych do odpowiadających im elementów struktury faktu. Unifikacja zapewnia także wymuszenie spójności tak przypisanych wartości pochodzących z dwóch różnych części sieci Rete - algorytm dba o to, by wartości tych samych zmiennych logicznych były równe. Listing [[ref:code:unification-example]] pokazuje kilka przykładów działania unifikacji wykorzystanej w implementacji środowiska uruchomieniowego języka =FOOF=.
 
@@ -1193,7 +1193,7 @@ Realizacja wnioskowania wstecz w środowisku uruchomieniowym języka =FOOF= pole
 
 Pierwszy z przykładów powoduje zwrócenie listy wszystkich faktów obecnych w bazie faktów. Drugi przykład ogranicza tę listę do nazw modułów języka =FOOF=, które są dostępne w aplikacji, natomiast ostatni dodatkowo ogranicza listę dostępnych modułów do tych, które definiują funkcję =transmogrify=. Przykłady te pokazują, iż wnioskowanie wstecz szczególnie dobrze nadaje się do zastosowań, gdzie baza wiedzy jest statyczna.
 
-Warto zauważyć, iż opisana powyżej implementacja jedynie /emuluje/ wnioskowanie wstecz w rzeczywistości przeprowadzając wnioskowanie w przód dla jednej tylko reguły. Liniowa w stosunku do ilości faktów złożoność obliczeniowa tego rozwiązania jest adekwatna, ale w przyszłości istnieje możliwość implementacji osobnego mechanizmu opartego o *przeszukiwanie w głąb*. Wadą obecnej implementacji jest konieczność istnienia osobnej bazy faktów, która musi być pozostawać w ciągłej synchronizacji ze stanem globalnej sieci Rete znajdującej się w bazie reguł.
+Warto zauważyć, iż opisana powyżej implementacja jedynie /emuluje/ wnioskowanie wstecz w rzeczywistości przeprowadzając wnioskowanie w przód dla jednej tylko reguły. Liniowa w stosunku do ilości faktów złożoność obliczeniowa tego rozwiązania jest adekwatna, ale w przyszłości istnieje możliwość implementacji osobnego mechanizmu opartego o *przeszukiwanie w głąb*. Wadą obecnej implementacji jest konieczność istnienia osobnej bazy faktów, która musi pozostawać w ciągłej synchronizacji ze stanem globalnej sieci Rete znajdującej się w bazie reguł.
 
 ** Integracja ze Środowiskiem Uruchomieniowym
 #+LaTeX: \label{sec:rete-integration}
@@ -1204,7 +1204,7 @@ Pierwszym i zarazem największym ograniczeniem, jest utrudnienie realizacji oper
 
 #+latex: \begin{listing}[H]
 #+latex: \caption{\mylisting{Alternatywna implementacja operacji \texttt{whenever}.}}
-#+latex: \label{code:backwards-chaining-example}
+#+latex: \label{code:rete-fuckup-solved}
 #+BEGIN_SRC clojure
 (notify-whenever identyfikator wzorzec)
 (notify-whenever (self) '(temperature ?t))
@@ -1213,7 +1213,7 @@ Pierwszym i zarazem największym ograniczeniem, jest utrudnienie realizacji oper
 
 Wprowadzona konstrukcja =notify-whenever= zamiast funkcji reprezentującej akcję przyjmuje identyfikator procesu, który zostanie asynchronicznie poinformowany o spełnieniu reguły zadanej podanym wzorcem.
 
-Drugą limitacją zaimplementowanego systemu regułowego jest /logiczne/ usuwanie reguł z odpowiednie bazy danych, polegające na wyłączeniu efektów związanych z regułą akcji. Usunięta w ten sposób reguła nadal jest przetwarzana podczas wnioskowania, a jedynie efekty jej działania są pomijane.
+Drugą limitacją zaimplementowanego systemu regułowego jest /logiczne/ usuwanie reguł z odpowiedniej bazy danych, polegające na wyłączeniu efektów związanych z regułą akcji. Usunięta w ten sposób reguła nadal jest przetwarzana podczas wnioskowania, a jedynie efekty jej działania są pomijane.
 
 Kolejnym ograniczeniem, jest fakt istnienia globalnych baz danych zawierających fakty i reguły. Dane te stanowią *stan* aplikacji, którego istnienie nie jest pożądane w funkcyjnych językach programowania, do których należy język =FOOF= [[cite:Backus1978]]. Rozwiązanie tego problemu (zaprezentowane na schemacie [[ref:fig:distributed-rete]]) wymaga znaczących zmian architekturalnych w środowisku uruchomieniowym, w zamian pozwalając na implementację szeregu ciekawych optymalizacji.
 
@@ -1256,7 +1256,7 @@ Projekt będący częścią niniejszej pracy jest daleki od bycia kompletnym. W 
 
 - Implementacja większej liczby typów danych, w szczególności map oraz wektorów i związanych z nimi elementarnych operacji, celem wsparcia wielu zależnych od nich technik programistycznych.
 
-- Wraz z implementacją wektorów istnieje możliwość zrównoleglenia podstawowych operacji na wektorach na poziomie dostępu do danych (ang. /data-level parallelism/), co pozwoli osiągnąć znaczne przyspieszenie programów przetwarzających duże zbiory danych.
+- Wraz z rozwojem implementacji wektorów istnieje możliwość zrównoleglenia ich podstawowych operacji na poziomie dostępu do danych (ang. /data-level parallelism/), co pozwoli osiągnąć znaczne przyspieszenie programów przetwarzających duże zbiory danych.
 
 - Umożliwienie kompilacji do kodu maszynowego, na przykład za pomocą infrastruktury GCC (ang. /GNU Compiler Collection/) lub LLVM (ang. /Low-Level Virtual Machine/). Kierunek ten zapewni największe korzyści dla ekosystemu języka programowania =FOOF=.
 
