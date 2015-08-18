@@ -1542,9 +1542,95 @@ Program prezentuje wykorzystanie wnioskowania wstecz wbudowanego w język system
 * Spis wbudowanych funkcji i makr języka =FOOF=
 #+LaTeX: \label{sec:built-ins}
 
-- list contents of bootstrap.scm
-- describe what =&make-structure=, =&yield-cont= etc do
-- list available macros
+#+LaTeX: \noindent
+Lista wbudowanych funkcji i wartości dostępnych dla programisty (naturalnie istnieje możliwość powiększenia poniższej listy za pomocą wbudowanej funkcji =cpsfy=):
+- =nil= - wartość reprezentująca pustą listę i jednocześnie logiczny fałsz.
+
+- =(car x)= - funkcja zwraca pierwszy element pary =x=.
+
+- =(cdr x)= - funkcja zwraca drugi element pary =x=.
+
+- =(cadr x)= - funkcja zwraca drugi element listy =x= złożonej z par, odpowiada złożeniu funkcji =car= i =cdr=.
+
+- =(cddr x)= - funkcja zwraca pozostałą cześć listy, po odrzuceniu dwóch pierwszych wartości.
+
+- =(cons x y)= - funkcja tworzy parę dwóch wartości =x= oraz =y=.
+
+- =(list args ...)= - funkcja tworzy listę złożoną z par, której elementami są przekazane argumenty.
+
+- =(* args ...)= - funkcja oblicza iloczyn przekazanych wartości.
+
+- =(+ args ...)= - funkcja oblicza sumę przekazanych wartości.
+
+- =(- args ...)= - funkcja oblicza różnicę przekazanych wartości.
+
+- =(= args ...)= - funkcja sprawdza matematyczną równość przekazanych wartości.
+
+- =(< args ...)= - funkcja sprawdzająca, czy zadane wartości są posortowane rosnąco.
+
+- =(sleep time)= - funkcja powoduje uśpienie aktualnie działającego mikroprocesu na zadany czas.
+
+- =(self)= - funkcja zwraca identyfikator aktualnie działającego mikroprocesu.
+
+- =(send pid msg)= - funkcja wysyła wiadomość =msg= do mikroprocesu o identyfikatorze =pid=.
+
+- =(recv)= - funkcja przechwytuje wiadomość z kolejki wiadomości aktualnie funkcjonującego mikroprocesu i zwraca jej wartość.
+
+- =(spawn function)= - funkcja odpowiedzialna za tworzenie nowych mikroprocesów, przyjmuje funkcję, która zostanie wywołana przez nowy mikroproces.
+
+- =(assert! fact)= - funkcja pozwala na asercję faktów do wbudowanej bazy faktów.
+
+- =(retract! fact)= - funkcja pozwala na retrakcję faktów z wbudowanej bazy faktów.
+
+- =(signal! fact)= - funkcja pozwala na sygnalizację zajścia zdarzenia przez asercję i retrakcję faktu.
+
+- =(select pattern)= - funkcja realizująca wnioskowanie wstecz, pozwala zadawać logiczne zapytania do wbudowanej w język bazy wiedzy.
+
+- =(notify-whenever pid pattern)= - funkcja realizująca wnioskowanie w przód, pozwala definiować reguły, które notyfikują mikroproces o identyfikatorze =pid= w razie zaistnienia odpowiednich warunków.
+
+- =(task-info)= - funkcja wyświetla statystyki z działania systemu, takie jak liczba, stan, czasy działania i priorytety mikroprocesów.
+
+- =(display string)= - funkcja wyświetla przekazany ciąg znaków na ekranie komputera.
+
+- =(newline)= - funkcja wyświetla znak nowej linii na ekranie komputera.
+
+- =(random)= - funkcja zwraca pseudolosową wartość z przedziału (0, 1] o rozkładzie Gaussa.
+
+#+LaTeX: \noindent
+Lista wbudowanych makr dostępnych dla programisty:
+- =(quasiquote ...)=, =(unquote ...)=, =(unquote-splicing ...)= - operacja quasiquote została zrealizowana jako szereg makr, dzięki czemu jej złożoność obliczeniowa podczas działania programu jest optymalna.
+
+- =(define (name args ...) body ...)= - definicje funkcyjne są transformowane na definicje zmiennych, na przykład =(define (foo) 23)= jest transformowane do postaci =(define foo (lambda () 23))=, co ułatwia późniejsze przetwarzanie przez kompilator.
+
+- =(when condition body ...)= - ułatwia tworzenie bloków warunkowych, odpowiada konstrukcji =(if condition (do body ...) nil)=.
+
+- =(unless condition body ...)= - ułatwia tworzenie bloków warunkowych, odpowiada konstrukcji =(if condition nil (do body ...))=.
+
+- =(cond ((condition body ...) ...))= - pozwala na łatwe tworzenie zagnieżdżonych bloków warunkowych.
+
+- =(and x y)= - realizuje operację logicznego iloczynu dwóch wartości, odpowiada konstrukcji =(if x y false)=.
+
+- =(or x y)= - realizuje operację logicznej sumy dwóch wartości, odpowiada konstrukcji =(if x true y)=.
+
+- =(let ((var value) ...) body ...)= - pozwala na tworzenie lokalnych zmiennych, odpowiada wywołaniu funkcji anonimowej =((lambda (var ...) body ...) value ...)=.
+
+- =(let* ((var value) ...) body ...)= - pozwala na tworzenie wzajemnie zależnych zmiennych, odpowiada zagnieżdżeniu kostrukcji =let=: =(let ((var value)) (let (...) ... body ...))=.
+
+- =(structure definitions)= - pozwala na tworzenie struktur, stanowiących podstawowe bloki budulcowe programów w języku =FOOF=.
+
+- =(module (name deps ...) body ...)= - umożliwia tworzenie parametryzowanych struktur, odpowiada konstrukcji =(define name (lambda (deps ...) (structure body ...)))=.
+
+#+LaTeX: \noindent
+Lista prymitywnych funkcji wykorzystywanych przez środowisko uruchomieniowe języka:
+- =(&make-structure values ...)= - funkcja odpowiedzialna za tworzenio obiektów reprezentujących strukutry języka =FOOF=.
+
+- =(&yield-cont cont value)= - funkcja odpowiada za tworzenie tak zwanych trampoliny, czyli par reifikowanych do postaci funkcyjnej kontynuacji =cont= oraz wartości =value=, które zostaną do nich przekazane.
+
+- =(&uproc-error-handler)= - funkcja zwraca wartość aktualnie zadeklarowanej procedury obsługi błędu dla obecnie działającego mikroprocesu.
+
+- =(&set-uproc-error-handler! function)= - funkcja pozwala zadeklarować nową procedurę obsługi sytuacji wyjątkowych dla obecnie działającego mikroprocesu.
+
+- =(cpsfy function)= - funkcja pozwala transformować funkcje zdefiniowane w języku Scheme i udostępniać je w formacie odpowiednim do uruchomienia przez środowisko uruchomieniowe języka =FOOF=.
 
 * Spisy rysunków i fragmentów kodu
 #+latex: \label{sec:misc}
