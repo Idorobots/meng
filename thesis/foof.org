@@ -1637,8 +1637,11 @@ Lista prymitywnych funkcji wykorzystywanych przez środowisko uruchomieniowe ję
 
 #+begin_latex
 \begingroup
+  \let\origaddvspace\addvspace
+  \renewcommand{\addvspace}[1]{}
   \listoffigures
-  \pagebreak
+  \renewcommand{\addvspace}[1]{\origaddvspace{#1}}
+%  \pagebreak
   \listofmylisting
 \endgroup
 #+end_latex
