@@ -1518,6 +1518,7 @@ Program działa podobnie do przykładu z listingu [[ref:code:ex-forward-chaining
 #+end_src
 #+latex: \end{listing}
 
+#+LaTeX: \pagebreak
 ** Wnioskowanie wstecz
 Program prezentuje wykorzystanie wnioskowania wstecz wbudowanego w język systemu regułowego. Na bazie faktów wykonywany jest szereg operacji, a następnie program odpytuje bazę faktów o wartości, dla których wystąpiły fakty =foo= oraz =bar=. Wynikiem działania programu jest asocjacja =(?value . 2)=.
 
