@@ -48,33 +48,38 @@
 #+end_latex
 
 * Problem
-# Heterogeniczność rozumiana na dwa sposoby.
-# Heterogeniczność platform sprzętowych.
-# Heterogeniczność systemów rozproszonych.
-
 # Problemy systemów rozproszonych w literaturze.
 # Istotne problemy, które są pomijane.
 # Platform Awareness
 
+# Heterogeniczność rozumiana na dwa sposoby.
+# Heterogeniczność platform sprzętowych.
+# Heterogeniczność systemów rozproszonych.
+
 # Brak/nieadekwatne rozwiązania heterogeniczności i Platform Awareness.
 # Technologia wpływa na sposób tworzenia systemów rozproszonych.
-
-# Aplikacja Client/Server wymaga skalowania.
-# Skalowanie wprowadza load-balancery.
-# Stan aplikacji wymaga wprowadzenia dodatkowych węzłów bazodanowych.
-# Skalowania bazy danych wymaga dodatkowych load-balancerów.
-# Wniosek: heterogeniczność systemów rozproszonych jest naturalna.
-# Wniosek: obecne technologie nie są kompatybilne z Platform Awareness.
-
-# Obecne technologie każą nam udawać, że system jest mniej złożony.
-# W rzeczywistości systemy są bardziej złożone.
-# Nie mamy dobrego sposobu propagacji wiedzy o systemie.
 
 # Celem pracy jest zaprojektowanie języka programowania rozwiązującego problem, ...
 # ...implementacja kompilatora, runtime i systemu modułowego dla tego języka, ...
 # ...integracja języka z wieloma platformami.
 
+** Na czym się skupiamy
+- Skalowalność
+- Dynamiczność
+- Niezawodność
+- Konfiguracja
+#+LaTeX: \pause
+- Heterogeniczność?
+- Świadomość platformy?
+
 ** Heterogeniczność
+#+LaTeX: \alt<3>{
+#+BEGIN_CENTER
+#+ATTR_LATEX: :width 0.5\textwidth
+[[file:./img/shapesorter.jpg]]
+#+END_CENTER
+
+#+LaTeX: }{
 #+LaTeX: \alt<2>{
 #+BEGIN_CENTER
 #+ATTR_LATEX: :width 0.7\textwidth
@@ -87,16 +92,7 @@
 #+ATTR_LATEX: :width 0.7\textwidth
 [[file:./img/heterohomo1.pdf]]
 #+END_CENTER
-#+LaTeX: }
-
-** Na czym się skupiamy
-- Skalowalność
-- Dynamiczność
-- Niezawodność
-- Konfiguracja
-#+LaTeX: \pause
-- Heterogeniczność?
-- Świadomość platformy?
+#+LaTeX: }}
 
 ** State of the Art
 #+BEGIN_CENTER
@@ -108,7 +104,13 @@
 - Heterogeniczność?
 - Świadomość platformy?
 
-** Przykład
+** COMMENT Przykład
+# Aplikacja Client/Server wymaga skalowania.
+# Skalowanie wprowadza load-balancery.
+# Stan aplikacji wymaga wprowadzenia dodatkowych węzłów bazodanowych.
+# Skalowania bazy danych wymaga dodatkowych load-balancerów.
+# Wniosek: heterogeniczność systemów rozproszonych jest naturalna.
+# Wniosek: obecne technologie nie są kompatybilne z Platform Awareness.
 
 #+LaTeX: \alt<4>{
 #+BEGIN_CENTER
@@ -135,7 +137,11 @@
 #+END_CENTER
 #+LaTeX: }}}
 
-** Heterogeniczność bez świadomości
+** COMMENT Heterogeniczność bez świadomości
+# Obecne technologie każą nam udawać, że system jest mniej złożony.
+# W rzeczywistości systemy są bardziej złożone.
+# Nie mamy dobrego sposobu propagacji wiedzy o systemie.
+
 #+LaTeX: \alt<2>{
 #+BEGIN_CENTER
 #+ATTR_LATEX: :width 0.7\textwidth
@@ -150,15 +156,17 @@
 #+LaTeX: }
 
 ** Cel pracy
+- Rozwiązanie problemu heterogeniczności
+#+LaTeX: \pause
 - Projekt języka programowania
 #+LaTeX: \pause
 - Kompilator
-- System uruchomieniowy + dystrybucja
-- System modułowy + wiedza
+- Środowisko uruchomieniowe wspierające przetwarzanie rozproszone
+- System modułowy
 #+LaTeX: \pause
 - _Integracja_ z wieloma platformami
 
-* Architektura
+* Projekt
 # Język ma bazować na prostym, przenośnym i integrowalnym rdzeniu.
 # Rdzeń korzysta z kilku ortogonalnych abstrakcji:
 # - Lambda calculus
@@ -196,13 +204,6 @@
 #+END_SRC
 
 ** System modułowy
-- Oparty o reguły:
-#+BEGIN_SRC scheme
-(whenever (and (module ?m) (provides ?m feature))
-  (start-using ?m))
-#+END_SRC
-
-#+LaTeX: \pause
 - Moduł dostarcza funkcjonalność vs. moduł wymaga funkcjonalności:
 
 #+LaTeX: \begin{multicols}{2}
@@ -225,7 +226,14 @@
 #+END_SRC
 #+LaTeX: \end{multicols}
 
-** Przetwarzanie wiedzy
+#+LaTeX: \pause
+- Oparty o reguły:
+#+BEGIN_SRC scheme
+(whenever (and (module ?m) (provides ?m feature))
+  (start-using ?m))
+#+END_SRC
+
+** Inżynieria wiedzy
 - Automatyczne odkrywanie i propagacja wiedzy
 #+LaTeX: \begin{multicols}{2}
 #+BEGIN_SRC scheme
@@ -238,20 +246,38 @@
 #+LaTeX: \end{multicols}
 
 #+LaTeX: \pause
+- Heterogeniczność i świadomość platformy
+#+LaTeX: \begin{multicols}{2}
+#+BEGIN_SRC scheme
+(@ O-time "N^2")
+(@ O-space "1")
+(function (insertion-sort xs)
+  ...)
+#+END_SRC
+#+LaTeX: \newcolumn
+#+BEGIN_SRC scheme
+(@ O-time "NlogN")
+(@ O-space "N")
+(function (merge-sort xs)
+  ...)
+#+END_SRC
+#+LaTeX: \end{multicols}
+
+#+LaTeX: \pause
 - Dynamiczność, niezawodność i skalowalność
 
-#+LaTeX: \pause
-- Przetwarzanie złożonych zdarzeń
-
-#+LaTeX: \pause
-- Świadomość platformy
-#+BEGIN_SRC scheme
-(@ big-oh (log N)
-  (function (hillis-steele xs) ; runs on O(N) GPU cores
-    ...))
-#+END_SRC
-
 * Implementacja
+# Kompilator wspiera makroekspansję kodu.
+# Główną fazą kompilacji jest transformacja przekazywania kontynuacji.
+
+# Środowisko uruchomieniowe wykorzystuje algorytm CFS w celu sprawiedliwego harmonogramowania procesów.
+# Umożliwia to łatwą implementacje Modelu Aktorowego.
+
+# System regułowy oparty o Rete + autorskie rozszerzenia.
+# Wspiera wnioskowanie w przód.
+# Wspiera wnioskowanie wstecz.
+
+** COMMENT Kompilator
 # Implementacja wykorzystuje LLVM.
 # Dzięki temu łatwo jest dystrybuować kod - archiwa bitkodu LLVM.
 # Pozwala na AOT i JIT kompilację.
@@ -260,21 +286,67 @@
 # - AVR, Epiphany, Xtensa,
 # - nawet MOS 6502, Javascript.
 
-# System regułowy oparty o Rete + autorskie rozszerzenia.
-# Wspiera wnioskowanie w przód.
-# Wspiera wnioskowanie wstecz.
-
-** Kompilator
 #+BEGIN_CENTER
 #+ATTR_LATEX: :width 0.8\textwidth
 [[file:./img/archs.pdf]]
 #+END_CENTER
 
-** System regułowy
-- algorytm Rete + rozszerzenia
+** Kompilator
+- Makroekspansja:
+#+LaTeX: \begin{multicols}{2}
+#+BEGIN_SRC scheme
+;; Przed makroekspansją
+(and A B)
+(or A B)
+#+END_SRC
+#+LaTeX: \breakcol
+#+BEGIN_SRC scheme
+;; Po makroekspansji
+(if A B false)
+(if A true B)
+#+END_SRC
+#+LaTeX: \end{multicols}
 
 #+LaTeX: \pause
-- wnioskowanie w przód:
+- Transformacja /Continuation Passing Style/:
+#+LaTeX: \begin{multicols}{2}
+#+BEGIN_SRC scheme
+;; Przed transformacją
+(lambda (x)
+  (* 2 x))
+#+END_SRC
+#+LaTeX: \breakcol
+#+BEGIN_SRC scheme
+;; Po transformacji
+(lambda (x cont)
+  (%MULT 2 x cont))
+#+END_SRC
+#+LaTeX: \end{multicols}
+
+#+LaTeX: \pause
+- Wynikowy kod jest podzbiorem języka Scheme
+
+** Środowisko uruchomieniowe
+- Integracja ze środowiskiem uruchomieniowym języka Scheme
+
+#+LaTeX: \pause
+- Model Aktorowy:
+#+BEGIN_SRC scheme
+(spawn fun)
+(self)
+(send pid message)
+(recv)
+(sleep time)
+#+END_SRC
+
+#+LaTeX: \pause
+- Algorytm /Completely Fair Scheduler/
+
+** System regułowy
+- Algorytm Rete z autorskimi rozszerzeniami
+
+#+LaTeX: \pause
+- Wnioskowanie w przód:
 #+BEGIN_SRC scheme
 (whenever (and (module ?m)
                (provides ?m ?f))
@@ -282,14 +354,14 @@
 #+END_SRC
 
 #+LaTeX: \pause
-- wnioskowanie wstecz:
+- Wnioskowanie wstecz:
 #+BEGIN_SRC scheme
 (select (?m ?f)
         (and (module ?m)
              (provides ?m ?f)))
 #+END_SRC
 
-* Wyniki
+* COMMENT Wyniki
 # Analiza wydajności systemu regułowego?
 
 # Przykład działania systemu rozproszonego zrealizowanego w języku?
@@ -305,6 +377,38 @@
 [[file:./img/rete_bench.pdf]]
 #+END_CENTER
 #+LaTeX: }
+
+* Podsumowanie
+# Zaprojektowano kompletny, funkcyjny język programowania.
+# Zaimplementowano kompilator wykorzystujący transformację przekazywania kontynuacji.
+# Zaimplementowano podstawowe środowisko uruchomieniowe języka bazujące na języku Scheme.
+# Zaimplementowano i zintegrowano system regułowy bazujący na algorytmie Rete, który umożliwia inżynierię wiedzy.
+
+# W przyszłości konieczne będzie wykorzystanie LLVM w celu optymalizacji i kompilacji natywnej.
+# Dodatkowo zaprojektowano lepszą implementacją systemu regułowego, która zostanie wykonana w przyszłości.
+
+** Co udało się wykonać
+- Projekt języka programowania
+
+#+LaTeX: \pause
+- Kompilator
+- Środowisko uruchomieniowe
+- System modułowy
+
+#+LaTeX: \pause
+- Inżynieria wiedzy
+
+#+LaTeX: \pause
+- Rozwiązanie problemu heterogeniczności i świadomości platformy
+
+** Przyszłe kierunki rozwoju
+- Kompilacja z wykorzystaniem LLVM
+
+#+LaTeX: \pause
+- Lepsza integracja systemu regułowego
+
+#+LaTeX: \pause
+- Rozszerzenie wykorzystania inżynierii wiedzy
 
 * 
 #+LaTeX: \usebackgroundtemplate{\includegraphics[width=\paperwidth]{titlepagepl}}
